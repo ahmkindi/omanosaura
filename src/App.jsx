@@ -26,7 +26,10 @@ function App() {
         >
           <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
-        <ThemeProvider dir={locale === 'en' ? 'ltr' : 'rtl'}>
+        <ThemeProvider
+          dir={locale === 'en' ? 'ltr' : 'rtl'}
+          style={{ overflowX: 'hidden' }}
+        >
           <Lizard className={styles.lizard} />
           <Navigation />
           <Welcome />
