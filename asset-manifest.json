@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/%7Bomanosaura%7D/static/css/main.4dbd1357.chunk.css",
+    "main.js": "/%7Bomanosaura%7D/static/js/main.bf4b1386.chunk.js",
+    "main.js.map": "/%7Bomanosaura%7D/static/js/main.bf4b1386.chunk.js.map",
+    "runtime-main.js": "/%7Bomanosaura%7D/static/js/runtime-main.3dde7a02.js",
+    "runtime-main.js.map": "/%7Bomanosaura%7D/static/js/runtime-main.3dde7a02.js.map",
+    "static/css/2.c490997a.chunk.css": "/%7Bomanosaura%7D/static/css/2.c490997a.chunk.css",
+    "static/js/2.d3cb9620.chunk.js": "/%7Bomanosaura%7D/static/js/2.d3cb9620.chunk.js",
+    "static/js/2.d3cb9620.chunk.js.map": "/%7Bomanosaura%7D/static/js/2.d3cb9620.chunk.js.map",
+    "static/js/3.50ef17ec.chunk.js": "/%7Bomanosaura%7D/static/js/3.50ef17ec.chunk.js",
+    "static/js/3.50ef17ec.chunk.js.map": "/%7Bomanosaura%7D/static/js/3.50ef17ec.chunk.js.map",
+    "index.html": "/%7Bomanosaura%7D/index.html",
+    "static/css/2.c490997a.chunk.css.map": "/%7Bomanosaura%7D/static/css/2.c490997a.chunk.css.map",
+    "static/css/main.4dbd1357.chunk.css.map": "/%7Bomanosaura%7D/static/css/main.4dbd1357.chunk.css.map",
+    "static/js/2.d3cb9620.chunk.js.LICENSE.txt": "/%7Bomanosaura%7D/static/js/2.d3cb9620.chunk.js.LICENSE.txt",
+    "static/media/getFetch.cjs": "/%7Bomanosaura%7D/static/media/getFetch.582d29c4.cjs",
+    "static/media/lizard.fbef722a.svg": "/%7Bomanosaura%7D/static/media/lizard.fbef722a.svg",
+    "static/media/main_logo.aa730041.png": "/%7Bomanosaura%7D/static/media/main_logo.aa730041.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3dde7a02.js",
+    "static/css/2.c490997a.chunk.css",
+    "static/js/2.d3cb9620.chunk.js",
+    "static/css/main.4dbd1357.chunk.css",
+    "static/js/main.bf4b1386.chunk.js"
+  ]
+}
