@@ -1,9 +1,10 @@
 import React, { Suspense, useState } from 'react'
-import { Container, ThemeProvider } from 'react-bootstrap'
+import { ThemeProvider } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Loading from './components/Loading'
 import Navigation from './components/Navigation'
+import Welcome from './components/Welcome'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 
@@ -25,7 +26,7 @@ function App() {
         </Helmet>
         <ThemeProvider dir={locale === 'en' ? 'ltr' : 'rtl'}>
           <Navigation />
-          <Container>Hey</Container>
+          <Welcome />
         </ThemeProvider>
       </Suspense>
     </LocaleContext.Provider>

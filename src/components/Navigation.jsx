@@ -18,7 +18,7 @@ function Navigation() {
   return (
     <Navbar className={styles.myNav} variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="#">Rakaez</Navbar.Brand>
+        <Navbar.Brand href="#">Omanosaura</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className={locale === 'en' ? 'ms-auto' : 'me-auto'}>
