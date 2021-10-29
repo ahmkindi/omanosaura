@@ -7,6 +7,8 @@ import Navigation from './components/Navigation'
 import Welcome from './components/Welcome'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
+import { ReactComponent as Lizard } from './assets/lizard.svg'
+import styles from './app.module.scss'
 
 function App() {
   const [locale, setLocale] = useState(i18n.language)
@@ -22,9 +24,10 @@ function App() {
             dir: locale === 'en' ? 'ltr' : 'rtl',
           }}
         >
-          <style>{'body { background-color: #231f20; color: white;  }'}</style>
+          <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
         <ThemeProvider dir={locale === 'en' ? 'ltr' : 'rtl'}>
+          <Lizard className={styles.lizard} />
           <Navigation />
           <Welcome />
         </ThemeProvider>

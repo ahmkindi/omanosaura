@@ -7,12 +7,11 @@ function Welcome() {
   return (
     <Container
       style={{
-        height: '90vh',
-        lineHeight: '90vh',
+        height: '50vh',
+        lineHeight: '50vh',
         textAlign: 'center',
         userSelect: 'none',
         fontSize: '3rem',
-        opacity: '0.5',
       }}
     >
       {t('welcome')}

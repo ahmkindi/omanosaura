@@ -1,3 +1,34 @@
-.myNav {
+.navbar {
+  text-align: center;
+}
+
+.langButton {
+  padding: 0px;
+  width: 36px;
   background-color: transparent;
+  color: #04D0E8;
+  font-weight: bold;
+  outline: none;
+}
+
+.langButtonActive {
+  padding: 0px;
+  width: 36px;
+  background-color: #043C6C;
+  color: #04D0E8;
+  font-weight: bold;
+}
+
+.langButton:hover {
+  color: #043C6C;
+  background-color: #F58A07;
+}
+
+.langButtonActive:hover {
+  background-color: #043C6C;
+  color: #04D0E8;
+}
+
+.langButtonGroup {
+  margin-left: 5px;
 }

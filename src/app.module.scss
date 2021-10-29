@@ -1,0 +1,14 @@
+.lizard {
+  z-index: -1;
+  height: 400px;
+  width: 400px;
+  position: absolute;
+  top: 30px;
+  left: -100px;
+  transform: rotate(115deg);
+  opacity: 0.4;
+}
+
+.lizard > g {
+  fill: #043c6c;
+}
