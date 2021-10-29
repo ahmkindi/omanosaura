@@ -1,5 +1,4 @@
 import React, { Suspense, useState } from 'react'
-import { ThemeProvider } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Loading from './components/Loading'
@@ -21,19 +20,13 @@ function App() {
         <Helmet
           htmlAttributes={{
             lang: locale,
-            dir: locale === 'en' ? 'ltr' : 'rtl',
           }}
         >
           <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
-        <ThemeProvider
-          dir={locale === 'en' ? 'ltr' : 'rtl'}
-          style={{ overflowX: 'hidden' }}
-        >
-          <Lizard className={styles.lizard} />
-          <Navigation />
-          <Welcome />
-        </ThemeProvider>
+        <Lizard className={styles.lizard} />
+        <Navigation />
+        <Welcome />
       </Suspense>
     </LocaleContext.Provider>
   )
