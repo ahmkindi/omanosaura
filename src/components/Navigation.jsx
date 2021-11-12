@@ -4,6 +4,7 @@ import i18n from '../i18n'
 import styles from './navigation.module.scss'
 import mainLogo from '../assets/main_logo.png'
 import { ButtonGroup, Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 function Navigation() {
   const { locale } = useContext(LocaleContext)
@@ -16,7 +17,9 @@ function Navigation() {
 
   return (
     <div className={styles.navbar}>
-      <img width="300" src={mainLogo} alt={'omanosaura'} />
+      <Link to="/">
+        <img width="300" src={mainLogo} alt={'omanosaura'} />
+      </Link>
       <ButtonGroup
         className={styles.langButtonGroup}
         aria-label="Basic example"
@@ -38,6 +41,14 @@ function Navigation() {
           EN
         </Button>
       </ButtonGroup>
+      <div className={styles.navOptions}>
+        <Link to="/trips">
+          <span>Trips</span>
+        </Link>
+        <Link to="/adventures">Adventures</Link>
+        <Link to="/about">About Us</Link>
+        <Link to="/contact">Contact Us</Link>
+      </div>
     </div>
   )
 }

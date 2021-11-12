@@ -1,12 +1,14 @@
 .navbar {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  margin: 8px;
 }
 
 .langButton {
   padding: 0px;
   width: 36px;
   background-color: transparent;
-  color: #04D0E8;
+  color: #043C6C;
   font-weight: bold;
   outline: none;
 }
@@ -14,7 +16,7 @@
 .langButtonActive {
   padding: 0px;
   width: 36px;
-  background-color: #043C6C;
+  background-color: #04D0E8 ;
   color: #04D0E8;
   font-weight: bold;
 }
@@ -31,4 +33,21 @@
 
 .langButtonGroup {
   margin-left: 5px;
+}
+
+.navOptions {
+  margin-left: auto;
+}
+
+.navOptions > a {
+  color: #043C6C;
+  margin: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.navOptions > a:hover {
+  border-bottom: 5px solid #F58A07;
+  transition: border-width 0.3s linear;
 }
