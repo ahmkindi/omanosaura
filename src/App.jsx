@@ -5,6 +5,9 @@ import Loading from './components/Loading'
 import Navigation from './components/Navigation'
 import Trips from './components/Trips'
 import Welcome from './components/Welcome'
+import Adventures from './components/Adventures'
+import About from './components/About'
+import Contact from './components/Contact'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 import { ReactComponent as Lizard } from './assets/lizard.svg'
@@ -31,6 +34,9 @@ function App() {
           <Navigation />
           <Routes>
             <Route path="/trips" element={<Trips />} />
+            <Route path="/adventures" element={<Adventures />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/" element={<Welcome />} />
           </Routes>
         </Router>

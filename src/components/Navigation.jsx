@@ -5,8 +5,10 @@ import styles from './navigation.module.scss'
 import mainLogo from '../assets/main_logo.png'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 function Navigation() {
+  const { t } = useTranslation()
   const { locale } = useContext(LocaleContext)
 
   function changeLocale(l) {
@@ -42,12 +44,10 @@ function Navigation() {
         </Button>
       </ButtonGroup>
       <div className={styles.navOptions}>
-        <Link to="/trips">
-          <span>Trips</span>
-        </Link>
-        <Link to="/adventures">Adventures</Link>
-        <Link to="/about">About Us</Link>
-        <Link to="/contact">Contact Us</Link>
+        <Link to="/trips">{t('trips')}</Link>
+        <Link to="/adventures">{t('adventures')}</Link>
+        <Link to="/about">{t('about')}</Link>
+        <Link to="/contact">{t('contact')}</Link>
       </div>
     </div>
   )
