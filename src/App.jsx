@@ -8,6 +8,7 @@ import Welcome from './components/Welcome'
 import Adventures from './components/Adventures'
 import About from './components/About'
 import Contact from './components/Contact'
+import Error404 from './components/errors/Error404'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 import { ReactComponent as Lizard } from './assets/lizard.svg'
@@ -30,16 +31,19 @@ function App() {
           <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
         <Lizard className={styles.lizard} />
-        <Router>
-          <Navigation />
-          <Routes>
-            <Route path="/trips" element={<Trips />} />
-            <Route path="/adventures" element={<Adventures />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/" element={<Welcome />} />
-          </Routes>
-        </Router>
+        <div style={{ margin: 'auto', maxWidth: '1024px' }}>
+          <Router>
+            <Navigation />
+            <Routes>
+              <Route path="/trips" element={<Trips />} />
+              <Route path="/adventures" element={<Adventures />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/" element={<Welcome />} />
+              <Route path="*" element={<Error404 />} />
+            </Routes>
+          </Router>
+        </div>
       </Suspense>
     </LocaleContext.Provider>
   )
