@@ -57,3 +57,24 @@
 .navActive {
   border-bottom: 5px solid #f58a07;
 }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #043c6c;
+  padding: 16px;
+  position: absolute;
+  bottom: 0;
+  height: 2.5rem;
+  width: 100%;
+}
+
+.footer > img {
+  padding: 4px;
+}
+
+.footer > h4 > span {
+  font-weight: bold;
+  color: #f58a07;
+}

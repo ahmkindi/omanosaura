@@ -234,3 +234,12 @@ a:hover {
     );
   }
 }
+
+.intro {
+  display: flex;
+  align-items: center;
+}
+
+.intro > * {
+  flex: 1;
+}

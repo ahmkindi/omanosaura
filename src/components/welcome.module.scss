@@ -1,30 +1,24 @@
 .welcomeBox {
-		height: 50vh;
-		padding: 0;
-		padding-top: 30px;
-		margin: 0;
-		margin-top: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
+  display: flex;
+  align-items: center;
+}
+
+.welcomeBox > div {
+  flex: 1;
 }
 
 .omanSlogan {
-  text-align: center;
-  user-select: none;
-  font-size: 3rem;
-  color: #F58A07;
+  font-size: 2rem;
+  color: #f58a07;
   font-weight: bold;
 }
 
 .contact {
-  text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .instaButton:visited {
-  color: #043C6C;
+  color: #043c6c;
 }
 
 .instaIcon {

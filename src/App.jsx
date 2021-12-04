@@ -8,6 +8,7 @@ import Welcome from './components/Welcome'
 import Adventures from './components/Adventures'
 import About from './components/About'
 import Contact from './components/Contact'
+import Footer from './components/Footer'
 import Error404 from './components/errors/Error404'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
@@ -30,18 +31,36 @@ function App() {
         >
           <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
-        <Lizard className={styles.lizard} />
-        <div style={{ margin: 'auto', maxWidth: '1024px' }}>
+        <Lizard
+          style={{ left: locale === 'ar' ? '12vw' : '62vw' }}
+          className={styles.lizard}
+        />
+        <div
+          style={{
+            margin: 'auto',
+            maxWidth: '1024px',
+            position: 'relative',
+            minHeight: '100vh',
+          }}
+        >
           <Router>
             <Navigation />
-            <Routes>
-              <Route path="/trips" element={<Trips />} />
-              <Route path="/adventures" element={<Adventures />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/" element={<Welcome />} />
-              <Route path="*" element={<Error404 />} />
-            </Routes>
+            <div
+              style={{
+                paddingBottom: '2.5rem',
+                direction: locale === 'ar' ? 'rtl' : 'ltr',
+              }}
+            >
+              <Routes>
+                <Route path="/trips" element={<Trips />} />
+                <Route path="/adventures" element={<Adventures />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/" element={<Welcome />} />
+                <Route path="*" element={<Error404 />} />
+              </Routes>
+            </div>
+            <Footer />
           </Router>
         </div>
       </Suspense>
