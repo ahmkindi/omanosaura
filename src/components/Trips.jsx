@@ -2,6 +2,7 @@ import styles from './trips.module.scss'
 import { useTranslation } from 'react-i18next'
 import traveler from '../assets/trips/traveler.json'
 import Lottie from 'react-lottie'
+import { GrGallery } from 'react-icons/gr'
 
 const travelerOptions = {
   loop: true,
@@ -20,6 +21,7 @@ const Trips = () => {
     trips.push({
       title: t(`trip${i}`),
       desc: t(`trip${i}Desc`),
+      img: `/static/trip_${i}_front.png`,
     })
   }
 
@@ -47,7 +49,7 @@ const Trips = () => {
             <a className={styles.postcardImgLink} href="/">
               <img
                 className={styles.postcardImg}
-                src="https://picsum.photos/1000/1000"
+                src={trip.img}
                 alt={trip.title}
               />
             </a>
@@ -73,7 +75,14 @@ const Trips = () => {
                   className={`${styles.tagItem} ${styles.play} ${styles.blue}`}
                 >
                   <a href="/">
-                    <i class="fas fa-play mr-2"></i>Play Episode
+                    <GrGallery
+                      style={{
+                        marginRight: '4px',
+                        marginBottom: '4px',
+                        color: 'white',
+                      }}
+                    />
+                    Gallery
                   </a>
                 </li>
               </ul>
