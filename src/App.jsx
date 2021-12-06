@@ -12,8 +12,6 @@ import Footer from './components/Footer'
 import Error404 from './components/errors/Error404'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
-import { ReactComponent as Lizard } from './assets/lizard.svg'
-import styles from './app.module.scss'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -31,10 +29,6 @@ function App() {
         >
           <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
         </Helmet>
-        <Lizard
-          style={{ left: locale === 'ar' ? '12vw' : '62vw' }}
-          className={styles.lizard}
-        />
         <div
           style={{
             margin: 'auto',
