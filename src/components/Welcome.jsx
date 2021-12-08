@@ -5,6 +5,11 @@ import Lottie from 'react-lottie'
 import { Button } from 'react-bootstrap'
 import { ReactComponent as TripsIcon } from '../assets/location.svg'
 import { ReactComponent as AdventuresIcon } from '../assets/adventurer.svg'
+import { MdGroups as WhyUsIcon1 } from 'react-icons/md'
+import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
+import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
+import { useContext } from 'react'
+import LocaleContext from '../LocaleContext'
 
 const hikerOptions = {
   loop: true,
@@ -17,6 +22,16 @@ const hikerOptions = {
 
 function Welcome() {
   const { t } = useTranslation()
+  const { locale } = useContext(LocaleContext)
+
+  const whyUs = []
+  for (let i = 1; i <= 3; i++) {
+    whyUs.push({
+      title: t(`whyUsTitle${i}`),
+      desc: t(`whyUsDesc${i}`),
+      icon: WhyUsIcon1,
+    })
+  }
 
   return (
     <>
@@ -49,11 +64,40 @@ function Welcome() {
           </a>
         </div>
       </div>
-      <div className={`${styles.section} ${styles.whyus}`}>
+      <div className={`${styles.section} ${styles.whyUs}`}>
         <h3>{t('whyUs')}</h3>
+        <div>
+          <div className={styles.whyUsCards}>
+            <WhyUsIcon1 size={75} />
+            <h3>{t(`whyUsTitle1`)}</h3>
+            <p>{t(`whyUsDesc1`)}</p>
+          </div>
+          <div>
+            <WhyUsIcon2 size={75} />
+            <h3>{t(`whyUsTitle1`)}</h3>
+            <p>{t(`whyUsDesc2`)}</p>
+          </div>
+          <div>
+            <WhyUsIcon3 size={75} />
+            <h3>{t(`whyUsTitle3`)}</h3>
+            <p>{t(`whyUsDesc3`)}</p>
+          </div>
+        </div>
       </div>
       <div className={styles.section}>
         <h3>{t('reviews')}</h3>
+        <div
+          className={`${styles.blockquote} ${
+            locale === 'ar' ? styles.blockAR : null
+          }`}
+        >
+          <h1>{t('reviewDesc')}</h1>
+          <h4>
+            &mdash;{t('reviewName')}
+            <br />
+            <em>{t('reviewNameDesc')}</em>
+          </h4>
+        </div>
       </div>
     </>
   )

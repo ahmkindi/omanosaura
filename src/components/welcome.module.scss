@@ -65,10 +65,10 @@
 }
 
 .trips {
-  --bg-color: #dce9ff;
-  --bg-color-light: #f1f7ff;
-  --text-color-hover: #4c5656;
-  --box-shadow-color: rgba(220, 233, 255, 0.48);
+  --bg-color: #043c6c;
+  --bg-color-light: #04d0e8;
+  --text-color-hover: #04d0e8;
+  --box-shadow-color: rgba(181, 248, 255, 0.8);
 }
 
 .card {
@@ -138,6 +138,14 @@
   transition: all 0.3s ease-out;
 }
 
+.card path {
+  fill: #04d0e8 !important;
+}
+
+.card:hover path {
+  fill: #043c6c !important;
+}
+
 .circle:after {
   content: '';
   width: 118px;
@@ -166,4 +174,129 @@
   left: 50px;
   z-index: 0;
   transition: transform 0.3s ease-out;
+}
+
+.whyUs > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.whyUs > div > div {
+  flex: 1;
+  background-color: white;
+  box-shadow: 2px 2px 8px rgb(0 0 0 / 15%);
+  border-radius: 10px;
+  text-align: center;
+  padding: 40px;
+  margin: 1rem;
+}
+
+.whyUs > div h3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+@media only screen and (min-width: 1024px) {
+  .whyUs > div {
+    flex-direction: row;
+  }
+}
+
+/* Blockquote main style */
+.blockquote {
+  position: relative;
+  font-family: 'Barlow Condensed', sans-serif;
+  max-width: 620px;
+  margin: 80px auto;
+  align-self: center;
+}
+
+/* Blockquote header */
+.blockquote h1 {
+  font-family: 'Abril Fatface', cursive;
+  position: relative; /* for pseudos */
+  color: #043c6c;
+  font-size: 2.8rem;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+  border: 2px solid #fff;
+  border: solid 2px;
+  border-radius: 20px;
+  padding: 25px;
+}
+
+/* Blockquote right double quotes */
+.blockquote h1:after {
+  content: '';
+  position: absolute;
+  border: 2px solid #043c6c;
+  border-radius: 0 50px 0 0;
+  width: 60px;
+  height: 60px;
+  bottom: -60px;
+  left: 50px;
+  border-bottom: none;
+  border-left: none;
+  z-index: 3;
+}
+
+.blockAR h1:after {
+  transform: rotate(270deg);
+  right: 50px;
+}
+
+.blockquote h1:before {
+  content: '';
+  position: absolute;
+  width: 80px;
+  border: 6px solid #229aa2;
+  bottom: -3px;
+  left: 50px;
+  z-index: 2;
+}
+
+.blockAR h1:before {
+  right: 50px;
+}
+
+/* increase header size after 600px */
+@media all and (min-width: 600px) {
+  .blockquote h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+}
+
+/* Blockquote subheader */
+.blockquote h4 {
+  position: relative;
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+  padding-top: 15px;
+  z-index: 1;
+  margin-left: 150px;
+  padding-left: 12px;
+}
+
+.blockAR h4 {
+  z-index: 1;
+  margin-right: 150px;
+  padding-right: 12px;
+}
+
+.blockquote h4:first-letter {
+  margin-left: -12px;
+}
+
+.blockAR h4:first-letter {
+  margin-left: 3px;
+}
+
+.blockAR h4 {
+  padding-right: 2px;
 }
