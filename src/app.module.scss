@@ -1,14 +1,1 @@
-.lizard {
-  z-index: -1;
-  height: 300px;
-  width: 300px;
-  position: absolute;
-  top: -120px;
-  left: 12vw;
-  transform: rotate(35deg);
-  opacity: 0.1;
-}
-
-.lizard > g {
-  fill: #043c6c;
-}
+$primary-blue: #043c6c;

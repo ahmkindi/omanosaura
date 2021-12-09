@@ -1,4 +1,4 @@
-$main-blue: #043c6c !default;
+@import 'variables.scss';
 $main-blue-rgb-015: rgba(4, 60, 108, 0.1) !default;
 
 a,
@@ -16,7 +16,7 @@ a:hover {
   margin: 0 0 2rem 0;
   overflow: hidden;
   position: relative;
-  color: #ffffff;
+  color: white;
 
   &.dark {
     background-color: transparent;
@@ -199,13 +199,13 @@ a:hover {
 }
 
 .postcard .postcardTagbox .blue.play:hover {
-  background: $main-blue;
+  background: $darkBlue;
 }
 .blue .postcardTitle:hover {
-  color: $main-blue;
+  color: $darkBlue;
 }
 .blue .postcardBar {
-  background-color: $main-blue;
+  background-color: $darkBlue;
 }
 .blue::before {
   background-image: linear-gradient(

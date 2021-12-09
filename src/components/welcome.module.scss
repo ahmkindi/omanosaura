@@ -1,5 +1,7 @@
+@import 'variables.scss';
+
 .instaButton:visited {
-  color: #043c6c;
+  color: $darkBlue;
 }
 
 .instaIcon {
@@ -65,7 +67,7 @@
 }
 
 .trips {
-  --bg-color: #043c6c;
+  --bg-color: $primaryColor;
   --bg-color-light: #04d0e8;
   --text-color-hover: #04d0e8;
   --box-shadow-color: rgba(181, 248, 255, 0.8);
@@ -74,7 +76,7 @@
 .card {
   width: 220px;
   height: 321px;
-  background: #fff;
+  background: white;
   border-top-right-radius: 10px;
   overflow: hidden;
   display: flex;
@@ -98,16 +100,16 @@
 }
 
 .card:hover .circle {
-  border-color: var(--bg-color-light);
-  background: var(--bg-color);
+  border-color: $lightBlue;
+  background: $darkBlue;
 }
 
 .card:hover .circle:after {
-  background: var(--bg-color-light);
+  background: $lightBlue;
 }
 
 .card:hover p {
-  color: var(--text-color-hover);
+  color: $lightBlue;
 }
 
 .card:active {
@@ -128,8 +130,8 @@
   width: 131px;
   height: 131px;
   border-radius: 50%;
-  background: #fff;
-  border: 2px solid var(--bg-color);
+  background: white;
+  border: 2px solid $darkBlue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -139,11 +141,11 @@
 }
 
 .card path {
-  fill: #04d0e8 !important;
+  fill: $lightBlue !important;
 }
 
 .card:hover path {
-  fill: #043c6c !important;
+  fill: $darkBlue !important;
 }
 
 .circle:after {
@@ -152,7 +154,7 @@
   height: 118px;
   display: block;
   position: absolute;
-  background: var(--bg-color);
+  background: $darkBlue;
   border-radius: 50%;
   top: 7px;
   left: 7px;
@@ -169,7 +171,7 @@
   position: absolute;
   height: 118px;
   border-radius: 50%;
-  background: var(--bg-color);
+  background: $darkBlue;
   top: 70px;
   left: 50px;
   z-index: 0;
@@ -216,12 +218,12 @@
 .blockquote h1 {
   font-family: 'Abril Fatface', cursive;
   position: relative; /* for pseudos */
-  color: #043c6c;
+  color: $darkBlue;
   font-size: 2.8rem;
   font-weight: normal;
   line-height: 1;
   margin: 0;
-  border: 2px solid #fff;
+  border: 2px solid white;
   border: solid 2px;
   border-radius: 20px;
   padding: 25px;
@@ -231,7 +233,7 @@
 .blockquote h1:after {
   content: '';
   position: absolute;
-  border: 2px solid #043c6c;
+  border: 2px solid $darkBlue;
   border-radius: 0 50px 0 0;
   width: 60px;
   height: 60px;
@@ -251,7 +253,7 @@
   content: '';
   position: absolute;
   width: 80px;
-  border: 6px solid #229aa2;
+  border: 6px solid $aqua;
   bottom: -3px;
   left: 50px;
   z-index: 2;
@@ -272,7 +274,7 @@
 /* Blockquote subheader */
 .blockquote h4 {
   position: relative;
-  color: #ffffff;
+  color: white;
   font-size: 1.3rem;
   font-weight: 400;
   line-height: 1.2;
