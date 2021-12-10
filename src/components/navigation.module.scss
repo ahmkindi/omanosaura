@@ -39,26 +39,66 @@
 
 .navOptions {
   visibility: hidden;
-  margin-left: auto;
-  font-family: 'Tajawal';
   display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.navOptionsColumn {
+  position: absolute;
+  z-index: 1;
+  background-color: $aqua;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  align-self: center;
+  text-align: center;
+  opacity: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease-in-out;
+
+  &.active {
+    max-height: 1000px;
+    opacity: 1;
+    padding: 20px 0;
+    transition: max-height 0.5s ease-in-out, opacity 0.25s ease-in-out;
+  }
+}
+
+.navOptionsColumn > a {
+  color: $darkBlue;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.navOptionsColumn > a > div {
+  padding: 8px;
 }
 
 .navOptions > a {
   color: $darkBlue;
   margin: 8px;
-  font-size: 1.1rem;
   font-weight: bold;
   text-decoration: none;
 }
 
+.navOptions > a > div {
+  font-size: 1.1rem;
+  padding: 0.3em 0.4em;
+  border-radius: 4px;
+}
+
 .navInactive:hover {
-  border-bottom: 5px solid $orange;
-  transition: border-width 0.3s linear;
+  background-color: $orange;
+  transition: background-color 0.2s linear;
 }
 
 .navActive {
-  border-bottom: 5px solid $orange;
+  background-color: $darkBlue;
+  color: $lightBlue;
 }
 
 .footer {
@@ -89,6 +129,12 @@
   top: 5px;
   position: absolute;
   visibility: visible;
+  cursor: pointer;
+}
+
+.navbarAr svg {
+  left: 20px;
+  right: auto;
 }
 
 @media all and (min-width: 800px) {
@@ -98,6 +144,10 @@
 
   .navOptions {
     visibility: visible;
+  }
+
+  .navOptionsColumn {
+    visibility: hidden;
   }
 }
 

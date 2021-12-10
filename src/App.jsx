@@ -35,6 +35,7 @@ function App() {
             maxWidth: '1024px',
             position: 'relative',
             minHeight: '100vh',
+            direction: locale === 'ar' ? 'rtl' : 'ltr',
           }}
         >
           <Router>

@@ -26,6 +26,7 @@
   "adv10": "Al-Tahy Cave",
   "adv10Desc": "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
   "jaifar": "Jaifar Saeed Suleiman Al Kindi",
+  "jaifarTitle": "Nature Lover/Founder of Omanosaura",
   "jaifarDesc": "Founder of Omanosaura For Travel and Tourism, 5+ years of experience in tourism sector, licensed from the Ministry of Tourism as a general tour guide. I love adventure and hold an IRATA license in ropes and safety",
   "companyDesc": "Omanosaura aims to deliver a unique experience in Oman, and present the beuty and magic of Oman. From this the name Omanosaura was born, a one of a kind lizard that can be found in Oman only!",
   "trip1": "Oman Throughout History",
@@ -62,5 +63,7 @@
   "reviews": "What Do Fellow Tourists Say?",
   "reviewDesc": "lorem lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.",
   "reviewName": "Azhar Al Kindi",
-  "reviewNameDesc": "Omani explorer"
+  "reviewNameDesc": "Omani explorer",
+  "aboutCompany": "About Omanosaura",
+  "ourChamp": "Our Champ!"
 }
