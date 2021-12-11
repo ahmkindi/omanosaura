@@ -24,7 +24,7 @@ const About = () => {
             </div>
             <ul className={styles.socialIcons}>
               <li>
-                <a href="/">
+                <a href="https://www.instagram.com/jaifar96/">
                   <AiOutlineInstagram />
                 </a>
               </li>
