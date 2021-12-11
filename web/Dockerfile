@@ -5,7 +5,7 @@ WORKDIR /app
 # Cache and Install dependencies
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install
+RUN yarn install --ignore-engines
 # Copy app files
 COPY . .
 # Expose port
