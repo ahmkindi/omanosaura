@@ -1,26 +1,30 @@
-version: "3.8"
+version: '3.8'
 
 services:
   web:
-    container_name: web-prod
-    image: web-prod
+    container_name: web-dev
+    image: web-dev
     build:
       context: ./web/
-      target: production
+      target: development
+    volumes:
+      - ./web/src:/app/src
     ports:
-      - 80:80
+      - 3000:3000
     depends_on:
       - server
   server:
-    container_name: server-prod
-    image: server-prod
+    container_name: server-dev
+    image: server-dev
     build:
       context: ./server/
-      target: production
+      target: development
       args:
         EMAIL_USERNAME: ${EMAIL_USERNAME}
         EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     env_file:
       - ./server/.env
+    volumes:
+      - ./server:/app
     ports:
       - 8081:8081
