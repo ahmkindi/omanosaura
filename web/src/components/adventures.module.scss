@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 $bp-md: 600px;
 $bp-lg: 800px;
 
@@ -38,7 +40,6 @@ $bp-lg: 800px;
   width: 100%;
   text-align: center;
   color: whitesmoke;
-  background-color: whitesmoke;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1),
     0 4px 4px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.1),
     0 16px 16px rgba(0, 0, 0, 0.1);
@@ -71,24 +72,10 @@ $bp-lg: 800px;
     pointer-events: none;
     background-image: linear-gradient(
       to bottom,
-      hsla(0, 0%, 0%, 0) 0%,
-      hsla(0, 0%, 0%, 0.009) 11.7%,
-      hsla(0, 0%, 0%, 0.034) 22.1%,
-      hsla(0, 0%, 0%, 0.072) 31.2%,
-      hsla(0, 0%, 0%, 0.123) 39.4%,
-      hsla(0, 0%, 0%, 0.182) 46.6%,
-      hsla(0, 0%, 0%, 0.249) 53.1%,
-      hsla(0, 0%, 0%, 0.32) 58.9%,
-      hsla(0, 0%, 0%, 0.394) 64.3%,
-      hsla(0, 0%, 0%, 0.468) 69.3%,
-      hsla(0, 0%, 0%, 0.54) 74.1%,
-      hsla(0, 0%, 0%, 0.607) 78.8%,
-      hsla(0, 0%, 0%, 0.668) 83.6%,
-      hsla(0, 0%, 0%, 0.721) 88.7%,
-      hsla(0, 0%, 0%, 0.762) 94.1%,
-      hsla(0, 0%, 0%, 0.79) 100%
+      hsla(0, 0%, 0%, 0.1) 0%,
+      hsla(0, 0%, 0%, 0.95) 100%
     );
-    transform: translateY(-50%);
+    transform: translateY(200%);
     transition: transform calc(var(--d) * 2) var(--e);
   }
 
@@ -105,12 +92,12 @@ $bp-lg: 800px;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 1rem;
+  padding: 0.7rem;
   transition: transform var(--d) var(--e);
   z-index: 1;
 
   > * + * {
-    margin-top: 1rem;
+    margin-top: 0.8rem;
   }
 }
 
@@ -121,30 +108,26 @@ $bp-lg: 800px;
 }
 
 .copy {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  font-style: italic;
-  line-height: 1.35;
+  font-size: 1rem;
 }
 
 .btn {
   cursor: pointer;
   margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.65rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
   font-weight: bold;
-  letter-spacing: 0.025rem;
-  text-transform: uppercase;
-  color: white;
-  background-color: black;
+  color: $lightBlue;
+  background-color: $darkBlue;
   border: none;
 
   &:hover {
-    background-color: lighten(black, 5%);
+    background-color: $orange;
+    color: $darkBlue;
   }
 
   &:focus {
-    outline: 1px dashed yellow;
+    outline: 1px dashed $darkBlue;
     outline-offset: 3px;
   }
 }

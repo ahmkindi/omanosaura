@@ -6,12 +6,17 @@
   margin: 8px;
 }
 
+.logo {
+  width: 210px;
+}
+
 .langButton {
   padding: 0px;
   width: 36px;
   background-color: transparent;
   color: $darkBlue;
   font-weight: bold;
+  border-color: $darkBlue;
   outline: none;
 }
 
@@ -31,6 +36,10 @@
 .langButtonActive:hover {
   background-color: $darkBlue;
   color: $lightBlue;
+}
+
+.langButton:focus {
+  box-shadow: none !important;
 }
 
 .langButtonGroup {
@@ -148,6 +157,10 @@
 
   .navOptionsColumn {
     visibility: hidden;
+  }
+
+  .logo {
+    width: 300px;
   }
 }
 

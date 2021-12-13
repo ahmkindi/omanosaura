@@ -14,6 +14,9 @@
   flex-direction: column-reverse;
   text-align: center;
   padding-bottom: 1rem;
+  padding: 0.5rem;
+  margin: 0.2rem;
+  margin-bottom: 5rem;
 }
 
 .welcomeBox > div {
@@ -36,7 +39,7 @@
 }
 
 .section > h3 {
-  font-size: calc(1rem + 2vw);
+  font-size: 2.4rem;
   font-weight: 800;
   text-align: center;
   margin-bottom: 3rem;
@@ -64,12 +67,13 @@
     align-items: center;
     text-align: initial;
   }
+
+  .section > h3 {
+    font-size: calc(1rem + 2vw);
+  }
 }
 
 .trips {
-  --bg-color: $primaryColor;
-  --bg-color-light: #04d0e8;
-  --text-color-hover: #04d0e8;
   --box-shadow-color: rgba(181, 248, 255, 0.8);
 }
 
@@ -414,5 +418,18 @@
 .aboutCard:hover .details {
   max-height: 120px;
   bottom: 0;
-  transition: bottom 0.5s liner, max-height 3s ease-in-out;
+  transition: bottom 0.5s ease-in, max-height 0.5s ease-in-out;
+}
+
+.myButton {
+  color: $darkBlue;
+  border: 1px solid $darkBlue;
+  background-color: transparent;
+  font-weight: bold;
+}
+
+.myButton:hover {
+  color: $darkBlue;
+  background-color: $orange;
+  transition: background-color 0.2s linear;
 }

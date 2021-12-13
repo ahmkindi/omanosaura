@@ -65,5 +65,13 @@
   "reviewName": "Azhar Al Kindi",
   "reviewNameDesc": "Omani explorer",
   "aboutCompany": "About Omanosaura",
-  "ourChamp": "Our Champ!"
+  "ourChamp": "Our Champ!",
+  "tripsIntro": "Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia.",
+  "gallery": "Gallery",
+  "contactShort": "Contact",
+  "contactDesc": "You can reach us by pressing the big blue button, or use your favourite social media app from the icons below. Either way an adcenture awaits!",
+  "name": "NAME",
+  "email": "EMAIL",
+  "subject": "SUBJECT",
+  "send": "SEND"
 }

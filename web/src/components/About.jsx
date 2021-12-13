@@ -6,9 +6,13 @@ import {
   AiOutlineInstagram,
   AiOutlineTwitter,
 } from 'react-icons/ai'
+import { useContext } from 'react'
+import LocaleContext from '../LocaleContext'
 
 const About = () => {
   const { t } = useTranslation()
+  const { locale } = useContext(LocaleContext)
+
   return (
     <div>
       <div className={styles.section}>
@@ -17,7 +21,7 @@ const About = () => {
       </div>
       <div className={styles.section}>
         <h3>{t('ourChamp')}</h3>
-        <div style={{ display: 'flex' }}>
+        <div className={styles.welcomeBox}>
           <div className={styles.aboutCard}>
             <div className={styles.aboutCardImage}>
               <img src={Jaifar} alt="omanosaura founder Jaifar Al Kindi" />
@@ -47,7 +51,9 @@ const About = () => {
               </h2>
             </div>
           </div>
-          <h5 style={{ maxWidth: '500px' }}>{t('jaifarDesc')}</h5>
+          <div>
+            <h5 style={{ maxWidth: '500px' }}>{t('jaifarDesc')}</h5>
+          </div>
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ function Navigation() {
         }`}
       >
         <Link to="/">
-          <img width="300" src={mainLogo} alt={'omanosaura'} />
+          <img className={styles.logo} src={mainLogo} alt={'omanosaura'} />
         </Link>
         <ButtonGroup
           className={styles.langButtonGroup}

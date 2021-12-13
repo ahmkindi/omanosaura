@@ -39,7 +39,7 @@ function Welcome() {
         <div>
           <div className={styles.omanSlogan}>{t('omanSlogan')}</div>
           <div className={styles.contact}>{t('introText')}</div>
-          <Button>{t('contactText')}</Button>
+          <Button className={styles.myButton}>{t('contactText')}</Button>
         </div>
         <div>
           <Lottie options={hikerOptions} width={400} height={400} />
@@ -53,14 +53,14 @@ function Welcome() {
             <div className={styles.circle}>
               <TripsIcon />
             </div>
-            <p>Trips</p>
+            <p>{t('trips')}</p>
           </a>
           <a href="/adventures" className={`${styles.card} ${styles.trips}`}>
             <div className={styles.overlay}></div>
             <div className={styles.circle}>
               <AdventuresIcon />
             </div>
-            <p>Adventures</p>
+            <p>{t('adventures')}</p>
           </a>
         </div>
       </div>

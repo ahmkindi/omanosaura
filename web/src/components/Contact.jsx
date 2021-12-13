@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react'
 import styles from './contact.module.scss'
 import axios from 'axios'
+import { useTranslation } from 'react-i18next'
 
 const Contact = () => {
+  const { t } = useTranslation()
   const [formOpen, setFormOpen] = useState(false)
   const name = useRef(null)
   const email = useRef(null)
@@ -31,14 +33,10 @@ const Contact = () => {
     <div className={styles.contact}>
       <div className={styles.sectionheader}>
         {' '}
-        <h1>CONTACT</h1>
+        <h1>{t('contactShort')}</h1>
       </div>
       <article>
-        <p>
-          You can reach us by pressing the big blue button, or use your
-          favourite social media app from the icons below. Either way an
-          adventure awaits!
-        </p>
+        <p>{t('contactDesc')}</p>
 
         <label htmlFor="checkcontact" className={styles.contactbutton}>
           <div className={styles.mail}></div>
@@ -54,7 +52,7 @@ const Contact = () => {
         <form onSubmit={(e) => handleSubmit(e)} className={styles.contactform}>
           <p className={styles.inputWrapper}>
             <input type="text" name="contact_nom" id="contact_nom" ref={name} />
-            <label htmlFor="contact_nom">NAME</label>
+            <label htmlFor="contact_nom">{t('name')}</label>
           </p>
           <p className={styles.inputWrapper}>
             <input
@@ -63,7 +61,7 @@ const Contact = () => {
               id="contact_email"
               ref={email}
             />
-            <label htmlFor="contact_email">EMAIL</label>
+            <label htmlFor="contact_email">{t('email')}</label>
           </p>
           <p className={styles.inputWrapper}>
             <input
@@ -72,7 +70,7 @@ const Contact = () => {
               id="contact_sujet"
               ref={subject}
             />
-            <label htmlFor="contact_sujet">SUBJECT</label>
+            <label htmlFor="contact_sujet">{t('subject')}</label>
           </p>
           <p className={styles.textareaWrapper}>
             <textarea
@@ -82,7 +80,7 @@ const Contact = () => {
             ></textarea>
           </p>
           <p className={styles.submitWrapper}>
-            <input type="submit" value="SEND" />
+            <input type="submit" value={t('send')} />
           </p>
         </form>
       </article>
