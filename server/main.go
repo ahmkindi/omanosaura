@@ -16,6 +16,7 @@ func basicAuth(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		log.Println("authenticating")
 		username, password, ok := r.BasicAuth()
+		log.Println(username, password)
 		if ok {
 			usernameHash := sha256.Sum256([]byte(username))
 			passwordHash := sha256.Sum256([]byte(password))
@@ -28,7 +29,6 @@ func basicAuth(next http.Handler) http.Handler {
 				return
 			}
 		}
-		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	}
 
@@ -43,18 +43,20 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	protected := r.PathPrefix("/admin").Subrouter()
-	protected.Use(basicAuth)
-
 	r.HandleFunc("/send", server.HandlerSendEmail).Methods("POST")
 	r.HandleFunc("/trips", server.HandlerGetAllTrips).Methods("GET")
 	r.HandleFunc("/trips/photos/{id}", server.HandlerGetTripPhotos).Methods("GET")
 
+	protected := r.PathPrefix("/admin").Subrouter()
+	protected.Use(basicAuth)
 	protected.HandleFunc("/trips", server.HandlerInsertTrip).Methods("POST")
 	protected.HandleFunc("/trips", server.HandlerUpdateTrip).Methods("PUT")
-	protected.HandleFunc("/trips/{id}", server.HandlerDeleteTrip).Methods("DELETE")
+	protected.HandleFunc("/trips/delete/{id}", server.HandlerDeleteTrip).Methods("POST")
 	protected.HandleFunc("/trips/photos", server.HandlerInsertTripPhotos).Methods("POST")
 	protected.HandleFunc("/trips/photos/{id}", server.HandlerDeleteTripPhoto).Methods("DELETE")
+	protected.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}).Methods("POST")
 
 	http.ListenAndServe(":8081", r)
 }

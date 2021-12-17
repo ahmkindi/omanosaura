@@ -10,14 +10,19 @@ import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Error404 from './components/errors/Error404'
+import { AdminHome, AdminTrips } from './components/admin'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
+import AuthContext from './AuthContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
   const [locale, setLocale] = useState(i18n.language)
+  const [signedIn, setSignedIn] = useState(false)
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
 
-  i18n.on('languageChanged', (lng) => setLocale(i18n.language))
+  i18n.on('languageChanged', () => setLocale(i18n.language))
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
@@ -27,7 +32,7 @@ function App() {
             lang: locale,
           }}
         >
-          <style>{'body { background-color: #229AA2; color: #043C6C  }'}</style>
+          <style>{'body { background-color: #e1eced; color: #043C6C  }'}</style>
         </Helmet>
         <div
           style={{
@@ -38,25 +43,47 @@ function App() {
             direction: locale === 'ar' ? 'rtl' : 'ltr',
           }}
         >
-          <Router>
-            <Navigation />
-            <div
-              style={{
-                paddingBottom: '2.5rem',
-                direction: locale === 'ar' ? 'rtl' : 'ltr',
+          {!window.location.pathname.includes('admin') && (
+            <Router>
+              <Navigation />
+              <div
+                style={{
+                  paddingBottom: '2.5rem',
+                  direction: locale === 'ar' ? 'rtl' : 'ltr',
+                }}
+              >
+                <Routes>
+                  <Route path="/trips" element={<Trips />} />
+                  <Route path="/adventures" element={<Adventures />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/" element={<Welcome />} />
+                  <Route path="*" element={<Error404 />} />
+                </Routes>
+              </div>
+              <Footer />
+            </Router>
+          )}
+          {window.location.pathname.includes('admin') && (
+            <AuthContext.Provider
+              value={{
+                signedIn,
+                setSignedIn,
+                username,
+                setUsername,
+                password,
+                setPassword,
               }}
             >
-              <Routes>
-                <Route path="/trips" element={<Trips />} />
-                <Route path="/adventures" element={<Adventures />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/" element={<Welcome />} />
-                <Route path="*" element={<Error404 />} />
-              </Routes>
-            </div>
-            <Footer />
-          </Router>
+              <Router>
+                <Routes>
+                  <Route path="/admin" element={<AdminHome />} />
+                  <Route path="/admin/trips" element={<AdminTrips />} />
+                  <Route path="*" element={<Error404 />} />
+                </Routes>
+              </Router>
+            </AuthContext.Provider>
+          )}
         </div>
       </Suspense>
     </LocaleContext.Provider>

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react'
 
 const defaultValue = {
   locale: 'en',
-  setLocale: () => {} 
+  setLocale: () => {},
 }
 
-export default React.createContext(defaultValue);
+export default React.createContext(defaultValue)
