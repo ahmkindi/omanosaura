@@ -22,9 +22,16 @@ services:
       args:
         EMAIL_USERNAME: ${EMAIL_USERNAME}
         EMAIL_PASSWORD: ${EMAIL_PASSWORD}
-    env_file:
-      - ./server/.env
     volumes:
       - ./server:/app
     ports:
       - 8081:8081
+    depends_on:
+      - db
+  db:
+    image: postgres:13.2-alpine
+    container_name: db-dev
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 123456

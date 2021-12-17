@@ -7,8 +7,7 @@ ARG EMAIL_PASSWORD
 
 # Cache and install dependencies
 # currently no dependencies
-#COPY go.sum ./
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy app files
@@ -31,8 +30,7 @@ ARG EMAIL_PASSWORD
 # Add a work directory
 WORKDIR /app
 # Cache and install dependencies
-#COPY go.sum ./
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 # Copy app files
 COPY . .

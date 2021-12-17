@@ -1,66 +1,28 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"net/smtp"
-	"os"
-	"text/template"
+	"omanosaura/api"
+
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
-type Contact struct {
-	Name    string
-	Email   string
-	Subject string
-	Message string
-}
-
 func main() {
-	EMAIL_USERNAME := os.Getenv("EMAIL_USERNAME")
-	EMAIL_PASSWORD := os.Getenv("EMAIL_PASSWORD")
-	emailAuth := smtp.PlainAuth("", EMAIL_USERNAME, EMAIL_PASSWORD, "smtppro.zoho.com")
-	headers := "MIME-version: 1.0;\nContent-Type: text/html;"
 
-	http.HandleFunc("/send", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+	server, err := api.CreateServer()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		log.Println("Sending")
+	r := mux.NewRouter()
 
-		var details Contact
-		if err := json.NewDecoder(r.Body).Decode(&details); err != nil {
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
-		var externalBody bytes.Buffer
-		externalBody.Write([]byte(fmt.Sprintf("Subject: Hey Explorer\n%s\n\n", headers)))
-		var internalBody bytes.Buffer
-		internalBody.Write([]byte(fmt.Sprintf("Subject: %s\n%s\n\n", details.Subject, headers)))
+	r.HandleFunc("/send", server.HandlerSendEmail).Methods("POST")
+	r.HandleFunc("/trips", server.HandlerInsertTrip).Methods("POST")
+	r.HandleFunc("/trips", server.HandlerUpdateTrip).Methods("PUT")
+	r.HandleFunc("/trips", server.HandlerGetAllTrips).Methods("GET")
+	r.HandleFunc("/trips/gallery/{id}", server.HandlerGetTripGallery).Methods("GET")
 
-		external, err := template.ParseFiles("external-email.html")
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-		external.Execute(&externalBody, struct{ Name string }{Name: details.Name})
-
-		internal, err := template.ParseFiles("internal-email.html")
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-		internal.Execute(&internalBody, details)
-
-		smtp.SendMail("smtppro.zoho.com:587", emailAuth, EMAIL_USERNAME, []string{"admin@omanosaura.com"}, internalBody.Bytes())
-		smtp.SendMail("smtppro.zoho.com:587", emailAuth, EMAIL_USERNAME, []string{details.Email}, externalBody.Bytes())
-
-		w.WriteHeader(http.StatusOK)
-	})
-
-	http.ListenAndServe(":8081", nil)
+	http.ListenAndServe(":8081", r)
 }
