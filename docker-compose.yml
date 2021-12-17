@@ -19,9 +19,8 @@ services:
     build:
       context: ./server/
       target: development
-      args:
-        EMAIL_USERNAME: ${EMAIL_USERNAME}
-        EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - ./server:/app
     ports:

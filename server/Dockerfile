@@ -2,9 +2,6 @@ FROM golang:1.16.5 as development
 # Add a work directory
 WORKDIR /app
 
-ARG EMAIL_USERNAME
-ARG EMAIL_PASSWORD
-
 # Cache and install dependencies
 # currently no dependencies
 COPY go.mod go.sum ./
@@ -23,9 +20,6 @@ FROM golang:1.16.5 as builder
 # Define build env
 ENV GOOS linux
 ENV CGO_ENABLED 0
-
-ARG EMAIL_USERNAME
-ARG EMAIL_PASSWORD
 
 # Add a work directory
 WORKDIR /app

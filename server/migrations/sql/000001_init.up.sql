@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS trips (
 );
 
 CREATE TABLE IF NOT EXISTS trip_photos (
+	id UUID PRIMARY KEY,
 	trip_id UUID REFERENCES trips(id),
-	photo BYTEA,
-	PRIMARY KEY(trip_id, photo)
+	photo BYTEA
 );
 
 COMMIT;

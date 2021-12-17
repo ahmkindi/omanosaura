@@ -2,7 +2,7 @@ package models
 
 import "github.com/google/uuid"
 
-type Trips struct {
+type Trip struct {
 	Id            uuid.UUID `json:"id"`
 	Title         string    `json:"title"`
 	TitleAr       string    `json:"title_ar"`
@@ -13,7 +13,8 @@ type Trips struct {
 	FrontPhoto    []byte    `json:"front_photo"`
 }
 
-type TripPhotos struct {
+type TripPhoto struct {
+	Id     uuid.UUID `json:"id"`
 	TripId uuid.UUID `json:"trip_id"`
 	Photo  []byte    `json:"photo"`
 }
