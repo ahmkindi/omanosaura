@@ -14,7 +14,7 @@ const AdminHome = () => {
     e.preventDefault()
     axios
       .post(
-        'admin/',
+        '/admin/',
         {},
         {
           auth: {

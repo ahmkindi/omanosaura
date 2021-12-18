@@ -10,7 +10,7 @@ import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Error404 from './components/errors/Error404'
-import { AdminHome, AdminTrips } from './components/admin'
+import { AdminHome, AdminTrips, EditTrip } from './components/admin'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 import AuthContext from './AuthContext'
@@ -43,47 +43,50 @@ function App() {
             direction: locale === 'ar' ? 'rtl' : 'ltr',
           }}
         >
-          {!window.location.pathname.includes('admin') && (
-            <Router>
-              <Navigation />
-              <div
-                style={{
-                  paddingBottom: '2.5rem',
-                  direction: locale === 'ar' ? 'rtl' : 'ltr',
+          <Router>
+            {!window.location.pathname.includes('admin') && (
+              <>
+                <Navigation />
+                <div
+                  style={{
+                    paddingBottom: '2.5rem',
+                    direction: locale === 'ar' ? 'rtl' : 'ltr',
+                  }}
+                >
+                  <Routes>
+                    <Route path="/trips" element={<Trips />} />
+                    <Route path="/adventures" element={<Adventures />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/" element={<Welcome />} />
+                    <Route path="*" element={<Error404 />} />
+                  </Routes>
+                </div>
+                <Footer />
+              </>
+            )}
+            {window.location.pathname.includes('admin') && (
+              <AuthContext.Provider
+                value={{
+                  signedIn,
+                  setSignedIn,
+                  username,
+                  setUsername,
+                  password,
+                  setPassword,
                 }}
               >
                 <Routes>
-                  <Route path="/trips" element={<Trips />} />
-                  <Route path="/adventures" element={<Adventures />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/" element={<Welcome />} />
-                  <Route path="*" element={<Error404 />} />
-                </Routes>
-              </div>
-              <Footer />
-            </Router>
-          )}
-          {window.location.pathname.includes('admin') && (
-            <AuthContext.Provider
-              value={{
-                signedIn,
-                setSignedIn,
-                username,
-                setUsername,
-                password,
-                setPassword,
-              }}
-            >
-              <Router>
-                <Routes>
                   <Route path="/admin" element={<AdminHome />} />
-                  <Route path="/admin/trips" element={<AdminTrips />} />
+                  <Route
+                    path="/admin/trips"
+                    element={signedIn ? <AdminTrips /> : <AdminHome />}
+                  />
                   <Route path="*" element={<Error404 />} />
                 </Routes>
-              </Router>
-            </AuthContext.Provider>
-          )}
+              </AuthContext.Provider>
+            )}
+          </Router>
         </div>
       </Suspense>
     </LocaleContext.Provider>
