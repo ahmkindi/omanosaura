@@ -1,29 +1,31 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
+import LocaleContext from '../LocaleContext'
 import styles from './contact.module.scss'
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 
 const Contact = () => {
   const { t } = useTranslation()
+  const { locale } = useContext(LocaleContext)
   const [formOpen, setFormOpen] = useState(false)
   const name = useRef(null)
   const email = useRef(null)
   const subject = useRef(null)
   const message = useRef(null)
+  const inputClass = `${styles.inputWrapper} ${
+    locale === 'ar' ? styles.inputWrapperAR : null
+  }`
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    console.log(name.current.value)
-    console.log(message.current.value)
-
     setFormOpen(false)
     axios
-      .post('api/send', {
-        name: 'name',
-        email: 'ahmkind19@gmail.com',
-        subject: 'subject',
-        message: 'message',
+      .post('/send', {
+        name: name.current.value,
+        email: email.current.value,
+        subject: subject.current.value,
+        message: message.current.value,
       })
       .then((response) => console.log(response))
       .catch((error) => console.log(error))
@@ -50,11 +52,11 @@ const Contact = () => {
         />
 
         <form onSubmit={(e) => handleSubmit(e)} className={styles.contactform}>
-          <p className={styles.inputWrapper}>
+          <p className={inputClass}>
             <input type="text" name="contact_nom" id="contact_nom" ref={name} />
             <label htmlFor="contact_nom">{t('name')}</label>
           </p>
-          <p className={styles.inputWrapper}>
+          <p className={inputClass}>
             <input
               type="text"
               name="contact_email"
@@ -63,7 +65,7 @@ const Contact = () => {
             />
             <label htmlFor="contact_email">{t('email')}</label>
           </p>
-          <p className={styles.inputWrapper}>
+          <p className={inputClass}>
             <input
               type="text"
               name="contact_sujet"

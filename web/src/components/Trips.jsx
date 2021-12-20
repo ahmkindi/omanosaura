@@ -3,7 +3,6 @@ import welcomeStyles from './welcome.module.scss'
 import { useTranslation } from 'react-i18next'
 import traveler from '../assets/trips/traveler.json'
 import Lottie from 'react-lottie'
-import { GrGallery } from 'react-icons/gr'
 
 const travelerOptions = {
   loop: true,
@@ -62,8 +61,10 @@ const Trips = () => {
                 <li
                   className={`${styles.tagItem} ${styles.play} ${styles.blue}`}
                 >
-                  <a href="/">
-                    <GrGallery className={styles.myIcon} />
+                  <a
+                    href="/"
+                    style={{ padding: '0.8em 0.5em', paddingBottom: '0.8em' }}
+                  >
                     {t('gallery')}
                   </a>
                 </li>

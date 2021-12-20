@@ -16,7 +16,7 @@ a:hover {
   margin: 0 0 2rem 0;
   overflow: hidden;
   position: relative;
-  color: white;
+  color: $darkBlue;
 
   &.dark {
     background-color: transparent;
@@ -28,6 +28,10 @@ a:hover {
 
   a {
     color: inherit;
+  }
+
+  a:hover .myIcon {
+    color: $darkBlue !important;
   }
 
   h1,
@@ -61,7 +65,7 @@ a:hover {
     height: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    background-color: #424242;
+    background-color: $darkBlue;
     transition: width 0.2s ease;
   }
 
@@ -89,7 +93,8 @@ a:hover {
 
     .tagItem {
       display: inline-block;
-      background: rgba(83, 83, 83, 0.4);
+      background: $darkBlue;
+      color: $orange;
       border-radius: 3px;
       padding: 2.5px 10px;
       margin: 0 5px 5px 0;
@@ -98,7 +103,8 @@ a:hover {
       transition: background-color 0.3s;
 
       &:hover {
-        background: rgba(83, 83, 83, 0.8);
+        background: $orange;
+        color: $darkBlue;
       }
     }
   }
@@ -199,13 +205,13 @@ a:hover {
 }
 
 .postcard .postcardTagbox .blue.play:hover {
-  background: $darkBlue;
+  background: $orange;
 }
 .blue .postcardTitle:hover {
-  color: $darkBlue;
+  color: $orange;
 }
 .blue .postcardBar {
-  background-color: $darkBlue;
+  background-color: $orange;
 }
 .blue::before {
   background-image: linear-gradient(
@@ -249,5 +255,5 @@ a:hover {
 }
 
 .myIcon path {
-  stroke: white;
+  stroke: $orange;
 }

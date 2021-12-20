@@ -5,23 +5,10 @@
   font-family: Open Sans, sans-serif;
   width: 500px;
   margin: 2em auto;
-  background: white;
   position: relative;
   line-height: 1.5em;
-}
-
-.contact::after {
-  content: '';
-  display: block;
-  height: 30px;
-  width: 90%;
-  left: 5%;
-  bottom: 0;
-  position: absolute;
-  -webkit-box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.19);
-  box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 100%;
-  z-index: -1;
+  border-radius: 5px;
+  color: $darkBlue;
 }
 
 .contact article {
@@ -29,7 +16,9 @@
 }
 
 .contact h1 {
-  background: $darkBlue;
+  background-color: $darkBlue;
+  text-align: center;
+  border-radius: 10px;
   font-family: Oswald, sans-serif;
   font-size: 1.75em;
   padding: 0.6em 0 0.6em 0.4em;
@@ -39,6 +28,7 @@
 }
 
 .contactbutton {
+  border-radius: 10px;
   background: $darkBlue;
   -webkit-box-shadow: 1px 1px 0 0 $lightBlue, 2px 2px 0 0 $lightBlue,
     3px 3px 0 0 $lightBlue;
@@ -142,6 +132,7 @@
 }
 
 .inputWrapper input[type='text'] {
+  border-radius: 10px;
   margin-top: 1em;
   display: block;
   width: 100%;
@@ -162,13 +153,13 @@
 }
 
 .inputWrapper input[type='text']:focus {
-  background: rgba(242, 56, 90, 0.05);
   box-shadow: inset 2px 2px 5px 0 #dadada;
   outline: none;
   text-indent: 0;
 }
 
 .inputWrapper label {
+  border-radius: 10px;
   position: absolute;
   left: 0;
   top: 0;
@@ -191,7 +182,17 @@
   left: 85%;
 }
 
+.inputWrapperAR label {
+  left: auto !important;
+  right: 0 !important;
+}
+
+.inputWrapperAR input[type='text']:focus + label {
+  right: 85% !important;
+}
+
 .textareaWrapper textarea {
+  border-radius: 10px;
   margin-top: 20px;
   display: block;
   width: 100%;
@@ -212,7 +213,6 @@
 }
 
 .textareaWrapper textarea:focus {
-  background: rgba(242, 56, 90, 0.05);
   box-shadow: inset 2px 2px 5px 0 #dadada;
   outline: none;
 }
@@ -222,6 +222,7 @@
 }
 
 .submitWrapper input {
+  border-radius: 10px;
   text-align: center;
   display: inline-block;
   width: 40%;
