@@ -19,7 +19,7 @@ func (server *Server) HandlerSendEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var externalBody bytes.Buffer
-	externalBody.Write([]byte(fmt.Sprintf("Subject: Hey Explorer\n%s\n\n")))
+	externalBody.Write([]byte(fmt.Sprintf("Subject: Hey Explorer\n%s\n\n", server.Email.Headers)))
 	var internalBody bytes.Buffer
 	internalBody.Write([]byte(fmt.Sprintf("Subject: %s\n%s\n\n", details.Subject, server.Email.Headers)))
 

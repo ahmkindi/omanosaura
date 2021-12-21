@@ -3,6 +3,15 @@ import LocaleContext from '../LocaleContext'
 import styles from './contact.module.scss'
 import axios from 'axios'
 import { useTranslation } from 'react-i18next'
+import {
+  AiOutlineWhatsApp,
+  AiOutlineInstagram,
+  AiFillPhone,
+} from 'react-icons/ai'
+import { Alert } from 'react-bootstrap'
+
+const failedEmail = `oops! we couldn't send the email 😭| Try again, or contact us using one of the social icons above`
+const successEmail = `Check your email to ensure we got your message 😇|`
 
 const Contact = () => {
   const { t } = useTranslation()
@@ -19,7 +28,6 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    setFormOpen(false)
     axios
       .post('/send', {
         name: name.current.value,
@@ -27,9 +35,16 @@ const Contact = () => {
         subject: subject.current.value,
         message: message.current.value,
       })
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error))
+      .then((response) =>
+        response.status === 200
+          ? setAlertText(successEmail)
+          : setAlertText(failedEmail)
+      )
+      .catch(() => setAlertText(failedEmail))
+      .finally(setFormOpen(false))
   }
+
+  const [alertText, setAlertText] = useState('')
 
   return (
     <div className={styles.contact}>
@@ -39,6 +54,31 @@ const Contact = () => {
       </div>
       <article>
         <p>{t('contactDesc')}</p>
+        <div className={styles.socials}>
+          <a
+            href="https://www.instagram.com/omanosaura/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <AiOutlineInstagram />
+          </a>
+          <a
+            href="https://wa.me/0096895598840"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <AiOutlineWhatsApp />
+          </a>
+          <a
+            href="tel:+96892767527"
+            onClick={() => {
+              navigator.clipboard.writeText('0096892767527')
+              setAlertText('Phone Number Copied 😎|')
+            }}
+          >
+            <AiFillPhone />
+          </a>
+        </div>
 
         <label htmlFor="checkcontact" className={styles.contactbutton}>
           <div className={styles.mail}></div>
@@ -86,6 +126,18 @@ const Contact = () => {
           </p>
         </form>
       </article>
+      {alertText !== '' && (
+        <Alert
+          variant={alertText.includes('oops') ? 'danger' : 'success'}
+          onClose={() => setAlertText('')}
+          dismissible
+        >
+          <Alert.Heading>
+            {alertText.substring(0, alertText.indexOf('|'))}
+          </Alert.Heading>
+          <p>{alertText.substring(alertText.indexOf('|') + 1)}</p>
+        </Alert>
+      )}
     </div>
   )
 }
