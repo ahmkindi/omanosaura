@@ -15,8 +15,7 @@ type tripsStore struct {
 }
 
 type TripsStore interface {
-	InsertTrip(ctx context.Context, trip models.Trip) error
-	UpdateTrip(ctx context.Context, trip models.Trip) error
+	InsertOrUpdateTrip(ctx context.Context, trip models.Trip) error
 	GetAllTrips(ctx context.Context) ([]models.Trip, error)
 	DeleteTrip(ctx context.Context, tripId uuid.UUID) error
 	InsertTripPhoto(ctx context.Context, tripPhoto models.TripPhoto) error
@@ -29,24 +28,18 @@ func NewTripsStore(db *sqlx.DB) TripsStore {
 	return &tripsStore{db: db}
 }
 
-func (s *tripsStore) InsertTrip(ctx context.Context, trip models.Trip) error {
+func (s *tripsStore) InsertOrUpdateTrip(ctx context.Context, trip models.Trip) error {
 	_, err := s.db.NamedExecContext(ctx,
 		`INSERT INTO trips VALUES
-		(:id, :title, :title_ar, :subtitle, :subtitle_ar, :description, :description_ar, :front_photo)`, trip)
-	return err
-}
-
-func (s *tripsStore) UpdateTrip(ctx context.Context, trip models.Trip) error {
-	_, err := s.db.NamedExecContext(ctx,
-		`UPDATE trips SET
-		title = :title, 
-		title_ar = :title_ar, 
-		subtitle = :subtitle, 
-		subtitle_ar = :subtitle_ar, 
-		description = :description, 
-		description_ar = :description_ar, 
-		front_photo = :front_photo
-		WHERE id=:id`, trip)
+		(:id, :title, :title_ar, :subtitle, :subtitle_ar, :description, :description_ar, :front_photo)
+		ON CONFLICT (id) DO UPDATE SET
+			title=excluded.title,
+			title_ar=excluded.title_ar,
+			subtitle=excluded.subtitle,
+			subtitle_ar=excluded.subtitle_ar,
+			description=excluded.description,
+			description_ar=excluded.description_ar,
+			front_photo=excluded.front_photo`, trip)
 	return err
 }
 

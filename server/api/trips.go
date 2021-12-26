@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerInsertTrip(w http.ResponseWriter, r *http.Request) {
+func (server *Server) HandlerInsertOrUpdateTrip(w http.ResponseWriter, r *http.Request) {
 	log.Print("Inserting Trip")
 	var trip models.Trip
 	if err := json.NewDecoder(r.Body).Decode(&trip); err != nil {
@@ -19,27 +19,12 @@ func (server *Server) HandlerInsertTrip(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	trip.Id = uuid.Must(uuid.NewRandom())
-
-	if err := server.tripsStore.InsertTrip(r.Context(), trip); err != nil {
-		log.Println("failed to insert trip into db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+	if trip.Id == uuid.Nil {
+		log.Print("I AM NIL")
+		trip.Id = uuid.Must(uuid.NewRandom())
 	}
 
-	w.WriteHeader(http.StatusOK)
-}
-
-func (server *Server) HandlerUpdateTrip(w http.ResponseWriter, r *http.Request) {
-	log.Print("Updating Trip")
-	var trip models.Trip
-	if err := json.NewDecoder(r.Body).Decode(&trip); err != nil {
-		log.Println("failed to decode request", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	if err := server.tripsStore.UpdateTrip(r.Context(), trip); err != nil {
+	if err := server.tripsStore.InsertOrUpdateTrip(r.Context(), trip); err != nil {
 		log.Println("failed to insert trip into db", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

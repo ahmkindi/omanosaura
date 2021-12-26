@@ -11,8 +11,10 @@ import (
 )
 
 type Server struct {
-	Email      Email
-	tripsStore store.TripsStore
+	Email           Email
+	tripsStore      store.TripsStore
+	adventuresStore store.AdventuresStore
+	eventsStore     store.EventsStore
 }
 
 type Email struct {
@@ -49,6 +51,8 @@ func CreateServer() (*Server, error) {
 			Headers:  "MIME-version: 1.0;\nContent-Type: text/html;",
 			SmtpURL:  "smtppro.zoho.com:587",
 		},
-		tripsStore: store.NewTripsStore(db),
+		tripsStore:      store.NewTripsStore(db),
+		adventuresStore: store.NewAdventuresStore(db),
+		eventsStore:     store.NewEventsStore(db),
 	}, nil
 }
