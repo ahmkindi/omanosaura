@@ -37,3 +37,15 @@ type Event struct {
 	Photo  []byte    `json:"photo"`
 	Expiry time.Time `json:"expiry"`
 }
+
+type User struct {
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+	Phone string    `json:"phone"`
+}
+
+type EventUser struct {
+	EventId uuid.UUID `json:"event_id"`
+	UserId  uuid.UUID `json:"user_id"`
+}

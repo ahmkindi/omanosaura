@@ -32,4 +32,17 @@ CREATE TABLE IF NOT EXISTS events (
 	expiry DATE
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY,
+	email citext UNIQUE NOT NULL,
+  name TEXT,
+	phone TEXT UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS users_events (
+  event_id UUID REFERENCES events(id),
+  user_id UUID REFERENCES users(id),
+  PRIMARY KEY(event_id, user_id)
+);
+
 COMMIT;
