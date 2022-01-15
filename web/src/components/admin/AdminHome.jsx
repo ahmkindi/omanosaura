@@ -49,7 +49,7 @@ const AdminHome = () => {
       }
     }
     auth.setSignedIn(false)
-  }, [auth.setSignedIn])
+  }, [auth])
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -112,6 +112,8 @@ const AdminHome = () => {
         <>
           <Link to="/admin/trips">trips</Link>
           <Link to="/admin/adventures">adventures</Link>
+          <Link to="/admin/events">events</Link>
+          <Link to="/admin/users">users</Link>
         </>
       )}
     </div>

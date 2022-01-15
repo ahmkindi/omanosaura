@@ -10,6 +10,8 @@ import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
 import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
 import { useContext } from 'react'
 import LocaleContext from '../LocaleContext'
+import axios from 'axios'
+import useSWR from 'swr'
 
 const hikerOptions = {
   loop: true,
@@ -23,6 +25,10 @@ const hikerOptions = {
 function Welcome() {
   const { t } = useTranslation()
   const { locale } = useContext(LocaleContext)
+  const { data: events } = useSWR('/current/events', async (url) => {
+    const { data } = await axios.get(url)
+    return data
+  })
 
   const whyUs = []
   for (let i = 1; i <= 3; i++) {
@@ -64,6 +70,22 @@ function Welcome() {
           </a>
         </div>
       </div>
+      {events && (
+        <div className={`${styles.section} ${styles.events}`}>
+          <h3>{t('currentEvents')}</h3>
+          <div>
+            {events.map((event) => (
+              <div className={styles.event} key={event.id}>
+                <img
+                  alt="event"
+                  src={`data:image/jpeg;base64,${event.photo}`}
+                />
+                <Button className={styles.myButton}>{t(`register`)}</Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className={`${styles.section} ${styles.whyUs}`}>
         <h3>{t('whyUs')}</h3>
         <div>

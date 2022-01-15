@@ -10,7 +10,13 @@ import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Error404 from './components/errors/Error404'
-import { AdminHome, AdminTrips } from './components/admin'
+import {
+  AdminHome,
+  AdminTrips,
+  AdminAdventures,
+  AdminEvents,
+  AdminUsers,
+} from './components/admin'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 import AuthContext from './AuthContext'
@@ -81,6 +87,18 @@ function App() {
                   <Route
                     path="/admin/trips"
                     element={signedIn ? <AdminTrips /> : <AdminHome />}
+                  />
+                  <Route
+                    path="/admin/adventures"
+                    element={signedIn ? <AdminAdventures /> : <AdminHome />}
+                  />
+                  <Route
+                    path="/admin/events"
+                    element={signedIn ? <AdminEvents /> : <AdminHome />}
+                  />
+                  <Route
+                    path="/admin/users"
+                    element={signedIn ? <AdminUsers /> : <AdminHome />}
                   />
                   <Route path="*" element={<Error404 />} />
                 </Routes>

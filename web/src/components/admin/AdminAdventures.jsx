@@ -5,28 +5,27 @@ import { BiImageAdd } from 'react-icons/bi'
 import useSWR from 'swr'
 import axios from 'axios'
 import { useContext, useState } from 'react'
-import EditTrip from './EditTrip'
-export const emptyTrip = {
+import EditAdventure from './EditAdventure'
+
+export const emptyAdventure = {
   title: '',
   title_ar: '',
-  subtitle: '',
-  subtitle_ar: '',
   description: '',
   description_ar: '',
-  front_photo: '',
+  photo: '',
 }
 
-const AdminTrips = () => {
-  const { data: trips, mutate } = useSWR('/trips', async (url) => {
+const AdminAdventures = () => {
+  const { data: adventures, mutate } = useSWR('/adventures', async (url) => {
     const { data } = await axios.get(url)
     return data
   })
   const { username, password } = useContext(AuthContext)
-  const [activeTrip, setActiveTrip] = useState()
+  const [activeAdv, setActiveAdv] = useState()
 
-  const handleDelete = async (tripId) => {
+  const handleDelete = async (advId) => {
     await axios.post(
-      `/admin/trips/delete/${tripId}`,
+      `/admin/adventures/delete/${advId}`,
       {},
       {
         auth: {
@@ -35,45 +34,46 @@ const AdminTrips = () => {
         },
       }
     )
-    mutate(trips)
+    mutate(adventures)
   }
 
-  if (activeTrip)
-    return <EditTrip activeTrip={activeTrip} setActiveTrip={setActiveTrip} />
+  if (activeAdv)
+    return <EditAdventure activeAdv={activeAdv} setActiveAdv={setActiveAdv} />
   return (
     <>
-      <Button onClick={() => setActiveTrip(emptyTrip)}>New Trip</Button>
+      <Button onClick={() => setActiveAdv(emptyAdventure)}>
+        New Adventure
+      </Button>
       <Table striped bordered hover style={{ margin: '2rem' }}>
         <thead>
           <tr>
             <th>#</th>
             <th>Title</th>
             <th>AR Title</th>
-            <th>Add Photo</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tbody>
-          {trips?.map((trip, index) => (
-            <tr key={trip.id}>
+          {adventures?.map((adv, index) => (
+            <tr key={adv.id}>
               <td>{index + 1}</td>
-              <td>{trip.title}</td>
-              <td>{trip.title_ar}</td>
+              <td>{adv.title}</td>
+              <td>{adv.title_ar}</td>
               <td>
                 <Button variant="primary">
                   <BiImageAdd />
                 </Button>
               </td>
               <td>
-                <Button variant="primary" onClick={() => setActiveTrip(trip)}>
+                <Button variant="primary" onClick={() => setActiveAdv(adv)}>
                   <AiOutlineEdit />
                 </Button>
               </td>
               <td>
                 <Button
                   variant="danger"
-                  onClick={async () => await handleDelete(trip.id)}
+                  onClick={async () => await handleDelete(adv.id)}
                 >
                   <AiOutlineDelete />
                 </Button>
@@ -86,4 +86,4 @@ const AdminTrips = () => {
   )
 }
 
-export default AdminTrips
+export default AdminAdventures

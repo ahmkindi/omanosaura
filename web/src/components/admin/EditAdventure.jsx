@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 import { getBase64 } from '../helpers/files'
 import { useSWRConfig } from 'swr'
 
-const EditTrip = ({ activeTrip, setActiveTrip }) => {
+const EditAdventure = ({ activeAdv, setActiveAdv }) => {
   const { username, password } = useContext(AuthContext)
   const { mutate } = useSWRConfig()
   const [invalid, setInvalid] = useState(false)
@@ -14,11 +14,11 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('/admin/trips', activeTrip, {
+      const response = await axios.post('/admin/adventures', activeAdv, {
         auth: { username: username, password: password },
       })
-      response.status === 200 ? setActiveTrip(undefined) : setInvalid(true)
-      await mutate('/trips')
+      response.status === 200 ? setActiveAdv(undefined) : setInvalid(true)
+      await mutate('/adventures')
     } catch {
       setInvalid(true)
     }
@@ -27,9 +27,9 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
   const handlePhotoChange = (e) => {
     if (e.target.files.length > 0) {
       getBase64(e.target.files[0], (result) => {
-        setActiveTrip((prev) => ({
+        setActiveAdv((prev) => ({
           ...prev,
-          front_photo: result.substring(result.indexOf(',') + 1),
+          photo: result.substring(result.indexOf(',') + 1),
         }))
       })
     }
@@ -45,27 +45,9 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
           <Col sm={10}>
             <Form.Control
               type="text"
-              value={activeTrip.title}
+              value={activeAdv.title}
               onChange={(e) =>
-                setActiveTrip((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group
-          as={Row}
-          className="mb-3"
-          controlId="formHorizontalSubtitle"
-        >
-          <Form.Label column sm={2}>
-            Subtitle
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              value={activeTrip.subtitle}
-              onChange={(e) =>
-                setActiveTrip((prev) => ({ ...prev, subtitle: e.target.value }))
+                setActiveAdv((prev) => ({ ...prev, title: e.target.value }))
               }
             />
           </Col>
@@ -82,9 +64,9 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
             <Form.Control
               as="textarea"
               style={{ height: '100px' }}
-              value={activeTrip.description}
+              value={activeAdv.description}
               onChange={(e) =>
-                setActiveTrip((prev) => ({
+                setActiveAdv((prev) => ({
                   ...prev,
                   description: e.target.value,
                 }))
@@ -101,30 +83,9 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
           <Col sm={10}>
             <Form.Control
               type="text"
-              value={activeTrip.title_ar}
+              value={activeAdv.title_ar}
               onChange={(e) =>
-                setActiveTrip((prev) => ({ ...prev, title_ar: e.target.value }))
-              }
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group
-          as={Row}
-          className="mb-3"
-          controlId="formHorizontalARSubtitle"
-        >
-          <Form.Label column sm={2}>
-            AR Subtitle
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              value={activeTrip.subtitle_ar}
-              onChange={(e) =>
-                setActiveTrip((prev) => ({
-                  ...prev,
-                  subtitle_ar: e.target.value,
-                }))
+                setActiveAdv((prev) => ({ ...prev, title_ar: e.target.value }))
               }
             />
           </Col>
@@ -141,9 +102,9 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
             <Form.Control
               as="textarea"
               style={{ height: '100px' }}
-              value={activeTrip.description_ar}
+              value={activeAdv.description_ar}
               onChange={(e) =>
-                setActiveTrip((prev) => ({
+                setActiveAdv((prev) => ({
                   ...prev,
                   description_ar: e.target.value,
                 }))
@@ -157,7 +118,7 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
         <Form.Control type="file" onChange={(e) => handlePhotoChange(e)} />
       </Form.Group>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-        <Button onClick={() => setActiveTrip(undefined)} variant="warning">
+        <Button onClick={() => setActiveAdv(undefined)} variant="warning">
           Cancel
         </Button>
         <Button type="submit" variant="success">
@@ -168,4 +129,4 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
   )
 }
 
-export default EditTrip
+export default EditAdventure

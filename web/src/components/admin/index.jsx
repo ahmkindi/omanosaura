@@ -1,3 +1,5 @@
 export { default as AdminHome } from './AdminHome'
 export { default as AdminTrips } from './AdminTrips'
-export { default as EditTrip } from './EditTrip'
+export { default as AdminAdventures } from './AdminAdventures'
+export { default as AdminEvents } from './AdminEvents'
+export { default as AdminUsers } from './AdminUsers'

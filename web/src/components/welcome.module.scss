@@ -433,3 +433,22 @@
   background-color: $orange;
   transition: background-color 0.2s linear;
 }
+
+.event {
+  position: relative;
+}
+
+.event img {
+  width: 100%;
+  height: auto;
+}
+
+.event button {
+  position: absolute;
+}
+
+.events > div {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
