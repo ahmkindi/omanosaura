@@ -15,6 +15,7 @@ type Server struct {
 	tripsStore      store.TripsStore
 	adventuresStore store.AdventuresStore
 	eventsStore     store.EventsStore
+	usersSotre      store.UsersStore
 }
 
 type Email struct {
@@ -54,5 +55,6 @@ func CreateServer() (*Server, error) {
 		tripsStore:      store.NewTripsStore(db),
 		adventuresStore: store.NewAdventuresStore(db),
 		eventsStore:     store.NewEventsStore(db),
+		usersSotre:      store.NewUsersStore(db),
 	}, nil
 }

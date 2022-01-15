@@ -16,7 +16,6 @@ func basicAuth(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		log.Println("authenticating")
 		username, password, ok := r.BasicAuth()
-		log.Println(username, password)
 		if ok {
 			usernameHash := sha256.Sum256([]byte(username))
 			passwordHash := sha256.Sum256([]byte(password))
@@ -58,7 +57,12 @@ func main() {
 	protected.HandleFunc("/adventures", server.HandlerInsertOrUpdateAdventure).Methods("POST")
 	protected.HandleFunc("/adventures/delete/{id}", server.HandlerDeleteAdventure).Methods("POST")
 	protected.HandleFunc("/events", server.HandlerInsertOrUpdateEvent).Methods("POST")
+	protected.HandleFunc("/events", server.HandlerGetAllEvents).Methods("GET")
 	protected.HandleFunc("/events/delete/{id}", server.HandlerDeleteEvent).Methods("POST")
+	protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
+	protected.HandleFunc("/users/interested/{event_id}", server.HandlerRegisterUser).Methods("POST")
+	protected.HandleFunc("/users/interested/{event_id}", server.HandlerInterestedUsers).
+		Methods("GET")
 	protected.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods("POST")

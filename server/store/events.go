@@ -44,7 +44,7 @@ func (s *eventsStore) GetAllEvents(ctx context.Context) ([]models.Event, error) 
 
 func (s *eventsStore) GetCurrentEvents(ctx context.Context) ([]models.Event, error) {
 	var events []models.Event
-	err := s.db.SelectContext(ctx, &events, `SELECT * FROM events WHERE expiry <= CURRENT_DATE`)
+	err := s.db.SelectContext(ctx, &events, `SELECT * FROM events WHERE expiry > CURRENT_DATE`)
 	return events, err
 }
 

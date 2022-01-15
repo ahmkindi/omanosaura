@@ -1,5 +1,7 @@
 BEGIN;
 
+CREATE EXTENSION citext;
+
 CREATE TABLE IF NOT EXISTS trips (
 	id UUID PRIMARY KEY,
 	title TEXT,
@@ -34,13 +36,13 @@ CREATE TABLE IF NOT EXISTS events (
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY,
-	email citext UNIQUE NOT NULL,
+	email CITEXT UNIQUE NOT NULL,
   name TEXT,
 	phone TEXT UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS users_events (
-  event_id UUID REFERENCES events(id),
+CREATE TABLE IF NOT EXISTS event_users (
+  event_id UUID REFERENCES events(id) ON DELETE CASCADE,
   user_id UUID REFERENCES users(id),
   PRIMARY KEY(event_id, user_id)
 );
