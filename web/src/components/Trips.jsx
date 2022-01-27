@@ -1,8 +1,12 @@
 import styles from './trips.module.scss'
 import welcomeStyles from './welcome.module.scss'
-import { useTranslation } from 'react-i18next'
 import traveler from '../assets/trips/traveler.json'
 import Lottie from 'react-lottie'
+import useSWR from 'swr'
+import axios from 'axios'
+import { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
+import LocaleContext from '../LocaleContext'
 
 const travelerOptions = {
   loop: true,
@@ -14,18 +18,15 @@ const travelerOptions = {
 }
 
 const Trips = () => {
+  const { locale } = useContext(LocaleContext)
   const { t } = useTranslation()
 
-  const trips = []
-  for (let i = 1; i <= 9; i++) {
-    trips.push({
-      title: t(`trip${i}`),
-      desc: t(`trip${i}Desc`),
-      img: `/static/trip_${i}_front.png`,
-      tag: t(`trip${i}Tag`),
-      sub: t(`trip${i}Sub`),
-    })
-  }
+  const { data: trips } = useSWR('/trips', async (url) => {
+    const { data } = await axios.get(url)
+    return data
+  })
+
+  const isAr = locale === 'ar'
 
   return (
     <>
@@ -36,28 +37,29 @@ const Trips = () => {
         <Lottie options={travelerOptions} height={400} width={400} />
       </div>
       <div style={{ margin: '8px' }}>
-        {trips.map((trip) => (
+        {trips?.map((trip) => (
           <article
             className={`${styles.postcard} ${styles.dark} ${styles.blue}`}
           >
             <a className={styles.postcardImgLink} href="/">
               <img
                 className={styles.postcardImg}
-                src={trip.img}
-                alt={trip.title}
+                src={`data:image/jpeg;base64,${trip.front_photo}`}
+                alt={isAr ? trip.title_ar : trip.title}
               />
             </a>
             <div className={styles.postcardText}>
               <h1 class={`${styles.postcardTitle} ${styles.blue}`}>
-                <a href="/">{trip.title}</a>
+                <a href="/">{isAr ? trip.title_ar : trip.title}</a>
               </h1>
               <div class={`${styles.postcardSubtitle} ${styles.small}`}>
-                {trip.sub}
+                {isAr ? trip.subtitle_ar : trip.subtitle}
               </div>
               <div className={styles.postcardBar}></div>
-              <div className={styles.postcardPreviewText}>{trip.desc}</div>
+              <div className={styles.postcardPreviewText}>
+                {isAr ? trip.description_ar : trip.description}
+              </div>
               <ul className={styles.postcardTagbox}>
-                <li className={styles.tagItem}>{trip.tag}</li>
                 <li
                   className={`${styles.tagItem} ${styles.play} ${styles.blue}`}
                 >

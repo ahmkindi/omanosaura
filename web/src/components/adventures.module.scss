@@ -79,12 +79,6 @@ $bp-lg: 800px;
     transform: translateY(200%);
     transition: transform calc(var(--d) * 2) var(--e);
   }
-
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}):before {
-      background-image: url('../assets/advs/adv_#{$i}.png');
-    }
-  }
 }
 
 .content {

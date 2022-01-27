@@ -3,6 +3,7 @@ import LocaleContext from '../LocaleContext'
 import i18n from '../i18n'
 import styles from './navigation.module.scss'
 import mainLogo from '../assets/main_logo.png'
+import arabicLogo from '../assets/logo_ar.png'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import NavOptions from './NavOptions'
@@ -17,15 +18,17 @@ function Navigation() {
     }
   }
 
+  const isAr = locale === 'ar'
+
   return (
     <header className={styles.header}>
-      <div
-        className={`${styles.navbar} ${
-          locale === 'ar' ? styles.navbarAr : null
-        }`}
-      >
+      <div className={`${styles.navbar} ${isAr ? styles.navbarAr : null}`}>
         <Link to="/">
-          <img className={styles.logo} src={mainLogo} alt={'omanosaura'} />
+          <img
+            className={styles.logo}
+            src={isAr ? arabicLogo : mainLogo}
+            alt={'omanosaura'}
+          />
         </Link>
         <ButtonGroup
           className={styles.langButtonGroup}
@@ -33,17 +36,13 @@ function Navigation() {
           style={{ direction: 'ltr' }}
         >
           <Button
-            className={
-              locale === 'ar' ? styles.langButtonActive : styles.langButton
-            }
+            className={isAr ? styles.langButtonActive : styles.langButton}
             onClick={() => changeLocale('ar')}
           >
             AR
           </Button>
           <Button
-            className={
-              locale === 'en' ? styles.langButtonActive : styles.langButton
-            }
+            className={!isAr ? styles.langButtonActive : styles.langButton}
             onClick={() => changeLocale('en')}
           >
             EN
