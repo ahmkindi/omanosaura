@@ -276,3 +276,19 @@
     color: $orange;
   }
 }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $darkBlue;
+  padding: 16px;
+  position: absolute;
+  bottom: 0;
+  height: 2.5rem;
+  width: 100%;
+}
+
+.footer > img {
+  padding: 4px;
+}
