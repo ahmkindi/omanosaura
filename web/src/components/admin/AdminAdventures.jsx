@@ -15,16 +15,19 @@ export const emptyAdventure = {
 }
 
 const AdminAdventures = () => {
-  const { data: adventures, mutate } = useSWR('/adventures', async (url) => {
-    const { data } = await axios.get(url)
-    return data
-  })
+  const { data: adventures, mutate } = useSWR(
+    '/api/adventures',
+    async (url) => {
+      const { data } = await axios.get(url)
+      return data
+    }
+  )
   const { username, password } = useContext(AuthContext)
   const [activeAdv, setActiveAdv] = useState()
 
   const handleDelete = async (advId) => {
     await axios.post(
-      `/admin/adventures/delete/${advId}`,
+      `/api/admin/adventures/delete/${advId}`,
       {},
       {
         auth: {

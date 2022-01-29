@@ -14,11 +14,11 @@ const EditAdventure = ({ activeAdv, setActiveAdv }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('/admin/adventures', activeAdv, {
+      const response = await axios.post('/api/admin/adventures', activeAdv, {
         auth: { username: username, password: password },
       })
       response.status === 200 ? setActiveAdv(undefined) : setInvalid(true)
-      await mutate('/adventures')
+      await mutate('/api/adventures')
     } catch {
       setInvalid(true)
     }

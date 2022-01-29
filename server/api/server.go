@@ -29,9 +29,9 @@ type Email struct {
 func CreateServer() (*Server, error) {
 	connStr := fmt.Sprintf(
 		"postgres://%v:%v@%v/?sslmode=disable",
-		"postgres",
-		"123456",
-		"db",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_HOST"),
 	)
 
 	db, err := sqlx.Connect("postgres", connStr)

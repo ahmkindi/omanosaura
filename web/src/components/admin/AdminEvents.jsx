@@ -15,7 +15,7 @@ const emptyEvent = {
 
 const AdminEvents = () => {
   const { username, password } = useContext(AuthContext)
-  const { data: events, mutate } = useSWR('/admin/events', async (url) => {
+  const { data: events, mutate } = useSWR('/api/admin/events', async (url) => {
     const { data } = await axios.get(url, {
       auth: { username: username, password: password },
     })
@@ -25,7 +25,7 @@ const AdminEvents = () => {
 
   const handleDelete = async (eventId) => {
     await axios.post(
-      `/admin/events/delete/${eventId}`,
+      `/api/admin/events/delete/${eventId}`,
       {},
       {
         auth: {
@@ -38,7 +38,7 @@ const AdminEvents = () => {
   }
 
   const handleEdit = async (event) => {
-    await axios.post(`/admin/events`, event, {
+    await axios.post(`/api/admin/events`, event, {
       auth: {
         username: username,
         password: password,

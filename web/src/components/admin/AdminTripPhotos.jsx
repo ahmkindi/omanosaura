@@ -12,7 +12,7 @@ const AdminTripPhotos = () => {
   const { username, password } = useContext(AuthContext)
   const { id } = useParams()
   const { data: photos, mutate } = useSWR(
-    `/trips/photos/${id}`,
+    `/api/trips/photos/${id}`,
     async (url) => {
       const { data } = await axios.get(url, {
         auth: { username: username, password: password },
@@ -24,7 +24,7 @@ const AdminTripPhotos = () => {
 
   const handleDelete = async (photoId) => {
     await axios.post(
-      `/admin/trips/photos/${photoId}`,
+      `/api/admin/trips/photos/${photoId}`,
       {},
       {
         auth: {
@@ -39,7 +39,7 @@ const AdminTripPhotos = () => {
   const handleAddPhotos = async () => {
     if (newPhotos.length === 0) return
     await axios.post(
-      `/admin/trips/photos`,
+      `/api/admin/trips/photos`,
       newPhotos.map((p) => ({ trip_id: id, photo: p })),
       {
         auth: {

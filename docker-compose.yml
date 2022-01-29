@@ -32,5 +32,5 @@ services:
     container_name: db-dev
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: 123456
+    env_file:
+      - .env

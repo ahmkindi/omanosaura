@@ -13,7 +13,7 @@ import LocaleContext from '../LocaleContext'
 const Events = () => {
   const { locale } = useContext(LocaleContext)
   const { t } = useTranslation()
-  const { data: events } = useSWR('/current/events', async (url) => {
+  const { data: events } = useSWR('/api/current/events', async (url) => {
     const { data } = await axios.get(url)
     return data
   })
@@ -27,10 +27,8 @@ const Events = () => {
   const isAr = locale === 'ar'
 
   const handleSubmit = async () => {
-    console.log(agree.current.checked)
-    console.log(phone)
     try {
-      const response = await axios.post(`/users/interested/${show}`, {
+      const response = await axios.post(`/api/users/interested/${show}`, {
         name: name.current.value,
         email: email.current.value,
         phone: phone,
@@ -53,7 +51,7 @@ const Events = () => {
     <div className={`${styles.section} ${styles.events}`}>
       <h3>{t('currentEvents')}</h3>
       <div>
-        {events.map((event) => (
+        {events?.map((event) => (
           <div className={styles.event} key={event.id}>
             <img alt="event" src={`data:image/jpeg;base64,${event.photo}`} />
             <Button

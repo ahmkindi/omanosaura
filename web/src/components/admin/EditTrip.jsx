@@ -14,11 +14,11 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('/admin/trips', activeTrip, {
+      const response = await axios.post('/api/admin/trips', activeTrip, {
         auth: { username: username, password: password },
       })
       response.status === 200 ? setActiveTrip(undefined) : setInvalid(true)
-      await mutate('/trips')
+      await mutate('/api/trips')
     } catch {
       setInvalid(true)
     }

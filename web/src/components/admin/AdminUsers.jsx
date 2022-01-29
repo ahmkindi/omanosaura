@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 
-const baseUrl = '/admin/users'
+const baseUrl = '/api/admin/users'
 
 const AdminUsers = () => {
   const { id } = useParams()

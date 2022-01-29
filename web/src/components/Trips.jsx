@@ -24,7 +24,7 @@ const Trips = () => {
   const { t } = useTranslation()
   const [gallery, setGallery] = useState()
 
-  const { data: trips } = useSWR('/trips', async (url) => {
+  const { data: trips } = useSWR('/api/trips', async (url) => {
     const { data } = await axios.get(url)
     return data
   })

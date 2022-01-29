@@ -31,7 +31,7 @@ const Contact = () => {
 
     setLoading(true)
     try {
-      const response = await axios.post('/send', {
+      const response = await axios.post('/api/send', {
         name: name.current.value,
         email: email.current.value,
         subject: subject.current.value,

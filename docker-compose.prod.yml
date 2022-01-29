@@ -17,10 +17,16 @@ services:
     build:
       context: ./server/
       target: production
-      args:
-        EMAIL_USERNAME: ${EMAIL_USERNAME}
-        EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     env_file:
-      - ./server/.env
+      - .env
     ports:
       - 8081:8081
+    depends_on:
+      - db
+  db:
+    image: postgres:13.2-alpine
+    container_name: db-prod
+    ports:
+      - 5432:5432
+    env_file:
+      - .env

@@ -11,7 +11,7 @@ const Adventures = () => {
   const navigate = useNavigate()
   const { locale } = useContext(LocaleContext)
 
-  const { data: adventures } = useSWR('/adventures', async (url) => {
+  const { data: adventures } = useSWR('/api/adventures', async (url) => {
     const { data } = await axios.get(url)
     return data
   })

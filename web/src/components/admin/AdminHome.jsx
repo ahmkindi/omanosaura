@@ -15,7 +15,7 @@ const AdminHome = () => {
   const correctLogin = async (user, pass) => {
     try {
       const response = await axios.post(
-        '/admin/',
+        '/api/admin/',
         {},
         {
           auth: {

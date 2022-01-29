@@ -18,7 +18,7 @@ export const emptyTrip = {
 }
 
 const AdminTrips = () => {
-  const { data: trips, mutate } = useSWR('/trips', async (url) => {
+  const { data: trips, mutate } = useSWR('/api/trips', async (url) => {
     const { data } = await axios.get(url)
     return data
   })
@@ -28,7 +28,7 @@ const AdminTrips = () => {
 
   const handleDelete = async (tripId) => {
     await axios.post(
-      `/admin/trips/delete/${tripId}`,
+      `/api/admin/trips/delete/${tripId}`,
       {},
       {
         auth: {

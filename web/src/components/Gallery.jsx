@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import axios from 'axios'
 
 const Gallery = ({ trip, setGallery }) => {
-  const { data } = useSWR(`/trips/photos/${trip}`, async (url) => {
+  const { data } = useSWR(`/api/trips/photos/${trip}`, async (url) => {
     const { data } = await axios.get(url)
     return data
   })
