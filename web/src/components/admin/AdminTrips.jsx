@@ -6,6 +6,7 @@ import useSWR from 'swr'
 import axios from 'axios'
 import { useContext, useState } from 'react'
 import EditTrip from './EditTrip'
+import { useNavigate } from 'react-router-dom'
 export const emptyTrip = {
   title: '',
   title_ar: '',
@@ -23,6 +24,7 @@ const AdminTrips = () => {
   })
   const { username, password } = useContext(AuthContext)
   const [activeTrip, setActiveTrip] = useState()
+  const navigate = useNavigate()
 
   const handleDelete = async (tripId) => {
     await axios.post(
@@ -49,7 +51,7 @@ const AdminTrips = () => {
             <th>#</th>
             <th>Title</th>
             <th>AR Title</th>
-            <th>Add Photo</th>
+            <th>Gallery</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -62,7 +64,9 @@ const AdminTrips = () => {
               <td>{trip.title_ar}</td>
               <td>
                 <Button variant="primary">
-                  <BiImageAdd />
+                  <BiImageAdd
+                    onClick={() => navigate(`/admin/trip/photos/${trip.id}`)}
+                  />
                 </Button>
               </td>
               <td>

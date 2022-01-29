@@ -73,5 +73,16 @@
   "name": "NAME",
   "email": "EMAIL",
   "subject": "SUBJECT",
-  "send": "SEND"
+  "send": "SEND",
+  "register": "Register",
+  "interested": "I am Interested",
+  "phone": "Enter Phone Number",
+  "agree": "Omanosaura can store these details to contact me",
+  "success": "Successfully Registered!",
+  "error": "Failed to Register",
+  "registered": "we will contact you with more details",
+  "failedRegister": "oops, there was a problem trying to register you",
+  "currentEvents": "Current Events",
+  "done": "Done!",
+  "back": "Back"
 }

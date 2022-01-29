@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useContext } from 'react'
 import { Form, Button, Card } from 'react-bootstrap'
 import { getBase64 } from '../helpers/files'
+import { useNavigate } from 'react-router-dom'
 
 const emptyEvent = {
   expiry: new Date(),
@@ -20,6 +21,7 @@ const AdminEvents = () => {
     })
     return data
   })
+  const navigate = useNavigate()
 
   const handleDelete = async (eventId) => {
     await axios.post(
@@ -100,12 +102,20 @@ const AdminEvents = () => {
                       onChange={(e) => handlePhotoChange(e, index)}
                     />
                   </Form.Group>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(event.id)}
-                  >
-                    <AiOutlineDelete />
-                  </Button>
+                  <div style={{ display: 'flex' }}>
+                    <Button
+                      onClick={() => navigate(`/admin/users/${event.id}`)}
+                    >
+                      Interested Users
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDelete(event.id)}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      <AiOutlineDelete />
+                    </Button>
+                  </div>
                 </Form>
               </Card.Text>
             </Card.Body>

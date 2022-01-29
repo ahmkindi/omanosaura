@@ -113,7 +113,7 @@ const AdminHome = () => {
           <Link to="/admin/trips">trips</Link>
           <Link to="/admin/adventures">adventures</Link>
           <Link to="/admin/events">events</Link>
-          <Link to="/admin/users">users</Link>
+          <Link to="/admin/users/all">users</Link>
         </>
       )}
     </div>

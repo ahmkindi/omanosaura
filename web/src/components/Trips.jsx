@@ -4,9 +4,10 @@ import traveler from '../assets/trips/traveler.json'
 import Lottie from 'react-lottie'
 import useSWR from 'swr'
 import axios from 'axios'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocaleContext from '../LocaleContext'
+import Gallery from './Gallery'
 
 const travelerOptions = {
   loop: true,
@@ -20,6 +21,7 @@ const travelerOptions = {
 const Trips = () => {
   const { locale } = useContext(LocaleContext)
   const { t } = useTranslation()
+  const [gallery, setGallery] = useState()
 
   const { data: trips } = useSWR('/trips', async (url) => {
     const { data } = await axios.get(url)
@@ -66,6 +68,7 @@ const Trips = () => {
                   <a
                     href="/"
                     style={{ padding: '0.8em 0.5em', paddingBottom: '0.8em' }}
+                    onClick={() => setGallery(trip.id)}
                   >
                     {t('gallery')}
                   </a>
@@ -74,6 +77,7 @@ const Trips = () => {
             </div>
           </article>
         ))}
+        {gallery && <Gallery trip={gallery} setGallery={setGallery} />}
       </div>
     </>
   )

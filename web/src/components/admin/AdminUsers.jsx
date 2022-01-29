@@ -3,15 +3,22 @@ import { Table } from 'react-bootstrap'
 import useSWR from 'swr'
 import axios from 'axios'
 import { useContext } from 'react'
+import { useParams } from 'react-router-dom'
+
+const baseUrl = '/admin/users'
 
 const AdminUsers = () => {
+  const { id } = useParams()
   const { username, password } = useContext(AuthContext)
-  const { data: users } = useSWR('/users', async (url) => {
-    const { data } = await axios.get(url, {
-      auth: { username: username, password: password },
-    })
-    return data
-  })
+  const { data: users } = useSWR(
+    id === 'all' ? baseUrl : `${baseUrl}/${id}`,
+    async (url) => {
+      const { data } = await axios.get(url, {
+        auth: { username: username, password: password },
+      })
+      return data
+    }
+  )
 
   return (
     <Table striped bordered style={{ margin: '2rem' }}>

@@ -16,6 +16,7 @@ import {
   AdminAdventures,
   AdminEvents,
   AdminUsers,
+  AdminTripPhotos,
 } from './components/admin'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
@@ -89,6 +90,10 @@ function App() {
                     element={signedIn ? <AdminTrips /> : <AdminHome />}
                   />
                   <Route
+                    path="/admin/trip/photos/:id"
+                    element={signedIn ? <AdminTripPhotos /> : <AdminHome />}
+                  />
+                  <Route
                     path="/admin/adventures"
                     element={signedIn ? <AdminAdventures /> : <AdminHome />}
                   />
@@ -97,7 +102,7 @@ function App() {
                     element={signedIn ? <AdminEvents /> : <AdminHome />}
                   />
                   <Route
-                    path="/admin/users"
+                    path="/admin/users/:id"
                     element={signedIn ? <AdminUsers /> : <AdminHome />}
                   />
                   <Route path="*" element={<Error404 />} />

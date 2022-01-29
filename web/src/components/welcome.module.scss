@@ -434,20 +434,26 @@
   transition: background-color 0.2s linear;
 }
 
-.event {
-  position: relative;
-}
+// .event {
+//   position: relative;
+// }
 
 .event img {
   width: 100%;
   height: auto;
 }
 
-.event button {
-  position: absolute;
+.event {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .events > div {
+  justify-content: center;
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
@@ -467,4 +473,16 @@
 .aboutImg:hover {
   filter: drop-shadow(-5px -5px 0.25rem $darkBlue);
   transition: filter 0.3s ease-in-out;
+}
+
+.toast {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 2rem;
+  z-index: 10000;
+}
+
+.myInput {
+  box-shadow: none !important;
 }
