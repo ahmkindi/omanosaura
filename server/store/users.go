@@ -53,7 +53,7 @@ func (s *usersStore) InsertEventUser(ctx context.Context, eventUser models.Event
 	_, err := s.db.NamedExecContext(ctx,
 		`INSERT INTO event_users VALUES
     (:event_id, :user_id)
-		ON CONFLICT (event_id, user_id DO NOTHING`, eventUser)
+		ON CONFLICT (event_id, user_id) DO NOTHING`, eventUser)
 	return err
 }
 

@@ -1,11 +1,11 @@
-FROM node:15-alpine AS development
+FROM node:17-alpine AS development
 ENV NODE_ENV development
 # Add a work directory
 WORKDIR /app
 # Cache and Install dependencies
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --ignore-engines
+RUN yarn install
 # Copy app files
 COPY . .
 # Expose port

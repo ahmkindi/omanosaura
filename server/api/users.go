@@ -32,7 +32,7 @@ func (server *Server) HandlerRegisterUser(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	eventId, err := uuid.Parse(mux.Vars(r)["id"])
+	eventId, err := uuid.Parse(mux.Vars(r)["event_id"])
 	if err != nil {
 		log.Println("failed to convert event id into uuid", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -79,7 +79,7 @@ func (server *Server) HandlerGetAllUsers(w http.ResponseWriter, r *http.Request)
 func (server *Server) HandlerInterestedUsers(w http.ResponseWriter, r *http.Request) {
 	log.Print("Getting Interested Users")
 
-	eventId, err := uuid.Parse(mux.Vars(r)["id"])
+	eventId, err := uuid.Parse(mux.Vars(r)["event_id"])
 	if err != nil {
 		log.Println("failed to convert event id into uuid", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
