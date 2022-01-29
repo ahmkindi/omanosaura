@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import AuthContext from '../../AuthContext'
 import { Form, Button, Alert } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
 
@@ -106,14 +105,6 @@ const AdminHome = () => {
           {incorrect && (
             <Alert variant="warning">incorrect login details</Alert>
           )}
-        </>
-      )}
-      {auth.signedIn && (
-        <>
-          <Link to="/admin/trips">trips</Link>
-          <Link to="/admin/adventures">adventures</Link>
-          <Link to="/admin/events">events</Link>
-          <Link to="/admin/users/all">users</Link>
         </>
       )}
     </div>

@@ -17,6 +17,7 @@ import {
   AdminEvents,
   AdminUsers,
   AdminTripPhotos,
+  AdminNavigation,
 } from './components/admin'
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
@@ -83,30 +84,33 @@ function App() {
                   setPassword,
                 }}
               >
-                <Routes>
-                  <Route path="/admin" element={<AdminHome />} />
-                  <Route
-                    path="/admin/trips"
-                    element={signedIn ? <AdminTrips /> : <AdminHome />}
-                  />
-                  <Route
-                    path="/admin/trip/photos/:id"
-                    element={signedIn ? <AdminTripPhotos /> : <AdminHome />}
-                  />
-                  <Route
-                    path="/admin/adventures"
-                    element={signedIn ? <AdminAdventures /> : <AdminHome />}
-                  />
-                  <Route
-                    path="/admin/events"
-                    element={signedIn ? <AdminEvents /> : <AdminHome />}
-                  />
-                  <Route
-                    path="/admin/users/:id"
-                    element={signedIn ? <AdminUsers /> : <AdminHome />}
-                  />
-                  <Route path="*" element={<Error404 />} />
-                </Routes>
+                {signedIn && <AdminNavigation />}
+                <div style={{ padding: '0.5rem', direction: 'ltr' }}>
+                  <Routes>
+                    <Route path="/admin" element={<AdminHome />} />
+                    <Route
+                      path="/admin/trips"
+                      element={signedIn ? <AdminTrips /> : <AdminHome />}
+                    />
+                    <Route
+                      path="/admin/trip/photos/:id"
+                      element={signedIn ? <AdminTripPhotos /> : <AdminHome />}
+                    />
+                    <Route
+                      path="/admin/adventures"
+                      element={signedIn ? <AdminAdventures /> : <AdminHome />}
+                    />
+                    <Route
+                      path="/admin/events"
+                      element={signedIn ? <AdminEvents /> : <AdminHome />}
+                    />
+                    <Route
+                      path="/admin/users/:id"
+                      element={signedIn ? <AdminUsers /> : <AdminHome />}
+                    />
+                    <Route path="*" element={<Error404 />} />
+                  </Routes>
+                </div>
               </AuthContext.Provider>
             )}
           </Router>

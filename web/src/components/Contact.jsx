@@ -8,7 +8,7 @@ import {
   AiOutlineInstagram,
   AiFillPhone,
 } from 'react-icons/ai'
-import { Alert } from 'react-bootstrap'
+import { Alert, Spinner } from 'react-bootstrap'
 
 const failedEmail = `oops! we couldn't send the email 😭| Try again, or contact us using one of the social icons above`
 const successEmail = `Check your email to ensure we got your message 😇|`
@@ -24,24 +24,30 @@ const Contact = () => {
   const inputClass = `${styles.inputWrapper} ${
     locale === 'ar' ? styles.inputWrapperAR : null
   }`
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    axios
-      .post('/send', {
+    setLoading(true)
+    try {
+      const response = await axios.post('/send', {
         name: name.current.value,
         email: email.current.value,
         subject: subject.current.value,
         message: message.current.value,
       })
-      .then((response) =>
-        response.status === 200
-          ? setAlertText(successEmail)
-          : setAlertText(failedEmail)
-      )
-      .catch(() => setAlertText(failedEmail))
-      .finally(setFormOpen(false))
+      if (response.status === 200) {
+        setAlertText(successEmail)
+      } else {
+        setAlertText(failedEmail)
+      }
+    } catch (error) {
+      setAlertText(failedEmail)
+    } finally {
+      setLoading(false)
+      setFormOpen(false)
+    }
   }
 
   const [alertText, setAlertText] = useState('')
@@ -81,7 +87,8 @@ const Contact = () => {
         </div>
 
         <label htmlFor="checkcontact" className={styles.contactbutton}>
-          <div className={styles.mail}></div>
+          {!loading && <div className={styles.mail}></div>}
+          {loading && <Spinner animation="border" variant="light" />}
         </label>
         <input
           id="checkcontact"

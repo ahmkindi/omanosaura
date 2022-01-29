@@ -8,6 +8,7 @@ import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocaleContext from '../LocaleContext'
 import Gallery from './Gallery'
+import { Button } from 'react-bootstrap'
 
 const travelerOptions = {
   loop: true,
@@ -41,9 +42,10 @@ const Trips = () => {
       <div style={{ margin: '8px' }}>
         {trips?.map((trip) => (
           <article
+            key={trip.id}
             className={`${styles.postcard} ${styles.dark} ${styles.blue}`}
           >
-            <a className={styles.postcardImgLink} href="/">
+            <a className={styles.postcardImgLink} href="/contact">
               <img
                 className={styles.postcardImg}
                 src={`data:image/jpeg;base64,${trip.front_photo}`}
@@ -51,10 +53,10 @@ const Trips = () => {
               />
             </a>
             <div className={styles.postcardText}>
-              <h1 class={`${styles.postcardTitle} ${styles.blue}`}>
+              <h1 className={`${styles.postcardTitle} ${styles.blue}`}>
                 <a href="/">{isAr ? trip.title_ar : trip.title}</a>
               </h1>
-              <div class={`${styles.postcardSubtitle} ${styles.small}`}>
+              <div className={`${styles.postcardSubtitle} ${styles.small}`}>
                 {isAr ? trip.subtitle_ar : trip.subtitle}
               </div>
               <div className={styles.postcardBar}></div>
@@ -62,17 +64,12 @@ const Trips = () => {
                 {isAr ? trip.description_ar : trip.description}
               </div>
               <ul className={styles.postcardTagbox}>
-                <li
-                  className={`${styles.tagItem} ${styles.play} ${styles.blue}`}
+                <Button
+                  className={welcomeStyles.myButton}
+                  onClick={() => setGallery(trip.id)}
                 >
-                  <a
-                    href="/"
-                    style={{ padding: '0.8em 0.5em', paddingBottom: '0.8em' }}
-                    onClick={() => setGallery(trip.id)}
-                  >
-                    {t('gallery')}
-                  </a>
-                </li>
+                  {t('gallery')}
+                </Button>
               </ul>
             </div>
           </article>

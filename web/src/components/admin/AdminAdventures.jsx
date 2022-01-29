@@ -1,7 +1,6 @@
 import AuthContext from '../../AuthContext'
 import { Table, Button } from 'react-bootstrap'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
-import { BiImageAdd } from 'react-icons/bi'
 import useSWR from 'swr'
 import axios from 'axios'
 import { useContext, useState } from 'react'
@@ -60,11 +59,6 @@ const AdminAdventures = () => {
               <td>{index + 1}</td>
               <td>{adv.title}</td>
               <td>{adv.title_ar}</td>
-              <td>
-                <Button variant="primary">
-                  <BiImageAdd />
-                </Button>
-              </td>
               <td>
                 <Button variant="primary" onClick={() => setActiveAdv(adv)}>
                   <AiOutlineEdit />

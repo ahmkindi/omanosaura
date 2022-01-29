@@ -27,7 +27,7 @@ const Events = () => {
   const isAr = locale === 'ar'
 
   const handleSubmit = async () => {
-    console.log(agree)
+    console.log(agree.current.checked)
     console.log(phone)
     try {
       const response = await axios.post(`/users/interested/${show}`, {
@@ -105,15 +105,15 @@ const Events = () => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShow('')}>
-              Back
+              {t('back')}
             </Button>
             <Button
               variant="primary"
-              // disabled={!agree.checked || phone === undefined}
+              disabled={!agree.current?.checked || phone === undefined}
               onClick={() => handleSubmit()}
               className={styles.myButton}
             >
-              Done!
+              {t('done')}
             </Button>
           </Modal.Footer>
         </Modal>
@@ -122,20 +122,20 @@ const Events = () => {
         className={styles.toast}
         onClose={() => setSuccess(undefined)}
         show={success !== undefined}
-        delay={3800}
+        delay={5500}
         autohide
       >
         <Toast.Header>
           <img
             src={coloredSmallLogo}
             width={30}
-            className="rounded me-2"
+            className="rounded me-auto"
             alt=""
           />
           <strong className="me-auto"></strong>
-          <small>{success ? t('success') : t('error')}</small>
+          <small className="px-2">{success ? t('success') : t('error')}</small>
         </Toast.Header>
-        <Toast.Body>
+        <Toast.Body style={{ fontSize: '1.1rem' }}>
           {success ? t('registered') : t('failedRegister')}
         </Toast.Body>
       </Toast>

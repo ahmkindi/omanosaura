@@ -25,15 +25,6 @@ function Welcome() {
   const { t } = useTranslation()
   const { locale } = useContext(LocaleContext)
 
-  const whyUs = []
-  for (let i = 1; i <= 3; i++) {
-    whyUs.push({
-      title: t(`whyUsTitle${i}`),
-      desc: t(`whyUsDesc${i}`),
-      icon: WhyUsIcon1,
-    })
-  }
-
   return (
     <>
       <div className={styles.welcomeBox}>
@@ -76,7 +67,7 @@ function Welcome() {
           </div>
           <div>
             <WhyUsIcon2 size={75} />
-            <h3>{t(`whyUsTitle1`)}</h3>
+            <h3>{t(`whyUsTitle2`)}</h3>
             <p>{t(`whyUsDesc2`)}</p>
           </div>
           <div>
