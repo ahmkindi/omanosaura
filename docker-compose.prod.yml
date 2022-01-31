@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: web-prod
+    image: web-prod
+    build:
+      context: ./web/
+      target: production
+    ports:
+      - 80:80
+    depends_on:
+      - server
+  server:
+    container_name: server-prod
+    image: server-prod
+    build:
+      context: ./server/
+      target: production
+    env_file:
+      - .env
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+  db:
+    image: postgres:13.2-alpine
+    container_name: db-prod
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
