@@ -19,7 +19,7 @@ const travelerOptions = {
   },
 }
 
-const Trips = () => {
+const Trips = ({ setMenuOpen }) => {
   const { locale } = useContext(LocaleContext)
   const { t } = useTranslation()
   const [gallery, setGallery] = useState()
@@ -66,7 +66,10 @@ const Trips = () => {
               <ul className={styles.postcardTagbox}>
                 <Button
                   className={welcomeStyles.myButton}
-                  onClick={() => setGallery(trip.id)}
+                  onClick={() => {
+                    setGallery(trip.id)
+                    setMenuOpen(false)
+                  }}
                 >
                   {t('gallery')}
                 </Button>

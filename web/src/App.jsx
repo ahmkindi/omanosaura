@@ -29,6 +29,7 @@ function App() {
   const [signedIn, setSignedIn] = useState(false)
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   i18n.on('languageChanged', () => setLocale(i18n.language))
 
@@ -54,7 +55,7 @@ function App() {
           <Router>
             {!window.location.pathname.includes('admin') && (
               <>
-                <Navigation />
+                <Navigation menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <div
                   style={{
                     paddingBottom: '2.5rem',
@@ -62,7 +63,10 @@ function App() {
                   }}
                 >
                   <Routes>
-                    <Route path="/trips" element={<Trips />} />
+                    <Route
+                      path="/trips"
+                      element={<Trips setMenuOpen={setMenuOpen} />}
+                    />
                     <Route path="/adventures" element={<Adventures />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />

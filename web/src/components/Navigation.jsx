@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import LocaleContext from '../LocaleContext'
 import i18n from '../i18n'
 import styles from './navigation.module.scss'
@@ -8,9 +8,8 @@ import { ButtonGroup, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import NavOptions from './NavOptions'
 
-function Navigation() {
+const Navigation = ({ menuOpen, setMenuOpen }) => {
   const { locale } = useContext(LocaleContext)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   function changeLocale(l) {
     if (locale !== l) {

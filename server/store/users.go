@@ -71,7 +71,7 @@ func (s *usersStore) GetAllUsersForEvent(
 	err := s.db.SelectContext(
 		ctx,
 		&users,
-		`SELECT * FROM users INNER JOIN (SELECT * FROM event_users WHERE event_id=$1) e ON users.id=e.user_id`,
+		`SELECT users.* FROM users INNER JOIN (SELECT * FROM event_users WHERE event_id=$1) e ON users.id=e.user_id`,
 		eventId,
 	)
 	return users, err

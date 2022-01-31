@@ -61,7 +61,7 @@ func main() {
 	protected.HandleFunc("/events", server.HandlerGetAllEvents).Methods("GET")
 	protected.HandleFunc("/events/delete/{id}", server.HandlerDeleteEvent).Methods("POST")
 	protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
-	protected.HandleFunc("/users/interested/{event_id}", server.HandlerInterestedUsers).
+	protected.HandleFunc("/users/{event_id}", server.HandlerInterestedUsers).
 		Methods("GET")
 	protected.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

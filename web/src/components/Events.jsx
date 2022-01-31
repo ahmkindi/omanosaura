@@ -20,9 +20,9 @@ const Events = () => {
   })
   const [show, setShow] = useState('')
   const [phone, setPhone] = useState()
+  const [agreed, setAgreed] = useState(false)
   const name = useRef()
   const email = useRef()
-  const agree = useRef()
   const [success, setSuccess] = useState()
 
   const isAr = locale === 'ar'
@@ -57,7 +57,10 @@ const Events = () => {
             <img alt="event" src={`data:image/jpeg;base64,${event.photo}`} />
             <Button
               className={styles.myButton}
-              onClick={() => setShow(event.id)}
+              onClick={() => {
+                setShow(event.id)
+                setPhone(undefined)
+              }}
             >
               {t('register')}
             </Button>
@@ -99,7 +102,11 @@ const Events = () => {
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicCheckbox">
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <Form.Check type="checkbox" ref={agree} />
+                  <Form.Check
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={() => setAgreed((prev) => !prev)}
+                  />
                   <a href={Terms} target="_blank" rel="noreferrer">
                     {t('agree')}
                   </a>
@@ -113,7 +120,7 @@ const Events = () => {
             </Button>
             <Button
               variant="primary"
-              disabled={!agree.current?.checked || phone === undefined}
+              disabled={!agreed || phone === undefined}
               onClick={() => handleSubmit()}
               className={styles.myButton}
             >
