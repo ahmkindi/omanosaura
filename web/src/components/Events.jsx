@@ -9,6 +9,7 @@ import PhoneInput from 'react-phone-number-input'
 import coloredSmallLogo from '../assets/colored_small.png'
 import { useContext } from 'react'
 import LocaleContext from '../LocaleContext'
+import Terms from '../assets/terms.pdf'
 
 const Events = () => {
   const { locale } = useContext(LocaleContext)
@@ -97,7 +98,12 @@ const Events = () => {
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label={t('agree')} ref={agree} />
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <Form.Check type="checkbox" ref={agree} />
+                  <a href={Terms} target="_blank" rel="noreferrer">
+                    {t('agree')}
+                  </a>
+                </div>
               </Form.Group>
             </Form>
           </Modal.Body>

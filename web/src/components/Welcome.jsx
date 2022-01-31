@@ -11,6 +11,7 @@ import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
 import { useContext } from 'react'
 import LocaleContext from '../LocaleContext'
 import Events from './Events'
+import { useNavigate } from 'react-router-dom'
 
 const hikerOptions = {
   loop: true,
@@ -24,6 +25,7 @@ const hikerOptions = {
 function Welcome() {
   const { t } = useTranslation()
   const { locale } = useContext(LocaleContext)
+  const navigate = useNavigate()
 
   return (
     <>
@@ -31,7 +33,12 @@ function Welcome() {
         <div>
           <div className={styles.omanSlogan}>{t('omanSlogan')}</div>
           <div className={styles.contact}>{t('introText')}</div>
-          <Button className={styles.myButton}>{t('contactText')}</Button>
+          <Button
+            className={styles.myButton}
+            onClick={() => navigate('/contact')}
+          >
+            {t('contactText')}
+          </Button>
         </div>
         <div>
           <Lottie options={hikerOptions} width={400} height={400} />
