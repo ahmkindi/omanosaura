@@ -6,3 +6,6 @@ stop:
 
 deploy:
 	docker-compose -f docker-compose.prod.yml up
+
+deploy-remote:
+	docker-compose --context omanosaura -f docker-compose.prod.yml up -d
