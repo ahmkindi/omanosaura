@@ -38,6 +38,21 @@
   margin-bottom: 5rem;
 }
 
+.section > label {
+  text-align: center;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & span {
+    padding-right: 8px;
+    margin-bottom: 16px;
+  }
+}
+
 .section > h3 {
   font-size: 2.4rem;
   font-weight: 800;

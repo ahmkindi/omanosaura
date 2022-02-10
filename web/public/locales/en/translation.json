@@ -61,9 +61,9 @@
   "whyUsDesc2": "We take you on memorable experiences catered for you",
   "whyUsDesc3": "Our guides are certified and are trained to always put your safety first",
   "reviews": "What Do Fellow Tourists Say?",
-  "reviewDesc": "lorem lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.",
-  "reviewName": "Azhar Al Kindi",
-  "reviewNameDesc": "Omani explorer",
+  "reviewDesc": "Out of the blue, We discovered Omanosaura but at the end, Its human quality and good service made the difference. If you are looking to feel Oman's culture, live adventures and a good value for money, congrats, you are at home",
+  "reviewName": "Omanosaura Tourist",
+  "reviewNameDesc": "Spanish explorer",
   "aboutCompany": "About Omanosaura",
   "ourChamp": "Our Champ!",
   "tripsIntro": "These are our full day experiences. If you find the one you like let us know, otherwise you can pick and choose parts from different trips to make your own experience!",
@@ -84,5 +84,6 @@
   "failedRegister": "oops, there was a problem trying to register you",
   "currentEvents": "Current Events",
   "done": "Done!",
-  "back": "Back"
+  "back": "Back",
+  "translate": "translate"
 }

@@ -8,10 +8,11 @@ import { ReactComponent as AdventuresIcon } from '../assets/adventurer.svg'
 import { MdGroups as WhyUsIcon1 } from 'react-icons/md'
 import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
 import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import LocaleContext from '../LocaleContext'
 import Events from './Events'
 import { useNavigate } from 'react-router-dom'
+import Switch from 'react-switch'
 
 const hikerOptions = {
   loop: true,
@@ -26,6 +27,7 @@ function Welcome() {
   const { t } = useTranslation()
   const { locale } = useContext(LocaleContext)
   const navigate = useNavigate()
+  const [translate, setTranslate] = useState(false)
 
   return (
     <>
@@ -86,12 +88,49 @@ function Welcome() {
       </div>
       <div className={styles.section}>
         <h3>{t('reviews')}</h3>
+        <div className={styles.toggle}>
+          <Switch
+            checked={translate}
+            onChange={(checked) => setTranslate(checked)}
+            dir="rtl"
+            onColor="#f58a07"
+            onHandleColor="#043c6c"
+            offHandleColor="#04d0e8"
+            handleDiameter={20}
+            checkedIcon={false}
+            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+            height={30}
+            width={115}
+            id="material-switch"
+            uncheckedIcon={
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                  // fontSize: 16,
+                  fontWeight: 'bold',
+                  color: '043c6c',
+                  paddingRight: 60,
+                }}
+              >
+                {t('translate')}
+              </div>
+            }
+          />
+        </div>
         <div
           className={`${styles.blockquote} ${
-            locale === 'ar' ? styles.blockAR : null
+            locale === 'ar' && translate ? styles.blockAR : null
           }`}
         >
-          <h1>{t('reviewDesc')}</h1>
+          <h1 dir={locale === 'ar' && translate ? 'rtl' : 'ltr'}>
+            {translate
+              ? t('reviewDesc')
+              : 'Conocimos Omanosaura por casualidad y al final, su calidad humana y buen servicio marcó la diferencia. Si buscas sentir la cultura omaní y vivir aventuras a un buen precio enhorabuena, estás en el lugar correcto'}
+          </h1>
           <h4>
             &mdash;{t('reviewName')}
             <br />
