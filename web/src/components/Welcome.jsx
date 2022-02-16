@@ -110,7 +110,7 @@ function Welcome() {
                   justifyContent: 'center',
                   alignItems: 'center',
                   height: '100%',
-                  // fontSize: 16,
+                  fontSize: 16,
                   fontWeight: 'bold',
                   color: '043c6c',
                   paddingRight: 60,
@@ -123,13 +123,24 @@ function Welcome() {
         </div>
         <div
           className={`${styles.blockquote} ${
-            locale === 'ar' && translate ? styles.blockAR : null
+            locale === 'ar'
+              ? translate
+                ? styles.blockAR
+                : styles.blockAR
+              : null
           }`}
         >
-          <h1 dir={locale === 'ar' && translate ? 'rtl' : 'ltr'}>
-            {translate
-              ? t('reviewDesc')
-              : 'Conocimos Omanosaura por casualidad y al final, su calidad humana y buen servicio marcó la diferencia. Si buscas sentir la cultura omaní y vivir aventuras a un buen precio enhorabuena, estás en el lugar correcto'}
+          <h1>
+            {translate ? (
+              t('reviewDesc')
+            ) : (
+              <div dir="ltr">
+                Conocimos Omanosaura por casualidad y al final, su calidad
+                humana y buen servicio marcó la diferencia. Si buscas sentir la
+                cultura omaní y vivir aventuras a un buen precio enhorabuena,
+                estás en el lugar correcto
+              </div>
+            )}
           </h1>
           <h4>
             &mdash;{t('reviewName')}

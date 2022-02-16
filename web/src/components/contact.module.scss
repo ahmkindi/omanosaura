@@ -2,7 +2,6 @@
 @import './variables.scss';
 
 .contact {
-  font-family: Open Sans, sans-serif;
   width: 500px;
   margin: 2em auto;
   position: relative;
@@ -160,11 +159,11 @@
   height: 100%;
   background: $darkBlue;
   color: white;
-  font-family: Oswald, sans-serif;
   box-sizing: border-box;
   width: 15%;
   text-align: center;
-  line-height: 2.8em;
+  line-height: 3em;
+  font-size: 0.9em;
   -webkit-transition: all 250ms ease;
   -moz-transition: all 250ms ease;
   -ms-transition: all 250ms ease;
@@ -179,6 +178,7 @@
 .inputWrapperAR label {
   left: auto !important;
   right: 0 !important;
+  font-size: 1em;
 }
 
 .inputWrapperAR input[type='text']:focus + label {
@@ -226,7 +226,6 @@
   cursor: pointer;
   background: $darkBlue;
   color: white;
-  font-family: Oswald, sans-serif;
   font-size: 1em;
   border: none;
   -webkit-box-shadow: 1px 1px 0 0 $lightBlue, 2px 2px 0 0 $lightBlue,
