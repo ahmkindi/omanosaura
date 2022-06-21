@@ -5,6 +5,8 @@ import useSWR from 'swr'
 import axios from 'axios'
 import { useContext, useState } from 'react'
 import EditAdventure from './EditAdventure'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
 
 export const emptyAdventure = {
   title: '',
@@ -24,8 +26,10 @@ const AdminAdventures = () => {
   )
   const { username, password } = useContext(AuthContext)
   const [activeAdv, setActiveAdv] = useState()
+  const { setIsLoading } = useContext(LoadingContext)
 
   const handleDelete = async (advId) => {
+    setIsLoading(true)
     await axios.post(
       `/api/admin/adventures/delete/${advId}`,
       {},
@@ -36,13 +40,14 @@ const AdminAdventures = () => {
         },
       }
     )
-    mutate(adventures)
+    await mutate(adventures)
+    setIsLoading(false)
   }
 
   if (activeAdv)
     return <EditAdventure activeAdv={activeAdv} setActiveAdv={setActiveAdv} />
   return (
-    <>
+    <div className={styles.adminPage}>
       <Button onClick={() => setActiveAdv(emptyAdventure)}>
         New Adventure
       </Button>
@@ -79,7 +84,7 @@ const AdminAdventures = () => {
           ))}
         </tbody>
       </Table>
-    </>
+    </div>
   )
 }
 

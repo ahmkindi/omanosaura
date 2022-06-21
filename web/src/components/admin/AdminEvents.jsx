@@ -7,6 +7,8 @@ import { useContext } from 'react'
 import { Form, Button, Card } from 'react-bootstrap'
 import { getBase64 } from '../helpers/files'
 import { useNavigate } from 'react-router-dom'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
 
 const emptyEvent = {
   expiry: new Date(),
@@ -22,8 +24,10 @@ const AdminEvents = () => {
     return data
   })
   const navigate = useNavigate()
+  const { setIsLoading } = useContext(LoadingContext)
 
   const handleDelete = async (eventId) => {
+    setIsLoading(true)
     await axios.post(
       `/api/admin/events/delete/${eventId}`,
       {},
@@ -35,9 +39,11 @@ const AdminEvents = () => {
       }
     )
     await mutate()
+    setIsLoading(false)
   }
 
   const handleEdit = async (event) => {
+    setIsLoading(true)
     await axios.post(`/api/admin/events`, event, {
       auth: {
         username: username,
@@ -45,6 +51,7 @@ const AdminEvents = () => {
       },
     })
     await mutate()
+    setIsLoading(false)
   }
 
   const handlePhotoChange = (e, index) => {
@@ -64,7 +71,7 @@ const AdminEvents = () => {
   }
 
   return (
-    <>
+    <div className={styles.adminPage}>
       <Button onClick={() => handleEdit(emptyEvent)}>
         New Event <BiImageAdd />
       </Button>
@@ -122,7 +129,7 @@ const AdminEvents = () => {
           </Card>
         ))}
       </div>
-    </>
+    </div>
   )
 }
 

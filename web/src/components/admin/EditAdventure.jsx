@@ -4,9 +4,12 @@ import axios from 'axios'
 import { useContext, useState } from 'react'
 import { getBase64 } from '../helpers/files'
 import { useSWRConfig } from 'swr'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
 
 const EditAdventure = ({ activeAdv, setActiveAdv }) => {
   const { username, password } = useContext(AuthContext)
+  const { setIsLoading } = useContext(LoadingContext)
   const { mutate } = useSWRConfig()
   const [invalid, setInvalid] = useState(false)
   console.log(invalid)
@@ -14,6 +17,7 @@ const EditAdventure = ({ activeAdv, setActiveAdv }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      setIsLoading(true)
       const response = await axios.post('/api/admin/adventures', activeAdv, {
         auth: { username: username, password: password },
       })
@@ -21,6 +25,8 @@ const EditAdventure = ({ activeAdv, setActiveAdv }) => {
       await mutate('/api/adventures')
     } catch {
       setInvalid(true)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -36,7 +42,7 @@ const EditAdventure = ({ activeAdv, setActiveAdv }) => {
   }
 
   return (
-    <Form onSubmit={(e) => handleSubmit(e)} className="mt-3">
+    <Form onSubmit={(e) => handleSubmit(e)} className={styles.adminPage}>
       <div>
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalTitle">
           <Form.Label column sm={2}>

@@ -4,6 +4,7 @@ import useSWR from 'swr'
 import axios from 'axios'
 import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import styles from './admin.module.scss'
 
 const baseUrl = '/api/admin/users'
 
@@ -21,7 +22,12 @@ const AdminUsers = () => {
   )
 
   return (
-    <Table striped bordered style={{ margin: '2rem' }}>
+    <Table
+      striped
+      bordered
+      style={{ margin: '2rem' }}
+      className={styles.adminPage}
+    >
       <thead>
         <tr>
           <th>#</th>

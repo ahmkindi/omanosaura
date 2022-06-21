@@ -7,6 +7,9 @@ import axios from 'axios'
 import { useContext, useState } from 'react'
 import EditTrip from './EditTrip'
 import { useNavigate } from 'react-router-dom'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
+
 export const emptyTrip = {
   title: '',
   title_ar: '',
@@ -25,8 +28,10 @@ const AdminTrips = () => {
   const { username, password } = useContext(AuthContext)
   const [activeTrip, setActiveTrip] = useState()
   const navigate = useNavigate()
+  const { setIsLoading } = useContext(LoadingContext)
 
   const handleDelete = async (tripId) => {
+    setIsLoading(true)
     await axios.post(
       `/api/admin/trips/delete/${tripId}`,
       {},
@@ -37,13 +42,14 @@ const AdminTrips = () => {
         },
       }
     )
-    mutate(trips)
+    await mutate(trips)
+    setIsLoading(false)
   }
 
   if (activeTrip)
     return <EditTrip activeTrip={activeTrip} setActiveTrip={setActiveTrip} />
   return (
-    <>
+    <div className={styles.adminPage}>
       <Button onClick={() => setActiveTrip(emptyTrip)}>New Trip</Button>
       <Table striped bordered hover style={{ margin: '2rem' }}>
         <thead>
@@ -86,7 +92,7 @@ const AdminTrips = () => {
           ))}
         </tbody>
       </Table>
-    </>
+    </div>
   )
 }
 

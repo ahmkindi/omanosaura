@@ -4,16 +4,20 @@ import axios from 'axios'
 import { useContext, useState } from 'react'
 import { getBase64 } from '../helpers/files'
 import { useSWRConfig } from 'swr'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
 
 const EditTrip = ({ activeTrip, setActiveTrip }) => {
   const { username, password } = useContext(AuthContext)
   const { mutate } = useSWRConfig()
   const [invalid, setInvalid] = useState(false)
+  const { setIsLoading } = useContext(LoadingContext)
   console.log(invalid)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      setIsLoading(true)
       const response = await axios.post('/api/admin/trips', activeTrip, {
         auth: { username: username, password: password },
       })
@@ -21,6 +25,8 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
       await mutate('/api/trips')
     } catch {
       setInvalid(true)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -36,7 +42,7 @@ const EditTrip = ({ activeTrip, setActiveTrip }) => {
   }
 
   return (
-    <Form onSubmit={(e) => handleSubmit(e)} className="mt-3">
+    <Form onSubmit={(e) => handleSubmit(e)} className={styles.adminPage}>
       <div>
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalTitle">
           <Form.Label column sm={2}>

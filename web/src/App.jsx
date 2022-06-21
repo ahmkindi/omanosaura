@@ -22,6 +22,7 @@ import {
 import i18n from './i18n'
 import LocaleContext from './LocaleContext'
 import AuthContext from './AuthContext'
+import LoadingContext from './LoadingContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
   const [signedIn, setSignedIn] = useState(false)
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const [isLoading, setIsLoading] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   i18n.on('languageChanged', () => setLocale(i18n.language))
@@ -54,7 +56,12 @@ function App() {
         >
           <Router>
             {!window.location.pathname.includes('admin') && (
-              <>
+              <LoadingContext.Provider
+                value={{
+                  isLoading,
+                  setIsLoading,
+                }}
+              >
                 <Navigation menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <div
                   style={{
@@ -75,47 +82,54 @@ function App() {
                   </Routes>
                 </div>
                 <Footer />
-              </>
+              </LoadingContext.Provider>
             )}
             {window.location.pathname.includes('admin') && (
-              <AuthContext.Provider
+              <LoadingContext.Provider
                 value={{
-                  signedIn,
-                  setSignedIn,
-                  username,
-                  setUsername,
-                  password,
-                  setPassword,
+                  isLoading,
+                  setIsLoading,
                 }}
               >
-                {signedIn && <AdminNavigation />}
-                <div style={{ padding: '0.5rem', direction: 'ltr' }}>
-                  <Routes>
-                    <Route path="/admin" element={<AdminHome />} />
-                    <Route
-                      path="/admin/trips"
-                      element={signedIn ? <AdminTrips /> : <AdminHome />}
-                    />
-                    <Route
-                      path="/admin/trip/photos/:id"
-                      element={signedIn ? <AdminTripPhotos /> : <AdminHome />}
-                    />
-                    <Route
-                      path="/admin/adventures"
-                      element={signedIn ? <AdminAdventures /> : <AdminHome />}
-                    />
-                    <Route
-                      path="/admin/events"
-                      element={signedIn ? <AdminEvents /> : <AdminHome />}
-                    />
-                    <Route
-                      path="/admin/users/:id"
-                      element={signedIn ? <AdminUsers /> : <AdminHome />}
-                    />
-                    <Route path="*" element={<Error404 />} />
-                  </Routes>
-                </div>
-              </AuthContext.Provider>
+                <AuthContext.Provider
+                  value={{
+                    signedIn,
+                    setSignedIn,
+                    username,
+                    setUsername,
+                    password,
+                    setPassword,
+                  }}
+                >
+                  {signedIn && <AdminNavigation />}
+                  <div style={{ padding: '0.5rem', direction: 'ltr' }}>
+                    <Routes>
+                      <Route path="/admin" element={<AdminHome />} />
+                      <Route
+                        path="/admin/trips"
+                        element={signedIn ? <AdminTrips /> : <AdminHome />}
+                      />
+                      <Route
+                        path="/admin/trip/photos/:id"
+                        element={signedIn ? <AdminTripPhotos /> : <AdminHome />}
+                      />
+                      <Route
+                        path="/admin/adventures"
+                        element={signedIn ? <AdminAdventures /> : <AdminHome />}
+                      />
+                      <Route
+                        path="/admin/events"
+                        element={signedIn ? <AdminEvents /> : <AdminHome />}
+                      />
+                      <Route
+                        path="/admin/users/:id"
+                        element={signedIn ? <AdminUsers /> : <AdminHome />}
+                      />
+                      <Route path="*" element={<Error404 />} />
+                    </Routes>
+                  </div>
+                </AuthContext.Provider>
+              </LoadingContext.Provider>
             )}
           </Router>
         </div>

@@ -10,9 +10,11 @@ import coloredSmallLogo from '../assets/colored_small.png'
 import { useContext } from 'react'
 import LocaleContext from '../LocaleContext'
 import Terms from '../assets/terms.pdf'
+import LoadingContext from '../LoadingContext'
 
 const Events = () => {
   const { locale } = useContext(LocaleContext)
+  const { setIsLoading } = useContext(LoadingContext)
   const { t } = useTranslation()
   const { data: events } = useSWR('/api/current/events', async (url) => {
     const { data } = await axios.get(url)
@@ -29,6 +31,7 @@ const Events = () => {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true)
       const response = await axios.post(`/api/users/interested/${show}`, {
         name: name.current.value,
         email: email.current.value,
@@ -43,6 +46,7 @@ const Events = () => {
       setSuccess(false)
     } finally {
       setShow('')
+      setIsLoading(false)
     }
   }
 

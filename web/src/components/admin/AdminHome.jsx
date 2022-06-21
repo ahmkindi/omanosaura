@@ -3,17 +3,20 @@ import AuthContext from '../../AuthContext'
 import { Form, Button, Alert } from 'react-bootstrap'
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
+import LoadingContext from '../../LoadingContext'
 
 const secretKey = 'iamasecretkey'
 
 const AdminHome = () => {
   const auth = useContext(AuthContext)
   const [incorrect, setIncorrect] = useState(false)
+  const { setIsLoading } = useContext(LoadingContext)
   const username = useRef(null)
   const password = useRef(null)
 
   const correctLogin = async (user, pass) => {
     try {
+      setIsLoading(true)
       const response = await axios.post(
         '/api/admin/',
         {},
@@ -31,6 +34,8 @@ const AdminHome = () => {
       }
     } catch (error) {
       return false
+    } finally {
+      setIsLoading(false)
     }
   }
 

@@ -1,32 +1,37 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import LoadingContext from '../../LoadingContext'
+import ReactLoading from 'react-loading'
+import styles from './admin.module.scss'
 
-//TODO: Better styling and move to class
 const AdminNavigation = () => {
+  const { isLoading } = useContext(LoadingContext)
   return (
-    <div
-      style={{
-        display: 'flex',
-        color: 'black',
-        fontSize: '1.5rem',
-        gap: '1.5rem',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: '0.5rem 1rem',
-      }}
-    >
-      <Link style={{ color: 'black' }} to="/admin/trips">
-        trips
-      </Link>
-      <Link style={{ color: 'black' }} to="/admin/adventures">
-        adventures
-      </Link>
-      <Link style={{ color: 'black' }} to="/admin/events">
-        events
-      </Link>
-      <Link style={{ color: 'black' }} to="/admin/users/all">
-        users
-      </Link>
-    </div>
+    <>
+      <div className={styles.navbar}>
+        <Link style={{ color: 'black' }} to="/admin/trips">
+          trips
+        </Link>
+        <Link style={{ color: 'black' }} to="/admin/adventures">
+          adventures
+        </Link>
+        <Link style={{ color: 'black' }} to="/admin/events">
+          events
+        </Link>
+        <Link style={{ color: 'black' }} to="/admin/users/all">
+          users
+        </Link>
+      </div>
+      {isLoading && (
+        <ReactLoading
+          className={styles.loading}
+          type="spin"
+          color="blue"
+          height={50}
+          width={50}
+        />
+      )}
+    </>
   )
 }
 

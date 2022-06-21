@@ -7,9 +7,12 @@ import { useContext, useState } from 'react'
 import { Form, Button, Card } from 'react-bootstrap'
 import { getBase64 } from '../helpers/files'
 import { useParams } from 'react-router-dom'
+import LoadingContext from '../../LoadingContext'
+import styles from './admin.module.scss'
 
 const AdminTripPhotos = () => {
   const { username, password } = useContext(AuthContext)
+  const { setIsLoading } = useContext(LoadingContext)
   const { id } = useParams()
   const { data: photos, mutate } = useSWR(
     `/api/trips/photos/${id}`,
@@ -23,6 +26,7 @@ const AdminTripPhotos = () => {
   const [newPhotos, setNewPhotos] = useState([])
 
   const handleDelete = async (photoId) => {
+    setIsLoading(true)
     await axios.post(
       `/api/admin/trips/photos/${photoId}`,
       {},
@@ -34,10 +38,12 @@ const AdminTripPhotos = () => {
       }
     )
     await mutate()
+    setIsLoading(false)
   }
 
   const handleAddPhotos = async () => {
     if (newPhotos.length === 0) return
+    setIsLoading(true)
     await axios.post(
       `/api/admin/trips/photos`,
       newPhotos.map((p) => ({ trip_id: id, photo: p })),
@@ -50,6 +56,7 @@ const AdminTripPhotos = () => {
     )
     setNewPhotos([])
     await mutate()
+    setIsLoading(false)
   }
 
   const handlePhotoChange = (e) => {
@@ -64,7 +71,7 @@ const AdminTripPhotos = () => {
     }
   }
   return (
-    <>
+    <div className={styles.adminPage}>
       <Form.Control
         type="file"
         onChange={(e) => handlePhotoChange(e)}
@@ -97,7 +104,7 @@ const AdminTripPhotos = () => {
           </Card>
         ))}
       </div>
-    </>
+    </div>
   )
 }
 
