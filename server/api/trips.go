@@ -4,27 +4,27 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"omanosaura/models"
+	"omanosaura/database"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerInsertOrUpdateTrip(w http.ResponseWriter, r *http.Request) {
-	log.Print("Inserting Trip")
-	var trip models.Trip
+func (server *Server) HandlerUpsertTrip(w http.ResponseWriter, r *http.Request) {
+	log.Print("Upserting Trip")
+	var trip database.UpsertTripParams
 	if err := json.NewDecoder(r.Body).Decode(&trip); err != nil {
 		log.Println("failed to decode request", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
-	if trip.Id == uuid.Nil {
-		log.Print("I AM NIL")
-		trip.Id = uuid.Must(uuid.NewRandom())
+	if trip.ID == uuid.Nil {
+		log.Print("Inserting New Trip")
+		trip.ID = uuid.New()
 	}
 
-	if err := server.tripsStore.InsertOrUpdateTrip(r.Context(), trip); err != nil {
+	if err := server.Queries.UpsertTrip(r.Context(), trip); err != nil {
 		log.Println("failed to insert trip into db", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -35,7 +35,7 @@ func (server *Server) HandlerInsertOrUpdateTrip(w http.ResponseWriter, r *http.R
 
 func (server *Server) HandlerGetAllTrips(w http.ResponseWriter, r *http.Request) {
 	log.Print("Getting Trips")
-	trips, err := server.tripsStore.GetAllTrips(r.Context())
+	trips, err := server.Queries.GetAllTrips(r.Context())
 	if err != nil {
 		log.Println("failed to get trips from db", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -50,83 +50,25 @@ func (server *Server) HandlerGetAllTrips(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (server *Server) HandlerDeleteTrip(w http.ResponseWriter, r *http.Request) {
-	log.Print("Deleting trip")
-	tripId, err := uuid.Parse(mux.Vars(r)["id"])
+func (server *Server) HandlerGetTrip(w http.ResponseWriter, r *http.Request) {
+	log.Print("Getting Trip")
+	tripID, err := uuid.Parse(mux.Vars(r)["id"])
 	if err != nil {
-		log.Println("failed to convert trip id into uuid", err)
+		log.Println("failed to convert trid id into uuid", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-
-	if err := server.tripsStore.DeleteTrip(r.Context(), tripId); err != nil {
-		log.Println("failed to delelte trip", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-}
-
-func (server *Server) HandlerGetTripPhotos(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting trip photos")
-	tripId, err := uuid.Parse(mux.Vars(r)["id"])
+	trips, err := server.Queries.GetTrip(r.Context(), tripID)
 	if err != nil {
-		log.Println("failed to convert trip id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	photos, err := server.tripsStore.GetTripPhotos(r.Context(), tripId)
-	if err != nil {
-		log.Println("failed to delelte trip", err)
+		log.Println("failed to get trip from db", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(photos); err != nil {
-		log.Println("failed to encoding trips", err)
+	if err := json.NewEncoder(w).Encode(trips); err != nil {
+		log.Println("failed to encoding trip", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-}
-
-func (server *Server) HandlerInsertTripPhotos(w http.ResponseWriter, r *http.Request) {
-	log.Print("Uploading trip photos")
-	var tripPhotos []models.TripPhoto
-	if err := json.NewDecoder(r.Body).Decode(&tripPhotos); err != nil {
-		log.Println("failed to decode request", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	for _, photo := range tripPhotos {
-		photo.Id = uuid.Must(uuid.NewRandom())
-		if err := server.tripsStore.InsertTripPhoto(r.Context(), photo); err != nil {
-			log.Println("failed to insert photo", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-	}
-
-	w.WriteHeader(http.StatusOK)
-}
-
-func (server *Server) HandlerDeleteTripPhoto(w http.ResponseWriter, r *http.Request) {
-	log.Print("Deleting trip photo")
-	photoId, err := uuid.Parse(mux.Vars(r)["id"])
-	if err != nil {
-		log.Println("failed to convert photo id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	if err := server.tripsStore.DeleteTripPhoto(r.Context(), photoId); err != nil {
-		log.Println("failed to delelte photo", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
 }

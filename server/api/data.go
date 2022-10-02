@@ -1,4 +1,4 @@
-package models
+package api
 
 type Contact struct {
 	Name    string

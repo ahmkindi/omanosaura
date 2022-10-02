@@ -7,13 +7,12 @@ import (
 	"log"
 	"net/http"
 	"net/smtp"
-	"omanosaura/models"
 	"text/template"
 )
 
 func (server *Server) HandlerSendEmail(w http.ResponseWriter, r *http.Request) {
 	log.Println("Sending")
-	var details models.Contact
+	var details Contact
 	if err := json.NewDecoder(r.Body).Decode(&details); err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return

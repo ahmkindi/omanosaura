@@ -43,29 +43,33 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/send", server.HandlerSendEmail).Methods("POST")
-	r.HandleFunc("/trips", server.HandlerGetAllTrips).Methods("GET")
-	r.HandleFunc("/trips/photos/{id}", server.HandlerGetTripPhotos).Methods("GET")
-	r.HandleFunc("/adventures", server.HandlerGetAllAdventures).Methods("GET")
-	r.HandleFunc("/current/events", server.HandlerGetCurrentEvents).Methods("GET")
-	r.HandleFunc("/users/interested/{event_id}", server.HandlerRegisterUser).Methods("POST")
 
+	// trips
+	r.HandleFunc("/trips", server.HandlerGetAllTrips).Methods("GET")
+	r.HandleFunc("/trips/{id}", server.HandlerGetTrip).Methods("GET")
+
+	// adventures
+	r.HandleFunc("/adventures", server.HandlerGetAllAdventures).Methods("GET")
+	r.HandleFunc("/adventure/{id}", server.HandlerGetAdventure).Methods("GET")
+
+	// products
+	r.HandleFunc("/products/{id}/like", server.HandlerLikeProduct).Methods("POST")
+	r.HandleFunc("/products/{id}/dislike", server.HandlerDislikeProduct).Methods("POST")
+	r.HandleFunc("/products/{id}/review", server.HandlerReviewProduct).Methods("POST")
+	r.HandleFunc("/products/{id}/review", server.HandlerDeleteReviewProduct).Methods("DELETE")
+
+	// admin routes
 	protected := r.PathPrefix("/admin").Subrouter()
 	protected.Use(basicAuth)
-	protected.HandleFunc("/trips", server.HandlerInsertOrUpdateTrip).Methods("POST")
-	protected.HandleFunc("/trips/delete/{id}", server.HandlerDeleteTrip).Methods("POST")
-	protected.HandleFunc("/trips/photos", server.HandlerInsertTripPhotos).Methods("POST")
-	protected.HandleFunc("/trips/photos/{id}", server.HandlerDeleteTripPhoto).Methods("POST")
-	protected.HandleFunc("/adventures", server.HandlerInsertOrUpdateAdventure).Methods("POST")
-	protected.HandleFunc("/adventures/delete/{id}", server.HandlerDeleteAdventure).Methods("POST")
-	protected.HandleFunc("/events", server.HandlerInsertOrUpdateEvent).Methods("POST")
-	protected.HandleFunc("/events", server.HandlerGetAllEvents).Methods("GET")
-	protected.HandleFunc("/events/delete/{id}", server.HandlerDeleteEvent).Methods("POST")
-	protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
-	protected.HandleFunc("/users/{event_id}", server.HandlerInterestedUsers).
-		Methods("GET")
-	protected.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	}).Methods("POST")
+
+	protected.HandleFunc("/trips", server.HandlerUpsertTrip).Methods("POST")
+
+	protected.HandleFunc("/adventures", server.HandlerUpsertAdventure).Methods("POST")
+
+	protected.HandleFunc("/product/{id}", server.HandlerDeleteProduct).Methods("DELETE")
+	// protected.HandleFunc("/product/{id}/purchases", server.HandlerGetProductPurchases).Methods("GET")
+	// protected.HandleFunc("/product/purchases", server.HandlerGetAllPurchases).Methods("GET")
+	// protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
 
 	http.ListenAndServe(":8081", r)
 }

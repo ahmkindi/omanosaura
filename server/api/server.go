@@ -3,19 +3,17 @@ package api
 import (
 	"fmt"
 	"net/smtp"
+	"omanosaura/database"
 	"omanosaura/migrations"
-	"omanosaura/store"
 	"os"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Server struct {
-	Email           Email
-	tripsStore      store.TripsStore
-	adventuresStore store.AdventuresStore
-	eventsStore     store.EventsStore
-	usersSotre      store.UsersStore
+	Email   Email
+	Queries *database.Queries
+	DB      *sqlx.DB
 }
 
 type Email struct {
@@ -52,9 +50,7 @@ func CreateServer() (*Server, error) {
 			Headers:  "MIME-version: 1.0;\nContent-Type: text/html;",
 			SmtpURL:  "smtppro.zoho.com:587",
 		},
-		tripsStore:      store.NewTripsStore(db),
-		adventuresStore: store.NewAdventuresStore(db),
-		eventsStore:     store.NewEventsStore(db),
-		usersSotre:      store.NewUsersStore(db),
+		Queries: database.New(db),
+		DB:      db,
 	}, nil
 }
