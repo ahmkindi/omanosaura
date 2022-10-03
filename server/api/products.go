@@ -2,82 +2,78 @@ package api
 
 import (
 	"log"
-	"net/http"
+	"omanosaura/database"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerDeleteProduct(w http.ResponseWriter, r *http.Request) {
-	log.Print("Deleting Product")
-	productID, err := uuid.Parse(mux.Vars(r)["id"])
+func (server *Server) HandlerDeleteProduct(c *fiber.Ctx) error {
+	productID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
-		log.Println("failed to convert productID id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+		return fiber.ErrBadRequest
 	}
 
-	if err := server.Queries.DeleteProduct(r.Context(), productID); err != nil {
-		log.Println("failed to delelte trip", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
+	return server.Queries.DeleteProduct(c.Context(), productID)
 }
 
-func (server *Server) HandlerLikeProduct(w http.ResponseWriter, r *http.Request) {
-	log.Print("Liking Product")
-	productID, err := uuid.Parse(mux.Vars(r)["id"])
-	if err != nil {
-		log.Println("failed to convert productID id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerRateProduct(c *fiber.Ctx) error {
+	rating := new(database.RateProductParams)
+	if err := c.BodyParser(rating); err != nil {
+		return fiber.ErrBadRequest
 	}
-	log.Print(productID)
 
-	// get User and insert
-	w.WriteHeader(http.StatusOK)
+	// Get user ID from session
+	rating.UserID = uuid.Nil
+
+	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
+		ProductID: rating.ProductID,
+		UserID:    rating.UserID,
+	})
+	if err != nil {
+		return err
+	}
+	if !canRate {
+		return fiber.ErrUnauthorized
+	}
+
+	return server.Queries.RateProduct(c.Context(), *rating)
 }
 
-func (server *Server) HandlerDislikeProduct(w http.ResponseWriter, r *http.Request) {
-	log.Print("Disliking Product")
-	productID, err := uuid.Parse(mux.Vars(r)["id"])
-	if err != nil {
-		log.Println("failed to convert productID id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
+	review := new(database.ReviewProductParams)
+	if err := c.BodyParser(review); err != nil {
+		return fiber.ErrBadRequest
 	}
-	log.Print(productID)
 
-	// get User and delete
-	w.WriteHeader(http.StatusOK)
+	// Get user ID from session
+	review.UserID = uuid.Nil
+
+	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
+		ProductID: review.ProductID,
+		UserID:    review.UserID,
+	})
+	if err != nil {
+		return err
+	}
+	if !canRate {
+		return fiber.ErrUnauthorized
+	}
+
+	return server.Queries.ReviewProduct(c.Context(), *review)
+
 }
 
-func (server *Server) HandlerReviewProduct(w http.ResponseWriter, r *http.Request) {
-	log.Print("Review Product")
-	productID, err := uuid.Parse(mux.Vars(r)["id"])
+func (server *Server) HandlerDeleteReviewProduct(c *fiber.Ctx) error {
+	productID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
-		log.Println("failed to convert productID id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-	log.Print(productID)
-
-	// get User and insert
-	w.WriteHeader(http.StatusOK)
-}
-
-func (server *Server) HandlerDeleteReviewProduct(w http.ResponseWriter, r *http.Request) {
-	log.Print("Deleting Review Product")
-	productID, err := uuid.Parse(mux.Vars(r)["id"])
-	if err != nil {
-		log.Println("failed to convert productID id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+		return fiber.ErrBadRequest
 	}
 	log.Print(productID)
 
 	// get User and delete
-	w.WriteHeader(http.StatusOK)
+	return server.Queries.DeleteProductReview(c.Context(), database.DeleteProductReviewParams{
+		ProductID: productID,
+		UserID:    uuid.Nil,
+	})
 }

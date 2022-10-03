@@ -15,12 +15,6 @@ type Adventure struct {
 	AvailableDates []time.Time `json:"available_dates"`
 }
 
-type Like struct {
-	ProductID uuid.UUID `json:"product_id"`
-	UserID    uuid.UUID `json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
 type Product struct {
 	ID            uuid.UUID `json:"id"`
 	Kind          string    `json:"kind"`
@@ -40,6 +34,13 @@ type Purchase struct {
 	Paid              bool      `json:"paid"`
 	ChosenDate        time.Time `json:"chosen_date"`
 	CreatedAt         time.Time `json:"created_at"`
+}
+
+type Rating struct {
+	ProductID uuid.UUID `json:"product_id"`
+	UserID    uuid.UUID `json:"user_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Rating    float64   `json:"rating"`
 }
 
 type Review struct {

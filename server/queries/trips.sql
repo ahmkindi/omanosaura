@@ -21,6 +21,6 @@ ON CONFLICT (id) DO UPDATE SET
 SELECT * FROM products NATURAL JOIN trips;
 
 -- name: GetTrip :one
-SELECT *, (SELECT COUNT(*) FROM likes WHERE likes.product_id = $1) likes FROM products NATURAL JOIN (SELECT * FROM trips WHERE trips.id = $1) t
+SELECT *, (SELECT SUM(rating)/COUNT(*) FROM ratings WHERE ratings.product_id = $1) likes FROM products NATURAL JOIN (SELECT * FROM trips WHERE trips.id = $1) t
 INNER JOIN (SELECT * FROM reviews WHERE product_id = $1) r ON t.id = product_id
 INNER JOIN users ON r.user_id = users.id;

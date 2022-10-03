@@ -18,14 +18,14 @@ ON CONFLICT (id) DO UPDATE SET
 -- name: GetAllAdventures :many
 SELECT *
 FROM products NATURAL JOIN adventures
-INNER JOIN (SELECT COUNT(*), product_id FROM likes GROUP BY product_id) l ON products.id = l.product_id;
+INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id;
 
 -- name: GetAdventure :one
 SELECT *,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) purchased,
-(SELECT COUNT(*) FROM likes l WHERE l.product_id = $1) likes,
-(SELECT COUNT(*) FROM likes l WHERE l.product_id = $1 AND l.user_id=$2) > 0 liked
+(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
+(SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
+(SELECT rating FROM ratings r WHERE r.product_id = $1 AND r.user_id=$2) rating
 FROM products NATURAL JOIN (SELECT * FROM adventures WHERE adventures.id = $1) a
 INNER JOIN (SELECT * FROM reviews WHERE product_id = $1) r ON a.id = product_id
 INNER JOIN users ON r.user_id = users.id;

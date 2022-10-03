@@ -1,7 +1,5 @@
 BEGIN;
-
 CREATE EXTENSION citext;
-
 CREATE TABLE IF NOT EXISTS products (
   id UUID PRIMARY KEY,
   kind CHAR(1) NOT NULL CHECK (kind IN ('A', 'T')),
@@ -52,10 +50,11 @@ CREATE TABLE IF NOT EXISTS reviews (
   PRIMARY KEY(product_id, user_id)
 );
 
-CREATE TABLE IF NOT EXISTS likes (
+CREATE TABLE IF NOT EXISTS ratings (
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id),
   created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+  rating FLOAT NOT NULL CHECK (rating > 0 AND rating <= 5),
   PRIMARY KEY(product_id, user_id)
 );
 

@@ -16,9 +16,9 @@ import (
 const getAdventure = `-- name: GetAdventure :one
 SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, a.id, a.available_dates, adventures.id, adventures.available_dates, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) purchased,
-(SELECT COUNT(*) FROM likes l WHERE l.product_id = $1) likes,
-(SELECT COUNT(*) FROM likes l WHERE l.product_id = $1 AND l.user_id=$2) > 0 liked
+(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
+(SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
+(SELECT rating FROM ratings r WHERE r.product_id = $1 AND r.user_id=$2) rating
 FROM products NATURAL JOIN (SELECT id, available_dates FROM adventures WHERE adventures.id = $1) a
 INNER JOIN (SELECT product_id, user_id, review, last_updated FROM reviews WHERE product_id = $1) r ON a.id = product_id
 INNER JOIN users ON r.user_id = users.id
@@ -57,9 +57,9 @@ type GetAdventureRow struct {
 	Lastname         string      `json:"lastname"`
 	Phone            string      `json:"phone"`
 	Purchases        int64       `json:"purchases"`
-	Purchased        int64       `json:"purchased"`
-	Likes            int64       `json:"likes"`
-	Liked            bool        `json:"liked"`
+	UserPurchases    int64       `json:"user_purchases"`
+	Rating           int32       `json:"rating"`
+	Rating_2         float64     `json:"rating_2"`
 }
 
 func (q *Queries) GetAdventure(ctx context.Context, arg GetAdventureParams) (GetAdventureRow, error) {
@@ -93,17 +93,17 @@ func (q *Queries) GetAdventure(ctx context.Context, arg GetAdventureParams) (Get
 		&i.Lastname,
 		&i.Phone,
 		&i.Purchases,
-		&i.Purchased,
-		&i.Likes,
-		&i.Liked,
+		&i.UserPurchases,
+		&i.Rating,
+		&i.Rating_2,
 	)
 	return i, err
 }
 
 const getAllAdventures = `-- name: GetAllAdventures :many
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, adventures.id, available_dates, count, l.product_id, likes.product_id, user_id, created_at
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, adventures.id, available_dates, l.rating, l.product_id, ratings.product_id, user_id, created_at, ratings.rating
 FROM products NATURAL JOIN adventures
-INNER JOIN (SELECT COUNT(*), product_id FROM likes GROUP BY product_id) l ON products.id = l.product_id
+INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id
 `
 
 type GetAllAdventuresRow struct {
@@ -118,11 +118,12 @@ type GetAllAdventuresRow struct {
 	LastUdpated    time.Time   `json:"last_udpated"`
 	ID_2           uuid.UUID   `json:"id_2"`
 	AvailableDates []time.Time `json:"available_dates"`
-	Count          int64       `json:"count"`
+	Rating         int32       `json:"rating"`
 	ProductID      uuid.UUID   `json:"product_id"`
 	ProductID_2    uuid.UUID   `json:"product_id_2"`
 	UserID         uuid.UUID   `json:"user_id"`
 	CreatedAt      time.Time   `json:"created_at"`
+	Rating_2       float64     `json:"rating_2"`
 }
 
 func (q *Queries) GetAllAdventures(ctx context.Context) ([]GetAllAdventuresRow, error) {
@@ -146,11 +147,12 @@ func (q *Queries) GetAllAdventures(ctx context.Context) ([]GetAllAdventuresRow, 
 			&i.LastUdpated,
 			&i.ID_2,
 			pq.Array(&i.AvailableDates),
-			&i.Count,
+			&i.Rating,
 			&i.ProductID,
 			&i.ProductID_2,
 			&i.UserID,
 			&i.CreatedAt,
+			&i.Rating_2,
 		); err != nil {
 			return nil, err
 		}

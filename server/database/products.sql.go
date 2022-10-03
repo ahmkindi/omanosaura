@@ -11,6 +11,15 @@ import (
 	"github.com/google/uuid"
 )
 
+const deleteProduct = `-- name: DeleteProduct :exec
+DELETE FROM products WHERE id = $1
+`
+
+func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteProduct, id)
+	return err
+}
+
 const deleteProductReview = `-- name: DeleteProductReview :exec
 DELETE FROM reviews WHERE product_id = $1 AND user_id = $2
 `
@@ -25,32 +34,20 @@ func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductRevi
 	return err
 }
 
-const dislikeProduct = `-- name: DislikeProduct :exec
-DELETE FROM likes WHERE product_id = $1 AND user_id = $2
+const rateProduct = `-- name: RateProduct :exec
+INSERT INTO ratings(product_id, user_id, rating, created_at)
+VALUES ($1, $2, $3, CURRENT_DATE) ON CONFLICT (product_id, user_id) DO
+UPDATE SET rating = excluded.rating, created_at = excluded.created_at
 `
 
-type DislikeProductParams struct {
+type RateProductParams struct {
 	ProductID uuid.UUID `json:"product_id"`
 	UserID    uuid.UUID `json:"user_id"`
+	Rating    float64   `json:"rating"`
 }
 
-func (q *Queries) DislikeProduct(ctx context.Context, arg DislikeProductParams) error {
-	_, err := q.db.ExecContext(ctx, dislikeProduct, arg.ProductID, arg.UserID)
-	return err
-}
-
-const likeProduct = `-- name: LikeProduct :exec
-INSERT INTO likes(product_id, user_id, created_at)
-VALUES ($1, $2, CURRENT_DATE) ON CONFLICT (product_id, user_id) DO NOTHING
-`
-
-type LikeProductParams struct {
-	ProductID uuid.UUID `json:"product_id"`
-	UserID    uuid.UUID `json:"user_id"`
-}
-
-func (q *Queries) LikeProduct(ctx context.Context, arg LikeProductParams) error {
-	_, err := q.db.ExecContext(ctx, likeProduct, arg.ProductID, arg.UserID)
+func (q *Queries) RateProduct(ctx context.Context, arg RateProductParams) error {
+	_, err := q.db.ExecContext(ctx, rateProduct, arg.ProductID, arg.UserID, arg.Rating)
 	return err
 }
 
@@ -71,4 +68,22 @@ type ReviewProductParams struct {
 func (q *Queries) ReviewProduct(ctx context.Context, arg ReviewProductParams) error {
 	_, err := q.db.ExecContext(ctx, reviewProduct, arg.ProductID, arg.UserID, arg.Review)
 	return err
+}
+
+const userCanRateProduct = `-- name: UserCanRateProduct :one
+SELECT EXISTS (
+  SELECT 1 FROM purchases WHERE user_id = $1 AND product_id = $2 AND chosen_date > CURRENT_DATE
+)
+`
+
+type UserCanRateProductParams struct {
+	UserID    uuid.UUID `json:"user_id"`
+	ProductID uuid.UUID `json:"product_id"`
+}
+
+func (q *Queries) UserCanRateProduct(ctx context.Context, arg UserCanRateProductParams) (bool, error) {
+	row := q.db.QueryRowContext(ctx, userCanRateProduct, arg.UserID, arg.ProductID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }

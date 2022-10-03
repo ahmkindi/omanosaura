@@ -1,22 +1,17 @@
 package api
 
 import (
-	"encoding/json"
 	"log"
-	"net/http"
 	"omanosaura/database"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerUpsertTrip(w http.ResponseWriter, r *http.Request) {
-	log.Print("Upserting Trip")
-	var trip database.UpsertTripParams
-	if err := json.NewDecoder(r.Body).Decode(&trip); err != nil {
-		log.Println("failed to decode request", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerUpsertTrip(c *fiber.Ctx) error {
+	trip := new(database.UpsertTripParams)
+	if err := c.BodyParser(trip); err != nil {
+		return fiber.ErrBadRequest
 	}
 
 	if trip.ID == uuid.Nil {
@@ -24,51 +19,31 @@ func (server *Server) HandlerUpsertTrip(w http.ResponseWriter, r *http.Request) 
 		trip.ID = uuid.New()
 	}
 
-	if err := server.Queries.UpsertTrip(r.Context(), trip); err != nil {
-		log.Println("failed to insert trip into db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+	if err := server.Queries.UpsertTrip(c.Context(), *trip); err != nil {
+		return fiber.ErrInternalServerError
 	}
 
-	w.WriteHeader(http.StatusOK)
+	return nil
 }
 
-func (server *Server) HandlerGetAllTrips(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting Trips")
-	trips, err := server.Queries.GetAllTrips(r.Context())
+func (server *Server) HandlerGetAllTrips(c *fiber.Ctx) error {
+	trips, err := server.Queries.GetAllTrips(c.Context())
 	if err != nil {
-		log.Println("failed to get trips from db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(trips); err != nil {
-		log.Println("failed to encoding trips", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	return c.JSON(trips)
 }
 
-func (server *Server) HandlerGetTrip(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting Trip")
-	tripID, err := uuid.Parse(mux.Vars(r)["id"])
+func (server *Server) HandlerGetTrip(c *fiber.Ctx) error {
+	tripID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
-		log.Println("failed to convert trid id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+		return fiber.ErrBadRequest
 	}
-	trips, err := server.Queries.GetTrip(r.Context(), tripID)
+	trip, err := server.Queries.GetTrip(c.Context(), tripID)
 	if err != nil {
-		log.Println("failed to get trip from db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(trips); err != nil {
-		log.Println("failed to encoding trip", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	return c.JSON(trip)
 }

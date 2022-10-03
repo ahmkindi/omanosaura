@@ -2,20 +2,17 @@ package api
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
 	"net/smtp"
 	"text/template"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func (server *Server) HandlerSendEmail(w http.ResponseWriter, r *http.Request) {
-	log.Println("Sending")
-	var details Contact
-	if err := json.NewDecoder(r.Body).Decode(&details); err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
+	details := new(Contact)
+	if err := c.BodyParser(details); err != nil {
+		return fiber.ErrBadRequest
 	}
 	var externalBody bytes.Buffer
 	externalBody.Write([]byte(fmt.Sprintf("Subject: Hey Explorer\n%s\n\n", server.Email.Headers)))
@@ -24,20 +21,18 @@ func (server *Server) HandlerSendEmail(w http.ResponseWriter, r *http.Request) {
 
 	external, err := template.ParseFiles("external-email.html")
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 	external.Execute(&externalBody, struct{ Name string }{Name: details.Name})
 
 	internal, err := template.ParseFiles("internal-email.html")
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 	internal.Execute(&internalBody, details)
 
 	smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{"admin@omanosaura.com"}, internalBody.Bytes())
 	smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
 
-	w.WriteHeader(http.StatusOK)
+	return nil
 }

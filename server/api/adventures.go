@@ -1,22 +1,17 @@
 package api
 
 import (
-	"encoding/json"
 	"log"
-	"net/http"
 	"omanosaura/database"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerUpsertAdventure(w http.ResponseWriter, r *http.Request) {
-	log.Print("Upserting Adventure")
-	var adventure database.UpsertAdventureParams
-	if err := json.NewDecoder(r.Body).Decode(&adventure); err != nil {
-		log.Println("failed to decode request", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerUpsertAdventure(c *fiber.Ctx) error {
+	adventure := new(database.UpsertAdventureParams)
+	if err := c.BodyParser(adventure); err != nil {
+		return fiber.ErrBadRequest
 	}
 
 	if adventure.ID == uuid.Nil {
@@ -24,51 +19,34 @@ func (server *Server) HandlerUpsertAdventure(w http.ResponseWriter, r *http.Requ
 		adventure.ID = uuid.New()
 	}
 
-	if err := server.Queries.UpsertAdventure(r.Context(), adventure); err != nil {
-		log.Println("failed to upsert adventure into db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+	if err := server.Queries.UpsertAdventure(c.Context(), *adventure); err != nil {
+		return fiber.ErrInternalServerError
 	}
 
-	w.WriteHeader(http.StatusOK)
+	return nil
 }
 
-func (server *Server) HandlerGetAllAdventures(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting All Adventures")
-	adventures, err := server.Queries.GetAllAdventures(r.Context())
+func (server *Server) HandlerGetAllAdventures(c *fiber.Ctx) error {
+	adventures, err := server.Queries.GetAllAdventures(c.Context())
 	if err != nil {
-		log.Println("failed to get adventures from db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(adventures); err != nil {
-		log.Println("failed to encoding adventures", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	return c.JSON(adventures)
 }
 
-func (server *Server) HandlerGetAdventure(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting Adventure")
-	adventureID, err := uuid.Parse(mux.Vars(r)["id"])
+func (server *Server) HandlerGetAdventure(c *fiber.Ctx) error {
+	adventureID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
-		log.Println("failed to convert adventure id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+		return fiber.ErrBadRequest
 	}
-	adventure, err := server.Queries.GetTrip(r.Context(), adventureID)
+	adventure, err := server.Queries.GetAdventure(c.Context(), database.GetAdventureParams{
+		ProductID: adventureID,
+		UserID:    uuid.Nil,
+	})
 	if err != nil {
-		log.Println("failed to get adventure from db", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return fiber.ErrInternalServerError
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(adventure); err != nil {
-		log.Println("failed to encoding adventure", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	return c.JSON(adventure)
 }

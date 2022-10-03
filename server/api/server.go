@@ -2,18 +2,26 @@ package api
 
 import (
 	"fmt"
+	"net/http"
 	"net/smtp"
+	"net/url"
 	"omanosaura/database"
 	"omanosaura/migrations"
 	"os"
+	"time"
 
+	"github.com/FusionAuth/go-client/pkg/fusionauth"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/jmoiron/sqlx"
 )
 
 type Server struct {
-	Email   Email
-	Queries *database.Queries
-	DB      *sqlx.DB
+	Email        Email
+	Config       Config
+	Queries      *database.Queries
+	DB           *sqlx.DB
+	FusionClient *fusionauth.FusionAuthClient
+	Store        *session.Store
 }
 
 type Email struct {
@@ -42,6 +50,21 @@ func CreateServer() (*Server, error) {
 	}
 	username := os.Getenv("EMAIL_USERNAME")
 	password := os.Getenv("EMAIL_PASSWORD")
+
+	fusionauthHost, err := url.Parse("http://fusionauth:9011")
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse fusion auth url", err)
+	}
+
+	config := Config{
+		FusionClientID:      os.Getenv("FUSION_CLIENT_ID"),
+		FusionClientSecret:  os.Getenv("FUSION_CLIENT_SECRET"),
+		FusionRedirectURI:   os.Getenv("FUSION_REDIRECT_URI"),
+		FusionApplicationID: os.Getenv("FUSION_APPLICATION_ID"),
+		FusionAPIKey:        os.Getenv("FUSION_API_KEY"),
+		Domain:              os.Getenv("DOMAIN"),
+	}
+
 	return &Server{
 		Email: Email{
 			Username: username,
@@ -50,7 +73,10 @@ func CreateServer() (*Server, error) {
 			Headers:  "MIME-version: 1.0;\nContent-Type: text/html;",
 			SmtpURL:  "smtppro.zoho.com:587",
 		},
-		Queries: database.New(db),
-		DB:      db,
+		Queries:      database.New(db),
+		DB:           db,
+		FusionClient: fusionauth.NewClient(&http.Client{Timeout: time.Second * 10}, fusionauthHost, config.FusionAPIKey),
+		Config:       config,
+		Store:        session.New(),
 	}, nil
 }

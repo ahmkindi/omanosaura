@@ -13,15 +13,6 @@ import (
 	"github.com/lib/pq"
 )
 
-const deleteProduct = `-- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1
-`
-
-func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteProduct, id)
-	return err
-}
-
 const getAllTrips = `-- name: GetAllTrips :many
 SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, trips.id, subtitle, subtitle_ar, photos FROM products NATURAL JOIN trips
 `
@@ -80,7 +71,7 @@ func (q *Queries) GetAllTrips(ctx context.Context) ([]GetAllTripsRow, error) {
 }
 
 const getTrip = `-- name: GetTrip :one
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, t.id, t.subtitle, t.subtitle_ar, t.photos, trips.id, trips.subtitle, trips.subtitle_ar, trips.photos, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone, (SELECT COUNT(*) FROM likes WHERE likes.product_id = $1) likes FROM products NATURAL JOIN (SELECT id, subtitle, subtitle_ar, photos FROM trips WHERE trips.id = $1) t
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, t.id, t.subtitle, t.subtitle_ar, t.photos, trips.id, trips.subtitle, trips.subtitle_ar, trips.photos, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone, (SELECT SUM(rating)/COUNT(*) FROM ratings WHERE ratings.product_id = $1) likes FROM products NATURAL JOIN (SELECT id, subtitle, subtitle_ar, photos FROM trips WHERE trips.id = $1) t
 INNER JOIN (SELECT product_id, user_id, review, last_updated FROM reviews WHERE product_id = $1) r ON t.id = product_id
 INNER JOIN users ON r.user_id = users.id
 `
@@ -116,7 +107,7 @@ type GetTripRow struct {
 	Firstname     string      `json:"firstname"`
 	Lastname      string      `json:"lastname"`
 	Phone         string      `json:"phone"`
-	Likes         int64       `json:"likes"`
+	Likes         int32       `json:"likes"`
 }
 
 func (q *Queries) GetTrip(ctx context.Context, productID uuid.UUID) (GetTripRow, error) {
