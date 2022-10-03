@@ -1,0 +1,16 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Dinnext, Greta, Arabic, Droid Sans, Jennah, Helvetica, Ge, SS,
+    Cocon;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
