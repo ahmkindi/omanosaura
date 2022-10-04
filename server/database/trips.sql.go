@@ -14,7 +14,7 @@ import (
 )
 
 const getAllTrips = `-- name: GetAllTrips :many
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, trips.id, subtitle, subtitle_ar, photos FROM products NATURAL JOIN trips
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_baisa, last_udpated, trips.id, subtitle, subtitle_ar, photos FROM products NATURAL JOIN trips
 `
 
 type GetAllTripsRow struct {
@@ -25,7 +25,7 @@ type GetAllTripsRow struct {
 	Description   string    `json:"description"`
 	DescriptionAr string    `json:"description_ar"`
 	Photo         string    `json:"photo"`
-	PriceOmr      float64   `json:"price_omr"`
+	PriceBaisa    int32     `json:"price_baisa"`
 	LastUdpated   time.Time `json:"last_udpated"`
 	ID_2          uuid.UUID `json:"id_2"`
 	Subtitle      string    `json:"subtitle"`
@@ -50,7 +50,7 @@ func (q *Queries) GetAllTrips(ctx context.Context) ([]GetAllTripsRow, error) {
 			&i.Description,
 			&i.DescriptionAr,
 			&i.Photo,
-			&i.PriceOmr,
+			&i.PriceBaisa,
 			&i.LastUdpated,
 			&i.ID_2,
 			&i.Subtitle,
@@ -71,7 +71,7 @@ func (q *Queries) GetAllTrips(ctx context.Context) ([]GetAllTripsRow, error) {
 }
 
 const getTrip = `-- name: GetTrip :one
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, t.id, t.subtitle, t.subtitle_ar, t.photos, trips.id, trips.subtitle, trips.subtitle_ar, trips.photos, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone, (SELECT SUM(rating)/COUNT(*) FROM ratings WHERE ratings.product_id = $1) likes FROM products NATURAL JOIN (SELECT id, subtitle, subtitle_ar, photos FROM trips WHERE trips.id = $1) t
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_baisa, last_udpated, t.id, t.subtitle, t.subtitle_ar, t.photos, trips.id, trips.subtitle, trips.subtitle_ar, trips.photos, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone, (SELECT SUM(rating)/COUNT(*) FROM ratings WHERE ratings.product_id = $1) likes FROM products NATURAL JOIN (SELECT id, subtitle, subtitle_ar, photos FROM trips WHERE trips.id = $1) t
 INNER JOIN (SELECT product_id, user_id, review, last_updated FROM reviews WHERE product_id = $1) r ON t.id = product_id
 INNER JOIN users ON r.user_id = users.id
 `
@@ -84,7 +84,7 @@ type GetTripRow struct {
 	Description   string      `json:"description"`
 	DescriptionAr string      `json:"description_ar"`
 	Photo         string      `json:"photo"`
-	PriceOmr      float64     `json:"price_omr"`
+	PriceBaisa    int32       `json:"price_baisa"`
 	LastUdpated   time.Time   `json:"last_udpated"`
 	ID_2          uuid.UUID   `json:"id_2"`
 	Subtitle      string      `json:"subtitle"`
@@ -121,7 +121,7 @@ func (q *Queries) GetTrip(ctx context.Context, productID uuid.UUID) (GetTripRow,
 		&i.Description,
 		&i.DescriptionAr,
 		&i.Photo,
-		&i.PriceOmr,
+		&i.PriceBaisa,
 		&i.LastUdpated,
 		&i.ID_2,
 		&i.Subtitle,
@@ -151,7 +151,7 @@ func (q *Queries) GetTrip(ctx context.Context, productID uuid.UUID) (GetTripRow,
 
 const upsertTrip = `-- name: UpsertTrip :exec
 WITH upsert_product AS (
-  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_omr)
+  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_baisa)
   VALUES ($1, 'T', $2, $3, $4, $5, $6, $7)
   ON CONFLICT (id) DO UPDATE SET
     title = excluded.title,
@@ -159,7 +159,7 @@ WITH upsert_product AS (
     description = excluded.description,
     description_ar = excluded.description_ar,
     photo = excluded.photo,
-    price_omr = excluded.price_omr
+    price_baisa = excluded.price_baisa
 )
 INSERT INTO trips(id, subtitle, subtitle_ar, photos)
 VALUES ($1, $8, $9, $10)
@@ -176,7 +176,7 @@ type UpsertTripParams struct {
 	Description   string    `json:"description"`
 	DescriptionAr string    `json:"description_ar"`
 	Photo         string    `json:"photo"`
-	PriceOmr      float64   `json:"price_omr"`
+	PriceBaisa    int32     `json:"price_baisa"`
 	Subtitle      string    `json:"subtitle"`
 	SubtitleAr    string    `json:"subtitle_ar"`
 	Photos        []string  `json:"photos"`
@@ -190,7 +190,7 @@ func (q *Queries) UpsertTrip(ctx context.Context, arg UpsertTripParams) error {
 		arg.Description,
 		arg.DescriptionAr,
 		arg.Photo,
-		arg.PriceOmr,
+		arg.PriceBaisa,
 		arg.Subtitle,
 		arg.SubtitleAr,
 		pq.Array(arg.Photos),

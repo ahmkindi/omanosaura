@@ -14,7 +14,7 @@ import (
 )
 
 const getAdventure = `-- name: GetAdventure :one
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, a.id, a.available_dates, adventures.id, adventures.available_dates, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone,
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_baisa, last_udpated, a.id, a.available_dates, adventures.id, adventures.available_dates, r.product_id, r.user_id, r.review, r.last_updated, reviews.product_id, reviews.user_id, reviews.review, reviews.last_updated, users.id, email, firstname, lastname, phone,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
 (SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
@@ -37,7 +37,7 @@ type GetAdventureRow struct {
 	Description      string      `json:"description"`
 	DescriptionAr    string      `json:"description_ar"`
 	Photo            string      `json:"photo"`
-	PriceOmr         float64     `json:"price_omr"`
+	PriceBaisa       int32       `json:"price_baisa"`
 	LastUdpated      time.Time   `json:"last_udpated"`
 	ID_2             uuid.UUID   `json:"id_2"`
 	AvailableDates   []time.Time `json:"available_dates"`
@@ -73,7 +73,7 @@ func (q *Queries) GetAdventure(ctx context.Context, arg GetAdventureParams) (Get
 		&i.Description,
 		&i.DescriptionAr,
 		&i.Photo,
-		&i.PriceOmr,
+		&i.PriceBaisa,
 		&i.LastUdpated,
 		&i.ID_2,
 		pq.Array(&i.AvailableDates),
@@ -101,7 +101,7 @@ func (q *Queries) GetAdventure(ctx context.Context, arg GetAdventureParams) (Get
 }
 
 const getAllAdventures = `-- name: GetAllAdventures :many
-SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_omr, last_udpated, adventures.id, available_dates, l.rating, l.product_id, ratings.product_id, user_id, created_at, ratings.rating
+SELECT products.id, kind, title, title_ar, description, description_ar, photo, price_baisa, last_udpated, adventures.id, available_dates, l.rating, l.product_id, ratings.product_id, user_id, created_at, ratings.rating
 FROM products NATURAL JOIN adventures
 INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id
 `
@@ -114,7 +114,7 @@ type GetAllAdventuresRow struct {
 	Description    string      `json:"description"`
 	DescriptionAr  string      `json:"description_ar"`
 	Photo          string      `json:"photo"`
-	PriceOmr       float64     `json:"price_omr"`
+	PriceBaisa     int32       `json:"price_baisa"`
 	LastUdpated    time.Time   `json:"last_udpated"`
 	ID_2           uuid.UUID   `json:"id_2"`
 	AvailableDates []time.Time `json:"available_dates"`
@@ -143,7 +143,7 @@ func (q *Queries) GetAllAdventures(ctx context.Context) ([]GetAllAdventuresRow, 
 			&i.Description,
 			&i.DescriptionAr,
 			&i.Photo,
-			&i.PriceOmr,
+			&i.PriceBaisa,
 			&i.LastUdpated,
 			&i.ID_2,
 			pq.Array(&i.AvailableDates),
@@ -169,7 +169,7 @@ func (q *Queries) GetAllAdventures(ctx context.Context) ([]GetAllAdventuresRow, 
 
 const upsertAdventure = `-- name: UpsertAdventure :exec
 WITH upsert_product AS (
-  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_omr)
+  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_baisa)
   VALUES ($1, 'A', $2, $3, $4, $5, $6, $7)
   ON CONFLICT (id) DO UPDATE SET
     title = excluded.title,
@@ -177,7 +177,7 @@ WITH upsert_product AS (
     description = excluded.description,
     description_ar = excluded.description_ar,
     photo = excluded.photo,
-    price_omr = excluded.price_omr
+    price_baisa = excluded.price_baisa
 )
 INSERT INTO adventures(id, available_dates)
 VALUES ($1, $8)
@@ -192,7 +192,7 @@ type UpsertAdventureParams struct {
 	Description    string      `json:"description"`
 	DescriptionAr  string      `json:"description_ar"`
 	Photo          string      `json:"photo"`
-	PriceOmr       float64     `json:"price_omr"`
+	PriceBaisa     int32       `json:"price_baisa"`
 	AvailableDates []time.Time `json:"available_dates"`
 }
 
@@ -204,7 +204,7 @@ func (q *Queries) UpsertAdventure(ctx context.Context, arg UpsertAdventureParams
 		arg.Description,
 		arg.DescriptionAr,
 		arg.Photo,
-		arg.PriceOmr,
+		arg.PriceBaisa,
 		pq.Array(arg.AvailableDates),
 	)
 	return err

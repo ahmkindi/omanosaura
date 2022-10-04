@@ -1,5 +1,11 @@
 package api
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type Contact struct {
 	Name    string
 	Email   string
@@ -8,15 +14,20 @@ type Contact struct {
 }
 
 type Config struct {
-	FusionClientID      string
-	FusionClientSecret  string
-	FusionRedirectURI   string
-	FusionApplicationID string
-	FusionAPIKey        string
-	Domain              string
+	FusionClientID        string
+	FusionClientSecret    string
+	FusionRedirectURI     string
+	FusionApplicationID   string
+	FusionAPIKey          string
+	ThawaniAPIKey         string
+	ThawaniBaseUrl        string
+	ThawaniPublishableKey string
+	Domain                string
 }
 
-type IntrospectReq struct {
-	ClientID string `json:"client_id"`
-	Token    string `json:"token"`
+type PurchaseProductReq struct {
+	ProductID  uuid.UUID `json:"product_id"`
+	Quantity   int       `json:"quantity"`
+	ChosenDate time.Time `json:"chosen_date"`
+	Cash       bool      `json:"cash"`
 }

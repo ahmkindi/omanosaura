@@ -17,31 +17,32 @@ func main() {
 
 	app := fiber.New()
 	app.Post("/send", server.HandlerSendEmail)
+	app.Get("/login", server.HandlerUserLogin)
+	app.Get("/oauth-callback", server.HandlerOauthCallback)
+	app.Get("/logout", server.HandlerLogout)
+
+	users := app.Group("/user", server.UserMiddleware)
+	users.Get("/", server.HandlerGetUser)
 
 	// trips
-	app.Get("/trips/:id", server.HandlerGetTrip)
-	app.Get("/trips", server.HandlerGetAllTrips)
-	app.Post("/trips", server.HandlerUpsertTrip)
+	users.Get("/trips/:id", server.HandlerGetTrip)
+	users.Get("/trips", server.HandlerGetAllTrips)
 
 	// adventures
-	app.Get("/adventures/:id", server.HandlerGetAdventure)
-	app.Get("/adventures", server.HandlerGetAllAdventures)
-	app.Post("/adventures", server.HandlerUpsertAdventure)
+	users.Get("/adventures/:id", server.HandlerGetAdventure)
+	users.Get("/adventures", server.HandlerGetAllAdventures)
 
 	// products
-	app.Post("/products/:id/rate", server.HandlerRateProduct)
-	app.Post("/products/:id/review", server.HandlerReviewProduct)
-	app.Post("/products/:id/review", server.HandlerDeleteReviewProduct)
-	app.Delete("/product/:id", server.HandlerDeleteProduct)
+	users.Post("/products/rate", server.HandlerRateProduct)
+	users.Post("/products/review", server.HandlerReviewProduct)
+	users.Post("/products/:id/review", server.HandlerDeleteReviewProduct)
+	users.Post("/products/purchase", server.HandlerPurchaseProduct)
+	users.Post("/purchase/success/:id", server.HandlerPurchaseSuccess)
 
-	// protected.HandleFunc("/product/{id}/purchases", server.HandlerGetProductPurchases).Methods("GET")
-	// protected.HandleFunc("/product/purchases", server.HandlerGetAllPurchases).Methods("GET")
-	// protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
-
-	app.Get("/user", server.HandlerGetUser)
-	app.Get("/user/login", server.HandlerUserLogin)
-	app.Get("/oauth-callback", server.HandlerOauthCallback)
-	app.Get("/test", server.AddUserToContextMiddleWare)
+	admin := users.Group("/admin", server.AdminMiddleware)
+	admin.Delete("/product/:id", server.HandlerDeleteProduct)
+	admin.Post("/trips", server.HandlerUpsertTrip)
+	admin.Post("/adventures", server.HandlerUpsertAdventure)
 
 	app.Listen(":8081")
 }

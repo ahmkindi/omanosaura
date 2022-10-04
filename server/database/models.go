@@ -23,15 +23,17 @@ type Product struct {
 	Description   string    `json:"description"`
 	DescriptionAr string    `json:"description_ar"`
 	Photo         string    `json:"photo"`
-	PriceOmr      float64   `json:"price_omr"`
+	PriceBaisa    int32     `json:"price_baisa"`
 	LastUdpated   time.Time `json:"last_udpated"`
 }
 
 type Purchase struct {
+	ID                uuid.UUID `json:"id"`
 	ProductID         uuid.UUID `json:"product_id"`
 	UserID            uuid.UUID `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
+	CostBaisa         int32     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
 	CreatedAt         time.Time `json:"created_at"`
 }
@@ -63,4 +65,9 @@ type User struct {
 	Firstname string      `json:"firstname"`
 	Lastname  string      `json:"lastname"`
 	Phone     string      `json:"phone"`
+}
+
+type UserCustomerID struct {
+	UserID     uuid.UUID `json:"user_id"`
+	CustomerID string    `json:"customer_id"`
 }

@@ -1,6 +1,6 @@
 -- name: UpsertTrip :exec
 WITH upsert_product AS (
-  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_omr)
+  INSERT INTO products(id, kind, title, title_ar, description, description_ar, photo, price_baisa)
   VALUES ($1, 'T', $2, $3, $4, $5, $6, $7)
   ON CONFLICT (id) DO UPDATE SET
     title = excluded.title,
@@ -8,7 +8,7 @@ WITH upsert_product AS (
     description = excluded.description,
     description_ar = excluded.description_ar,
     photo = excluded.photo,
-    price_omr = excluded.price_omr
+    price_baisa = excluded.price_baisa
 )
 INSERT INTO trips(id, subtitle, subtitle_ar, photos)
 VALUES ($1, $8, $9, $10)
