@@ -1,4 +1,4 @@
-FROM golang:1.16.5 as development
+FROM golang:1.19.1 as development
 # Add a work directory
 WORKDIR /app
 
@@ -16,7 +16,7 @@ EXPOSE 8081
 # Start app
 CMD reflex -g '*.go' go run main.go --start-service
 
-FROM golang:1.16.5 as builder
+FROM golang:1.19.1 as builder
 # Define build env
 ENV GOOS linux
 ENV CGO_ENABLED 0

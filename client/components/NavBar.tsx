@@ -1,7 +1,15 @@
 import React from 'react'
+import useUser from '../hooks/useUser'
 
 const NavBar = () => {
-  return <div>NavBar</div>
+  const { user, isLoading, login } = useUser()
+  if (isLoading) {
+    return null
+  }
+  if (user) {
+    return <div>{user.email}</div>
+  }
+  return <div onClick={() => login('')}>Login</div>
 }
 
 export default NavBar

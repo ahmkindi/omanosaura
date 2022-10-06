@@ -19,10 +19,10 @@ func main() {
 	app.Post("/send", server.HandlerSendEmail)
 	app.Get("/login", server.HandlerUserLogin)
 	app.Get("/oauth-callback", server.HandlerOauthCallback)
-	app.Get("/logout", server.HandlerLogout)
 
 	users := app.Group("/user", server.UserMiddleware)
 	users.Get("/", server.HandlerGetUser)
+	users.Get("/logout", server.HandlerLogout)
 
 	// trips
 	users.Get("/trips/:id", server.HandlerGetTrip)

@@ -22,7 +22,7 @@ type Config struct {
 	ThawaniAPIKey         string
 	ThawaniBaseUrl        string
 	ThawaniPublishableKey string
-	Domain                string
+	BaseUrl               string
 }
 
 type PurchaseProductReq struct {

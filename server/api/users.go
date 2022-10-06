@@ -20,11 +20,14 @@ func (server *Server) HandlerGetUser(c *fiber.Ctx) error {
 
 func (server *Server) HandlerUserLogin(c *fiber.Ctx) error {
 
-	redirectTo := fmt.Sprintf(`http://%s:9011/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code`,
-		server.Config.Domain,
+	redirectTo := fmt.Sprintf(`%s/auth/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code`,
+		server.Config.BaseUrl,
 		server.Config.FusionClientID,
 		server.Config.FusionRedirectURI)
 
+	fmt.Print(redirectTo)
+
+	// return c.Redirect("http://localhost:9011/oauth2/authorize?client_id=0e1173ec-ea7f-444b-a60c-0585b592a903&redirect_uri=http://localhost:3000/api/oauth-callback&response_type=code")
 	return c.Redirect(redirectTo)
 }
 
@@ -78,8 +81,8 @@ func (server *Server) HandlerLogout(c *fiber.Ctx) error {
 	}
 
 	sess.Destroy()
-	return c.Redirect(fmt.Sprintf("http://%s:9011/oauth2/logout?client_id=%s",
-		server.Config.Domain,
+	return c.Redirect(fmt.Sprintf("%s/auth/oauth2/logout?client_id=%s",
+		server.Config.BaseUrl,
 		server.Config.FusionClientID,
 	))
 }

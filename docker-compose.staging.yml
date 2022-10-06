@@ -1,19 +1,20 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  web:
-    container_name: web-prod
-    image: web-prod
+  client:
+    image: omanosaura-client-prod
     build:
-      context: ./web/
-      target: production
+      context: ./client/
+      target: runner
+
+  nginx:
+    image: omanosaura-nginx-prod
+    build: ./client/nginx
     ports:
       - 80:80
-    depends_on:
-      - server
+
   server:
-    container_name: server-prod
-    image: server-prod
+    image: omanosaura-server-prod
     build:
       context: ./server/
       target: production
@@ -23,10 +24,40 @@ services:
       - 8081:8081
     depends_on:
       - db
+      - fusionauth
+
   db:
     image: postgres:13.2-alpine
-    container_name: db-prod
     ports:
       - 5432:5432
     env_file:
       - .env
+
+  fusiondb:
+    image: postgres:13.2-alpine
+    env_file:
+      - .env
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  fusionauth:
+    image: fusionauth/fusionauth-app:1.40.2
+    depends_on:
+      fusiondb:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://fusiondb:5432/fusionauth
+      DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      FUSIONAUTH_APP_RUNTIME_MODE: production
+      FUSIONAUTH_APP_URL: http://fusionauth:9011
+      SEARCH_TYPE: database
+    restart: unless-stopped
+    ports:
+      - 9011:9011

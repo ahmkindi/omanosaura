@@ -62,7 +62,7 @@ func CreateServer() (*Server, error) {
 		ThawaniAPIKey:         os.Getenv("THAWANI_API_KEY"),
 		ThawaniBaseUrl:        os.Getenv("THAWANI_BASE_URL"),
 		ThawaniPublishableKey: os.Getenv("THAWANI_PUBLISHABLE_KEY"),
-		Domain:                os.Getenv("DOMAIN"),
+		BaseUrl:               os.Getenv("BASE_URL"),
 	}
 
 	fusionauthHost, err := url.Parse("http://fusionauth:9011")
