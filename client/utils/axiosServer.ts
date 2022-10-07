@@ -2,7 +2,7 @@ import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
 
 const axiosServer = applyConverters(
-  axiosStatic.create({ baseURL: '/api/' }) as any
+  axiosStatic.create({ baseURL: '/server/' }) as any
 ) as AxiosInstance
 
 export const fetcher = async <T>(url: string) => {

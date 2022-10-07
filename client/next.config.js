@@ -7,7 +7,7 @@ const nextConfig = {
   rewrites: () => {
     return [
       {
-        source: '/api/:path*',
+        source: '/server/:path*',
         destination: 'http://server:8081/:path*',
       },
       {

@@ -1,23 +1,22 @@
+import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import { User } from '../types/requests'
 import axiosServer, { fetcher } from '../utils/axiosServer'
 
 const useUser = () => {
-  const { data, error, mutate } = useSWR('user', fetcher<User>)
+  const { data, error } = useSWR('user', fetcher<User>)
+  const router = useRouter()
 
   return {
     user: data,
     isLoading: !data && !error,
-    logout: async (redirectUri: string) => {
-        console.log(redirectUri)
-        await axiosServer.get(`logout`)
-        await mutate()
+    logout: async () => {
+        const response = await axiosServer.get(`user/logout?redirect=${router.pathname}`)
+        router.push(response.request.responseURL)
       },
-    login: async (redirectUri: string) => {
-        console.log(redirectUri)
-        const response = await axiosServer.get(`login`)
-        console.log(response.request.responseURL)
-        await mutate()
+    login: async () => {
+        const response = await axiosServer.get(`login?redirect=${router.pathname}`)
+        router.push(response.request.responseURL)
       }
   }
 }

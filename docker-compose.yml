@@ -6,6 +6,10 @@ services:
       context: ./client/nginx/
     ports:
       - 80:80
+    depends_on:
+      - client
+      - server
+      - fusionauth
 
   client:
     build:

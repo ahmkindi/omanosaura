@@ -56,7 +56,6 @@ func CreateServer() (*Server, error) {
 	config := Config{
 		FusionClientID:        os.Getenv("FUSION_CLIENT_ID"),
 		FusionClientSecret:    os.Getenv("FUSION_CLIENT_SECRET"),
-		FusionRedirectURI:     os.Getenv("FUSION_REDIRECT_URI"),
 		FusionApplicationID:   os.Getenv("FUSION_APPLICATION_ID"),
 		FusionAPIKey:          os.Getenv("FUSION_API_KEY"),
 		ThawaniAPIKey:         os.Getenv("THAWANI_API_KEY"),

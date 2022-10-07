@@ -20,14 +20,13 @@ func (server *Server) HandlerGetUser(c *fiber.Ctx) error {
 
 func (server *Server) HandlerUserLogin(c *fiber.Ctx) error {
 
-	redirectTo := fmt.Sprintf(`%s/auth/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code`,
+	redirectTo := fmt.Sprintf(`%s/fa/oauth2/authorize?client_id=%s&redirect_uri=%s/server/oauth-callback&response_type=code`,
 		server.Config.BaseUrl,
 		server.Config.FusionClientID,
-		server.Config.FusionRedirectURI)
+		server.Config.BaseUrl)
 
 	fmt.Print(redirectTo)
 
-	// return c.Redirect("http://localhost:9011/oauth2/authorize?client_id=0e1173ec-ea7f-444b-a60c-0585b592a903&redirect_uri=http://localhost:3000/api/oauth-callback&response_type=code")
 	return c.Redirect(redirectTo)
 }
 
@@ -36,7 +35,7 @@ func (server *Server) HandlerOauthCallback(c *fiber.Ctx) error {
 		c.Query("code"),
 		server.Config.FusionClientID,
 		server.Config.FusionClientSecret,
-		server.Config.FusionRedirectURI,
+		fmt.Sprintf("%s/server/oauth-callback", server.Config.BaseUrl),
 	)
 	if err != nil || fusionErr != nil {
 		return fiber.ErrInternalServerError
@@ -71,7 +70,7 @@ func (server *Server) HandlerOauthCallback(c *fiber.Ctx) error {
 		Phone:     user.User.MobilePhone,
 	})
 
-	return c.Redirect("http://localhost:3000")
+	return c.Redirect(server.Config.BaseUrl)
 }
 
 func (server *Server) HandlerLogout(c *fiber.Ctx) error {
@@ -81,7 +80,7 @@ func (server *Server) HandlerLogout(c *fiber.Ctx) error {
 	}
 
 	sess.Destroy()
-	return c.Redirect(fmt.Sprintf("%s/auth/oauth2/logout?client_id=%s",
+	return c.Redirect(fmt.Sprintf("%s/fa/oauth2/logout?client_id=%s",
 		server.Config.BaseUrl,
 		server.Config.FusionClientID,
 	))

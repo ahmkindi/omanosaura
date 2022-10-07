@@ -16,7 +16,6 @@ type Contact struct {
 type Config struct {
 	FusionClientID        string
 	FusionClientSecret    string
-	FusionRedirectURI     string
 	FusionApplicationID   string
 	FusionAPIKey          string
 	ThawaniAPIKey         string
