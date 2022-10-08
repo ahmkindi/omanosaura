@@ -13,30 +13,3 @@ const NavBar = () => {
 }
 
 export default NavBar
-
-/* import { signIn, useSession } from 'next-auth/react' */
-/* import React from 'react' */
-/**/
-/* const NavBar = () => { */
-/*   const { data: session, status } = useSession() */
-/**/
-/*   if (status === 'loading') { */
-/*     return null */
-/*   } */
-/*   if (session) { */
-/*     return <div>{session.user?.name}</div> */
-/*   } */
-/*   return ( */
-/*     <a */
-/*       href={`/api/auth/signin`} */
-/*       onClick={(e) => { */
-/*         e.preventDefault() */
-/*         signIn() */
-/*       }} */
-/*     > */
-/*       Sign in */
-/*     </a> */
-/*   ) */
-/* } */
-/**/
-/* export default NavBar */

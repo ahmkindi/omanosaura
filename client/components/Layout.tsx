@@ -24,8 +24,10 @@ export const Layout = (props: LayoutProps): JSX.Element => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <NavBar />
-      <main className={styles.children}>{props.children}</main>
+      <div className={styles.nonFooter}>
+        <NavBar />
+        <main className={styles.children}>{props.children}</main>
+      </div>
       <Footer />
     </div>
   )

@@ -1,0 +1,22 @@
+.layout {
+  /* max-width: 80vw; */
+  /* margin: auto; */
+  text-align: center;
+  background-color: red;
+  max-width: 1250px;
+  margin: auto;
+  position: relative;
+  min-height: 100vh;
+}
+
+.nonFooter {
+  paddin-bottom: var(--footer-height);
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: var(--footer-height);
+  background-color: green;
+}
