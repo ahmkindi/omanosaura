@@ -4,6 +4,7 @@ import styles from '../styles/Layout.module.css'
 import NavBar from './NavBar'
 import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
+import { createStyles } from '@mantine/core'
 
 type LayoutProps = {
   title?: string
@@ -11,11 +12,25 @@ type LayoutProps = {
   children?: ReactNode
 }
 
+const useStyles = createStyles(() => ({
+  layout: {
+    textAlign: 'center',
+    maxWidth: '1250px',
+    margin: 'auto',
+    position: 'relative',
+    minHeight: '100vh',
+  },
+  nonFooter: {
+    paddingBottom: 'var(--footer-height)',
+  },
+}))
+
 export const Layout = (props: LayoutProps): JSX.Element => {
-  const { t, lang } = useTranslation()
+  const { t } = useTranslation()
+  const { classes } = useStyles()
 
   return (
-    <div className={styles.layout} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <div className={classes.layout}>
       <Head>
         <title>{props.title ?? t('common:company')}</title>
         <meta

@@ -5,8 +5,10 @@ import React from 'react'
 import useUser from '../hooks/useUser'
 import { navOptions } from '../types/values'
 import styles from '../styles/NavBar.module.css'
-import FaUserCircle from 'react-icons/fa'
+import { ActionIcon, Avatar, Button, Group, Stack } from '@mantine/core'
 import Image from 'next/image'
+import { NextLink } from '@mantine/next'
+import { IconUserCircle } from '@tabler/icons'
 
 const NavBar = () => {
   const { user, isLoading, login, logout } = useUser()
@@ -16,46 +18,43 @@ const NavBar = () => {
   const isAr = lang === 'ar'
 
   return (
-    <nav className={styles.nav}>
+    <Group
+      position="apart"
+      sx={{
+        paddingTop: '1rem',
+      }}
+    >
       <Image
-        src={isAr ? 'arabic_logo.svg' : 'main_logo.svg'}
+        src={isAr ? '/logo_ar.png' : '/main_logo.png'}
         alt="Omanosaura Logo"
-        width={210}
+        width={414.54}
+        height={111.36}
       />
-      <div>
-        <div>
-          <ButtonGroup
-            className={styles.langButtonGroup}
-            aria-label="Basic example"
-            style={{ direction: 'ltr' }}
-          >
-            <Button
-              className={isAr ? styles.langButtonActive : styles.langButton}
-              onClick={() => changeLocale('ar')}
-            >
-              AR
+      <Stack>
+        <Group position="right">
+          <ActionIcon variant="transparent" size="lg" color={'orange'}>
+            <IconUserCircle size={'lg'} />
+          </ActionIcon>
+          <Link href="" locale={lang === 'ar' ? 'en' : 'ar'} passHref>
+            <Button variant="subtle" color="orange" size="lg">
+              {t('language')}
             </Button>
-            <Button
-              className={!isAr ? styles.langButtonActive : styles.langButton}
-              onClick={() => changeLocale('en')}
-            >
-              EN
-            </Button>
-          </ButtonGroup>
-        </div>
+          </Link>
+        </Group>
         <div>
           {navOptions.map((o) => (
-            <Link
-              key={o}
-              href={o}
-              className={pathname === o ? styles.navActive : styles.navInactive}
-            >
-              {t('trips')}
+            <Link key={o} href={`/${o}`} passHref>
+              <Button
+                size="lg"
+                variant={pathname === `/${o}` ? 'filled' : 'subtle'}
+              >
+                {t('trips')}
+              </Button>
             </Link>
           ))}
         </div>
-      </div>
-    </nav>
+      </Stack>
+    </Group>
   )
 }
 
