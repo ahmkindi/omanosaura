@@ -66,12 +66,12 @@ func CreateServer() (*Server, error) {
 
 	fusionauthHost, err := url.Parse("http://fusionauth:9011")
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse fusion auth url", err)
+		return nil, fmt.Errorf("failed to parse fusion auth url: %w", err)
 	}
 
 	thawaniHost, err := url.Parse(config.ThawaniBaseUrl)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse thawani url", err)
+		return nil, fmt.Errorf("failed to parse thawani url: %w", err)
 	}
 
 	return &Server{

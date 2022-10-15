@@ -24,25 +24,17 @@ func main() {
 	users.Get("/", server.HandlerGetUser)
 	users.Get("/logout", server.HandlerLogout)
 
-	// trips
-	users.Get("/trips/:id", server.HandlerGetTrip)
-	users.Get("/trips", server.HandlerGetAllTrips)
-
-	// adventures
-	users.Get("/adventures/:id", server.HandlerGetAdventure)
-	users.Get("/adventures", server.HandlerGetAllAdventures)
-
-	// products
+	users.Get("/products", server.HandlerGetAllProducts)
 	users.Post("/products/rate", server.HandlerRateProduct)
 	users.Post("/products/review", server.HandlerReviewProduct)
-	users.Post("/products/:id/review", server.HandlerDeleteReviewProduct)
 	users.Post("/products/purchase", server.HandlerPurchaseProduct)
 	users.Post("/purchase/success/:id", server.HandlerPurchaseSuccess)
+	users.Get("/products/:id", server.HandlerGetProduct)
+	users.Post("/products/:id/review", server.HandlerDeleteReviewProduct)
 
 	admin := users.Group("/admin", server.AdminMiddleware)
-	admin.Delete("/product/:id", server.HandlerDeleteProduct)
-	admin.Post("/trips", server.HandlerUpsertTrip)
-	admin.Post("/adventures", server.HandlerUpsertAdventure)
+	admin.Delete("/products/:id", server.HandlerDeleteProduct)
+	admin.Post("/products", server.HandlerUpsertProduct)
 
 	app.Listen(":8081")
 }

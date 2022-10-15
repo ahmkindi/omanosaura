@@ -10,26 +10,25 @@ import (
 	"github.com/google/uuid"
 )
 
-type Adventure struct {
-	ID             uuid.UUID   `json:"id"`
-	AvailableDates []time.Time `json:"available_dates"`
-}
-
 type Product struct {
-	ID            uuid.UUID `json:"id"`
-	Kind          string    `json:"kind"`
-	Title         string    `json:"title"`
-	TitleAr       string    `json:"title_ar"`
-	Description   string    `json:"description"`
-	DescriptionAr string    `json:"description_ar"`
-	Photo         string    `json:"photo"`
-	PriceBaisa    int32     `json:"price_baisa"`
-	LastUdpated   time.Time `json:"last_udpated"`
+	ID            string      `json:"id"`
+	Kind          string      `json:"kind"`
+	Title         string      `json:"title"`
+	TitleAr       string      `json:"title_ar"`
+	Subtitle      string      `json:"subtitle"`
+	SubtitleAr    string      `json:"subtitle_ar"`
+	Description   string      `json:"description"`
+	DescriptionAr string      `json:"description_ar"`
+	Photo         string      `json:"photo"`
+	PriceBaisa    int32       `json:"price_baisa"`
+	PlannedDates  []time.Time `json:"planned_dates"`
+	Photos        []string    `json:"photos"`
+	LastUpdated   time.Time   `json:"last_updated"`
 }
 
 type Purchase struct {
 	ID                uuid.UUID `json:"id"`
-	ProductID         uuid.UUID `json:"product_id"`
+	ProductID         string    `json:"product_id"`
 	UserID            uuid.UUID `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
@@ -39,24 +38,17 @@ type Purchase struct {
 }
 
 type Rating struct {
-	ProductID uuid.UUID `json:"product_id"`
+	ProductID string    `json:"product_id"`
 	UserID    uuid.UUID `json:"user_id"`
 	CreatedAt time.Time `json:"created_at"`
 	Rating    float64   `json:"rating"`
 }
 
 type Review struct {
-	ProductID   uuid.UUID `json:"product_id"`
+	ProductID   string    `json:"product_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	Review      string    `json:"review"`
 	LastUpdated time.Time `json:"last_updated"`
-}
-
-type Trip struct {
-	ID         uuid.UUID `json:"id"`
-	Subtitle   string    `json:"subtitle"`
-	SubtitleAr string    `json:"subtitle_ar"`
-	Photos     []string  `json:"photos"`
 }
 
 type User struct {

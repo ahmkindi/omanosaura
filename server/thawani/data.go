@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"omanosaura/thawani/types/mode"
+	"omanosaura/thawani/types/paymentstatus"
 
 	"github.com/google/uuid"
 )
@@ -41,9 +42,12 @@ type CustomerData struct {
 }
 
 type SessionData struct {
-	SessionId         string `json:"session_id"`
-	ClientReferenceId string `json:"client_reference_id"`
-	CustomerId        string `json:"customer_id"`
+	SessionId         string             `json:"session_id"`
+	ClientReferenceId string             `json:"client_reference_id"`
+	CustomerId        string             `json:"customer_id"`
+	Products          []Product          `json:"products"`
+	TotalAmount       int                `json:"total_amount"`
+	PaymentStatus     paymentstatus.Type `json:"payment_status"`
 }
 
 type BasicResponse struct {
@@ -61,7 +65,8 @@ type CreateCustomerResp struct {
 	Data CustomerData `json:"data"`
 }
 
-type CreateSessionResp struct {
+type Session struct {
 	BasicResponse
-	Data SessionData `json:"data"`
+	Data     SessionData `json:"data"`
+	Metadata interface{} `json:"metadata"`
 }

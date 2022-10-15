@@ -38,7 +38,7 @@ func (c *ThawaniClient) CreateCustomer(body CreateCustomerReq) (resp *CreateCust
 	return resp, err
 }
 
-func (c *ThawaniClient) CreateSession(body CreateSessionReq) (resp *CreateSessionResp, redirectTo string, error error) {
+func (c *ThawaniClient) CreateSession(body CreateSessionReq) (resp *Session, redirectTo string, error error) {
 	req, err := c.newRequest("POST", "/api/v1/checkout/session", body)
 	if err != nil {
 		return nil, redirectTo, err
@@ -46,6 +46,16 @@ func (c *ThawaniClient) CreateSession(body CreateSessionReq) (resp *CreateSessio
 
 	_, err = c.do(req, &resp)
 	return resp, fmt.Sprintf("%s/pay/%s?key=%s", c.BaseURL.String(), resp.Data.SessionId, c.PublishableKey), err
+}
+
+func (c *ThawaniClient) GetSessionByClientReference(clientReference string) (resp *Session, error error) {
+	req, err := c.newRequest("GET", fmt.Sprintf("/api/v1/checkout/reference/%s", clientReference), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = c.do(req, &resp)
+	return resp, err
 }
 
 func (c *ThawaniClient) newRequest(method, path string, body interface{}) (*http.Request, error) {

@@ -10,13 +10,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 const deleteProduct = `-- name: DeleteProduct :exec
 DELETE FROM products WHERE id = $1
 `
 
-func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
+func (q *Queries) DeleteProduct(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, deleteProduct, id)
 	return err
 }
@@ -26,7 +27,7 @@ DELETE FROM reviews WHERE product_id = $1 AND user_id = $2
 `
 
 type DeleteProductReviewParams struct {
-	ProductID uuid.UUID `json:"product_id"`
+	ProductID string    `json:"product_id"`
 	UserID    uuid.UUID `json:"user_id"`
 }
 
@@ -35,25 +36,220 @@ func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductRevi
 	return err
 }
 
-const getProduct = `-- name: GetProduct :one
-SELECT id, kind, title, title_ar, description, description_ar, photo, price_baisa, last_udpated FROM products WHERE id = $1
+const getAllProducts = `-- name: GetAllProducts :many
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated, l.rating, l.product_id, ratings.product_id, user_id, created_at, ratings.rating
+FROM products
+INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id
 `
 
-func (q *Queries) GetProduct(ctx context.Context, id uuid.UUID) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getProduct, id)
+type GetAllProductsRow struct {
+	ID            string      `json:"id"`
+	Kind          string      `json:"kind"`
+	Title         string      `json:"title"`
+	TitleAr       string      `json:"title_ar"`
+	Subtitle      string      `json:"subtitle"`
+	SubtitleAr    string      `json:"subtitle_ar"`
+	Description   string      `json:"description"`
+	DescriptionAr string      `json:"description_ar"`
+	Photo         string      `json:"photo"`
+	PriceBaisa    int32       `json:"price_baisa"`
+	PlannedDates  []time.Time `json:"planned_dates"`
+	Photos        []string    `json:"photos"`
+	LastUpdated   time.Time   `json:"last_updated"`
+	Rating        int32       `json:"rating"`
+	ProductID     string      `json:"product_id"`
+	ProductID_2   string      `json:"product_id_2"`
+	UserID        uuid.UUID   `json:"user_id"`
+	CreatedAt     time.Time   `json:"created_at"`
+	Rating_2      float64     `json:"rating_2"`
+}
+
+func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllProducts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetAllProductsRow{}
+	for rows.Next() {
+		var i GetAllProductsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Kind,
+			&i.Title,
+			&i.TitleAr,
+			&i.Subtitle,
+			&i.SubtitleAr,
+			&i.Description,
+			&i.DescriptionAr,
+			&i.Photo,
+			&i.PriceBaisa,
+			pq.Array(&i.PlannedDates),
+			pq.Array(&i.Photos),
+			&i.LastUpdated,
+			&i.Rating,
+			&i.ProductID,
+			&i.ProductID_2,
+			&i.UserID,
+			&i.CreatedAt,
+			&i.Rating_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getBasicProduct = `-- name: GetBasicProduct :one
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated FROM products WHERE id = $1
+`
+
+func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getBasicProduct, id)
 	var i Product
 	err := row.Scan(
 		&i.ID,
 		&i.Kind,
 		&i.Title,
 		&i.TitleAr,
+		&i.Subtitle,
+		&i.SubtitleAr,
 		&i.Description,
 		&i.DescriptionAr,
 		&i.Photo,
 		&i.PriceBaisa,
-		&i.LastUdpated,
+		pq.Array(&i.PlannedDates),
+		pq.Array(&i.Photos),
+		&i.LastUpdated,
 	)
 	return i, err
+}
+
+const getProduct = `-- name: GetProduct :one
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated,
+(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
+(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
+(SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
+(SELECT COUNT(*) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
+(SELECT rating FROM ratings r WHERE r.product_id = $1 AND r.user_id=$2) rating
+FROM products
+`
+
+type GetProductParams struct {
+	ProductID string    `json:"product_id"`
+	UserID    uuid.UUID `json:"user_id"`
+}
+
+type GetProductRow struct {
+	ID            string      `json:"id"`
+	Kind          string      `json:"kind"`
+	Title         string      `json:"title"`
+	TitleAr       string      `json:"title_ar"`
+	Subtitle      string      `json:"subtitle"`
+	SubtitleAr    string      `json:"subtitle_ar"`
+	Description   string      `json:"description"`
+	DescriptionAr string      `json:"description_ar"`
+	Photo         string      `json:"photo"`
+	PriceBaisa    int32       `json:"price_baisa"`
+	PlannedDates  []time.Time `json:"planned_dates"`
+	Photos        []string    `json:"photos"`
+	LastUpdated   time.Time   `json:"last_updated"`
+	Purchases     int64       `json:"purchases"`
+	UserPurchases int64       `json:"user_purchases"`
+	Rating        int32       `json:"rating"`
+	RatingCount   int64       `json:"rating_count"`
+	Rating_2      float64     `json:"rating_2"`
+}
+
+func (q *Queries) GetProduct(ctx context.Context, arg GetProductParams) (GetProductRow, error) {
+	row := q.db.QueryRowContext(ctx, getProduct, arg.ProductID, arg.UserID)
+	var i GetProductRow
+	err := row.Scan(
+		&i.ID,
+		&i.Kind,
+		&i.Title,
+		&i.TitleAr,
+		&i.Subtitle,
+		&i.SubtitleAr,
+		&i.Description,
+		&i.DescriptionAr,
+		&i.Photo,
+		&i.PriceBaisa,
+		pq.Array(&i.PlannedDates),
+		pq.Array(&i.Photos),
+		&i.LastUpdated,
+		&i.Purchases,
+		&i.UserPurchases,
+		&i.Rating,
+		&i.RatingCount,
+		&i.Rating_2,
+	)
+	return i, err
+}
+
+const getProductReviews = `-- name: GetProductReviews :many
+SELECT r.product_id, r.user_id, r.review, r.last_updated, rating FROM products
+INNER JOIN (SELECT product_id, user_id, review, last_updated FROM reviews WHERE reviews.product_id = $1 AND reviews.user_id = $2) r ON id = r.product_id
+INNER JOIN ratings ON r.user_id = ratings.user_id AND r.product_id = ratings.product_id
+ORDER BY last_updated
+LIMIT $3
+OFFSET $4
+`
+
+type GetProductReviewsParams struct {
+	ProductID string    `json:"product_id"`
+	UserID    uuid.UUID `json:"user_id"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
+}
+
+type GetProductReviewsRow struct {
+	ProductID   string    `json:"product_id"`
+	UserID      uuid.UUID `json:"user_id"`
+	Review      string    `json:"review"`
+	LastUpdated time.Time `json:"last_updated"`
+	Rating      float64   `json:"rating"`
+}
+
+func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]GetProductReviewsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getProductReviews,
+		arg.ProductID,
+		arg.UserID,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetProductReviewsRow{}
+	for rows.Next() {
+		var i GetProductReviewsRow
+		if err := rows.Scan(
+			&i.ProductID,
+			&i.UserID,
+			&i.Review,
+			&i.LastUpdated,
+			&i.Rating,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const insertPurchase = `-- name: InsertPurchase :exec
@@ -63,7 +259,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE)
 
 type InsertPurchaseParams struct {
 	ID                uuid.UUID `json:"id"`
-	ProductID         uuid.UUID `json:"product_id"`
+	ProductID         string    `json:"product_id"`
 	UserID            uuid.UUID `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
@@ -91,7 +287,7 @@ UPDATE SET rating = excluded.rating, created_at = excluded.created_at
 `
 
 type RateProductParams struct {
-	ProductID uuid.UUID `json:"product_id"`
+	ProductID string    `json:"product_id"`
 	UserID    uuid.UUID `json:"user_id"`
 	Rating    float64   `json:"rating"`
 }
@@ -110,13 +306,78 @@ DO UPDATE SET
 `
 
 type ReviewProductParams struct {
-	ProductID uuid.UUID `json:"product_id"`
+	ProductID string    `json:"product_id"`
 	UserID    uuid.UUID `json:"user_id"`
 	Review    string    `json:"review"`
 }
 
 func (q *Queries) ReviewProduct(ctx context.Context, arg ReviewProductParams) error {
 	_, err := q.db.ExecContext(ctx, reviewProduct, arg.ProductID, arg.UserID, arg.Review)
+	return err
+}
+
+const upsertProduct = `-- name: UpsertProduct :exec
+INSERT INTO products(
+  id,
+  kind,
+  title,
+  title_ar,
+  subtitle,
+  subtitle_ar,
+  description,
+  description_ar,
+  photo,
+  price_baisa,
+  planned_dates,
+  photos,
+  last_updated)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+ON CONFLICT (id) DO UPDATE SET
+  title = excluded.title,
+  title_ar = excluded.title_ar,
+  subtitle = excluded.subtitle,
+  subtitle_ar = excluded.subtitle_ar,
+  description = excluded.description,
+  description_ar = excluded.description_ar,
+  photo = excluded.photo,
+  price_baisa = excluded.price_baisa,
+  planned_dates=excluded.planned_dates,
+  photos = excluded.photos,
+  last_updated = excluded.last_updated
+`
+
+type UpsertProductParams struct {
+	ID            string      `json:"id"`
+	Kind          string      `json:"kind"`
+	Title         string      `json:"title"`
+	TitleAr       string      `json:"title_ar"`
+	Subtitle      string      `json:"subtitle"`
+	SubtitleAr    string      `json:"subtitle_ar"`
+	Description   string      `json:"description"`
+	DescriptionAr string      `json:"description_ar"`
+	Photo         string      `json:"photo"`
+	PriceBaisa    int32       `json:"price_baisa"`
+	PlannedDates  []time.Time `json:"planned_dates"`
+	Photos        []string    `json:"photos"`
+	LastUpdated   time.Time   `json:"last_updated"`
+}
+
+func (q *Queries) UpsertProduct(ctx context.Context, arg UpsertProductParams) error {
+	_, err := q.db.ExecContext(ctx, upsertProduct,
+		arg.ID,
+		arg.Kind,
+		arg.Title,
+		arg.TitleAr,
+		arg.Subtitle,
+		arg.SubtitleAr,
+		arg.Description,
+		arg.DescriptionAr,
+		arg.Photo,
+		arg.PriceBaisa,
+		pq.Array(arg.PlannedDates),
+		pq.Array(arg.Photos),
+		arg.LastUpdated,
+	)
 	return err
 }
 
@@ -128,31 +389,11 @@ SELECT EXISTS (
 
 type UserCanRateProductParams struct {
 	UserID    uuid.UUID `json:"user_id"`
-	ProductID uuid.UUID `json:"product_id"`
+	ProductID string    `json:"product_id"`
 }
 
 func (q *Queries) UserCanRateProduct(ctx context.Context, arg UserCanRateProductParams) (bool, error) {
 	row := q.db.QueryRowContext(ctx, userCanRateProduct, arg.UserID, arg.ProductID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
-const validateChosenDate = `-- name: ValidateChosenDate :one
-SELECT EXISTS (
-  (SELECT 1 FROM adventures a WHERE a.id = $1 AND $2::DATE = ANY(available_dates))
-  UNION
-  (SELECT 1 FROM trips t WHERE t.id = $1 AND $2 > CURRENT_DATE + 1)
-)
-`
-
-type ValidateChosenDateParams struct {
-	ProductID  uuid.UUID `json:"product_id"`
-	ChosenDate time.Time `json:"chosen_date"`
-}
-
-func (q *Queries) ValidateChosenDate(ctx context.Context, arg ValidateChosenDateParams) (bool, error) {
-	row := q.db.QueryRowContext(ctx, validateChosenDate, arg.ProductID, arg.ChosenDate)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err

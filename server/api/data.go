@@ -2,8 +2,6 @@ package api
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Contact struct {
@@ -25,7 +23,7 @@ type Config struct {
 }
 
 type PurchaseProductReq struct {
-	ProductID  uuid.UUID `json:"product_id"`
+	ProductID  string    `json:"product_id"`
 	Quantity   int       `json:"quantity"`
 	ChosenDate time.Time `json:"chosen_date"`
 	Cash       bool      `json:"cash"`
