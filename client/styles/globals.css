@@ -10,7 +10,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: Dinnext, Greta;
+  font-family: Dinnext, Greta !important;
 
   /* font-family: Dinnext, Greta, Arabic, Droid Sans, Jennah, Helvetica, Ge, SS, */
   /*   Cocon; */

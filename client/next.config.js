@@ -1,4 +1,5 @@
 const nextTranslate = require('next-translate')
+const nextVideos = require('next-videos')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,4 +19,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextTranslate(nextConfig)
+module.exports = nextTranslate(nextVideos(nextConfig))

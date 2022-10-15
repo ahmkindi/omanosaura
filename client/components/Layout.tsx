@@ -23,6 +23,7 @@ export const Layout = (props: LayoutProps): JSX.Element => {
           content={props.description ?? t('common:description')}
         />
         <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div className={styles.nonFooter}>
         <NavBar />
