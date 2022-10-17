@@ -1,5 +1,12 @@
 {
   "description": "اشرح",
   "company": "عمانوصورا",
-  "language": "English"
+  "experiences": "نزهات",
+  "about": "من نحن",
+  "contact": "تواصل معنا",
+  "blog": "مقالات",
+  "login": "تسجيل الدخول",
+  "logout": "تسجيل خروج",
+  "profile": "حسابي",
+  "purchases": "المشتريات"
 }

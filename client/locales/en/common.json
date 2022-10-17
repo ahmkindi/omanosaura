@@ -1,5 +1,12 @@
 {
   "description": "Describe",
   "company": "Omanosaura",
-  "language": "العربية"
+  "experiences": "Experiences",
+  "about": "About",
+  "contact": "Contact",
+  "blog": "Blog",
+  "login": "Sign In",
+  "logout": "Sign Out",
+  "profile": "Profile",
+  "purchases": "Purchases"
 }

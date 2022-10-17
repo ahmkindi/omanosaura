@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   margin: 8px;
+  justify-content: space-between;
 }
 
 .langButton {
@@ -38,6 +39,7 @@
 
 .langButtonGroup {
   margin-left: 5px;
+  margin-right: 8px;
 }
 
 .navOptions {
@@ -97,10 +99,12 @@
 
 .navActive {
   background-color: var(--primary);
-  color: var(--secondary);
+  color: var(--secondary) !important;
 }
 
-.navbar svg {
+.navSVG,
+.burger,
+.x {
   height: 50px;
   width: 50px;
   right: 20px;
@@ -110,13 +114,19 @@
   cursor: pointer;
 }
 
-.navbarAr svg {
-  left: 20px;
-  right: auto;
+.navbarAr {
+  .navSVG,
+  .burger,
+  .x {
+    left: 20px;
+    right: auto;
+  }
 }
 
 @media all and (min-width: 800px) {
-  .navbar svg {
+  .navSVG,
+  .burger,
+  .x {
     visibility: hidden;
   }
 

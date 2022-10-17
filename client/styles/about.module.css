@@ -1,0 +1,10 @@
+.aboutImg {
+  border-radius: 10px;
+  filter: drop-shadow(5px 5px 0.25rem $orange);
+  transition: filter 0.3s ease-in-out;
+}
+
+.aboutImg:hover {
+  filter: drop-shadow(-5px -5px 0.25rem $darkBlue);
+  transition: filter 0.3s ease-in-out;
+}

@@ -4,5 +4,9 @@ module.exports = {
   pages: {
     '*': ['common'],
     '/': ['home'],
+    '/about': ['about'],
+    '/experiences': ['experiences'],
+    '/contact': ['contact'],
+    '/blog': ['blog'],
   },
 }

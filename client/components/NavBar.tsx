@@ -8,12 +8,13 @@ import { ButtonGroup, Button } from 'react-bootstrap'
 import { navoptions } from '../types/navoptions'
 import { useGlobal } from '../context/global'
 import { useRouter } from 'next/router'
+import { FiLogIn } from 'react-icons/fi'
+import Avatar from './Avatar'
 
 const NavBar = () => {
-  const { user, isLoading, login, logout } = useUser()
-  console.log(user, isLoading, login, logout)
+  const { user, isLoading, login } = useUser()
   const { menuOpen, setMenuOpen } = useGlobal()
-  const { lang, t } = useTranslation()
+  const { lang, t } = useTranslation('common')
   const { pathname } = useRouter()
 
   const isAr = lang === 'ar'
@@ -25,31 +26,12 @@ const NavBar = () => {
           <Image
             src={isAr ? '/logo_ar.png' : '/main_logo.png'}
             alt="omanosaura"
-            width={260}
-            height={69.85}
+            width={320}
+            height={85.97}
+            layout="intrinsic"
           />
         </Link>
-        <ButtonGroup
-          className={styles.langButtonGroup}
-          aria-label="lang buttons"
-          style={{ direction: 'ltr' }}
-        >
-          <Link href="/" locale="ar" passHref>
-            <Button
-              className={isAr ? styles.langButtonActive : styles.langButton}
-            >
-              AR
-            </Button>
-          </Link>
-          <Link href="/" locale="en" passHref>
-            <Button
-              className={!isAr ? styles.langButtonActive : styles.langButton}
-            >
-              EN
-            </Button>
-          </Link>
-        </ButtonGroup>
-        <svg>
+        <svg className={styles.navSVG}>
           <defs>
             <filter id="gooeyness">
               <feGaussianBlur
@@ -115,26 +97,80 @@ const NavBar = () => {
           </svg>
         </div>
         <div
-          className={styles.navOptions}
           style={{
-            marginLeft: isAr ? '0px' : 'auto',
-            marginRight: isAr ? 'auto' : '0px',
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'fit-content',
           }}
         >
-          {navoptions.map((n) => (
-            <Link key={n} href={`/${n}`} passHref>
-              <div
-                key={n}
-                className={
-                  pathname === '/adventures'
-                    ? styles.navActive
-                    : styles.navInactive
-                }
+          <div
+            style={{
+              alignSelf: 'end',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+          >
+            {isLoading ? null : user ? (
+              <Avatar user={user} />
+            ) : (
+              <Button
+                style={{
+                  marginLeft: '1rem',
+                  width: 'fit-content',
+                  padding: '0px 8px 0px 8px',
+                  margin: isAr ? '0px 0px 0px 8px' : '0px 8px 0px 0px',
+                }}
+                className={styles.langButton}
+                onClick={() => login()}
               >
-                {t('adventures')}
-              </div>
-            </Link>
-          ))}
+                <FiLogIn color="var(--primary)" style={{ margin: '4px' }} />
+                {t('login')}
+              </Button>
+            )}
+            <ButtonGroup
+              className={styles.langButtonGroup}
+              aria-label="lang buttons"
+              style={{ direction: 'ltr' }}
+            >
+              <Link href="" locale="ar" passHref>
+                <Button
+                  className={isAr ? styles.langButtonActive : styles.langButton}
+                >
+                  AR
+                </Button>
+              </Link>
+              <Link href="" locale="en" passHref>
+                <Button
+                  className={
+                    !isAr ? styles.langButtonActive : styles.langButton
+                  }
+                >
+                  EN
+                </Button>
+              </Link>
+            </ButtonGroup>
+          </div>
+          <div
+            className={styles.navOptions}
+            style={{
+              marginLeft: isAr ? '0px' : 'auto',
+              marginRight: isAr ? 'auto' : '0px',
+            }}
+          >
+            {navoptions.map((n) => (
+              <Link key={n} href={`/${n}`} passHref>
+                <div
+                  key={n}
+                  className={
+                    pathname === `/${n}` ? styles.navActive : styles.navInactive
+                  }
+                >
+                  {t(n)}
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
       <div
@@ -146,12 +182,10 @@ const NavBar = () => {
           <Link key={n} href={`/${n}`} passHref>
             <div
               className={
-                pathname === '/adventures'
-                  ? styles.navActive
-                  : styles.navInactive
+                pathname === `/${n}` ? styles.navActive : styles.navInactive
               }
             >
-              {t('adventures')}
+              {t(n)}
             </div>
           </Link>
         ))}
