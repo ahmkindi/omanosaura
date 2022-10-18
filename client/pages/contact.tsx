@@ -11,6 +11,7 @@ import { useState } from 'react'
 import axiosServer from '../utils/axiosServer'
 import { EmptyEmailForm } from '../types/requests'
 import styles from '../styles/contact.module.css'
+import FlipCard from '../components/FlipCard'
 
 const failedEmail = `oops! we couldn't send the email 😭| Try again, or contact us using one of the social icons above`
 const successEmail = `Check your email to ensure we got your message 😇|`
@@ -152,6 +153,7 @@ const Contact = () => {
           <p>{alertText.substring(alertText.indexOf('|') + 1)}</p>
         </Alert>
       )}
+      <FlipCard back={'test'} front={'front'} />
     </Layout>
   )
 }

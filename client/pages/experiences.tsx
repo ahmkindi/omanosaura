@@ -41,7 +41,7 @@ const Experiences = () => {
           cursor: 'grab',
         }}
       >
-        <ZoomableGroup center={[56, 21.5]} zoom={4} maxZoom={20}>
+        <ZoomableGroup center={[56, 21.5]} zoom={4} maxZoom={20} minZoom={2}>
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.map((geo) => (
@@ -58,7 +58,10 @@ const Experiences = () => {
               ))
             }
           </Geographies>
-          <Marker coordinates={[58.54, 23.61]}>
+          <Marker
+            coordinates={[58.54, 23.61]}
+            onClick={() => console.log('clicked')}
+          >
             <circle r={1} fill="#F53" />
           </Marker>
         </ZoomableGroup>
