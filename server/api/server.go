@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/smtp"
@@ -13,14 +14,14 @@ import (
 
 	"github.com/FusionAuth/go-client/pkg/fusionauth"
 	"github.com/gofiber/fiber/v2/middleware/session"
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Server struct {
 	Email         Email
 	Config        Config
 	Queries       *database.Queries
-	DB            *sqlx.DB
+	DB            *pgxpool.Pool
 	FusionClient  *fusionauth.FusionAuthClient
 	Store         *session.Store
 	ThawaniClient *thawani.ThawaniClient
@@ -42,12 +43,12 @@ func CreateServer() (*Server, error) {
 		os.Getenv("POSTGRES_HOST"),
 	)
 
-	db, err := sqlx.Connect("postgres", connStr)
+	db, err := pgxpool.Connect(context.TODO(), connStr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err = migrations.Migrate(db.DB); err != nil {
+	if err = migrations.Migrate(connStr); err != nil {
 		return nil, fmt.Errorf("failed to migrate: %w", err)
 	}
 	username := os.Getenv("EMAIL_USERNAME")

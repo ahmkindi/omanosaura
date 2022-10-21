@@ -23,6 +23,8 @@ type Product struct {
 	PriceBaisa    int32       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
+	Longitude     float64     `json:"longitude"`
+	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
 }
 

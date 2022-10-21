@@ -16,7 +16,7 @@ SELECT id, email, firstname, lastname, phone FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
+	row := q.db.QueryRow(ctx, getUser, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -33,7 +33,7 @@ SELECT customer_id FROM user_customer_id WHERE user_id = $1
 `
 
 func (q *Queries) GetUserCustomerId(ctx context.Context, userID uuid.UUID) (string, error) {
-	row := q.db.QueryRowContext(ctx, getUserCustomerId, userID)
+	row := q.db.QueryRow(ctx, getUserCustomerId, userID)
 	var customer_id string
 	err := row.Scan(&customer_id)
 	return customer_id, err
@@ -58,7 +58,7 @@ type UpsertUserParams struct {
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
-	_, err := q.db.ExecContext(ctx, upsertUser,
+	_, err := q.db.Exec(ctx, upsertUser,
 		arg.ID,
 		arg.Email,
 		arg.Firstname,

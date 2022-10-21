@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS products (
   price_baisa INT NOT NULL,
   planned_dates DATE[] NOT NULL DEFAULT ARRAY[]::DATE[],
   photos TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+  longitude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   last_updated DATE NOT NULL
 );
 

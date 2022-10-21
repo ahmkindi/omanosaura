@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 const deleteProduct = `-- name: DeleteProduct :exec
@@ -18,7 +17,7 @@ DELETE FROM products WHERE id = $1
 `
 
 func (q *Queries) DeleteProduct(ctx context.Context, id string) error {
-	_, err := q.db.ExecContext(ctx, deleteProduct, id)
+	_, err := q.db.Exec(ctx, deleteProduct, id)
 	return err
 }
 
@@ -32,14 +31,14 @@ type DeleteProductReviewParams struct {
 }
 
 func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductReviewParams) error {
-	_, err := q.db.ExecContext(ctx, deleteProductReview, arg.ProductID, arg.UserID)
+	_, err := q.db.Exec(ctx, deleteProductReview, arg.ProductID, arg.UserID)
 	return err
 }
 
 const getAllProducts = `-- name: GetAllProducts :many
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated, l.rating, l.product_id, ratings.product_id, user_id, created_at, ratings.rating
+SELECT products.id, products.kind, products.title, products.title_ar, products.subtitle, products.subtitle_ar, products.description, products.description_ar, products.photo, products.price_baisa, products.planned_dates, products.photos, products.longitude, products.latitude, products.last_updated, COALESCE(rating.rating, 0), COALESCE(rating.rating_count, 0)
 FROM products
-INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id
+LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM ratings GROUP BY product_id) rating ON products.id = rating.product_id
 `
 
 type GetAllProductsRow struct {
@@ -55,17 +54,15 @@ type GetAllProductsRow struct {
 	PriceBaisa    int32       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
+	Longitude     float64     `json:"longitude"`
+	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
 	Rating        int32       `json:"rating"`
-	ProductID     string      `json:"product_id"`
-	ProductID_2   string      `json:"product_id_2"`
-	UserID        uuid.UUID   `json:"user_id"`
-	CreatedAt     time.Time   `json:"created_at"`
-	Rating_2      float64     `json:"rating_2"`
+	RatingCount   int64       `json:"rating_count"`
 }
 
 func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllProducts)
+	rows, err := q.db.Query(ctx, getAllProducts)
 	if err != nil {
 		return nil, err
 	}
@@ -84,22 +81,17 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 			&i.DescriptionAr,
 			&i.Photo,
 			&i.PriceBaisa,
-			pq.Array(&i.PlannedDates),
-			pq.Array(&i.Photos),
+			&i.PlannedDates,
+			&i.Photos,
+			&i.Longitude,
+			&i.Latitude,
 			&i.LastUpdated,
 			&i.Rating,
-			&i.ProductID,
-			&i.ProductID_2,
-			&i.UserID,
-			&i.CreatedAt,
-			&i.Rating_2,
+			&i.RatingCount,
 		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -108,11 +100,11 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 }
 
 const getBasicProduct = `-- name: GetBasicProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated FROM products WHERE id = $1
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated FROM products WHERE id = $1
 `
 
 func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getBasicProduct, id)
+	row := q.db.QueryRow(ctx, getBasicProduct, id)
 	var i Product
 	err := row.Scan(
 		&i.ID,
@@ -125,15 +117,17 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 		&i.DescriptionAr,
 		&i.Photo,
 		&i.PriceBaisa,
-		pq.Array(&i.PlannedDates),
-		pq.Array(&i.Photos),
+		&i.PlannedDates,
+		&i.Photos,
+		&i.Longitude,
+		&i.Latitude,
 		&i.LastUpdated,
 	)
 	return i, err
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, last_updated,
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
 (SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
 (SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
@@ -160,6 +154,8 @@ type GetProductRow struct {
 	PriceBaisa    int32       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
+	Longitude     float64     `json:"longitude"`
+	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
 	Purchases     int64       `json:"purchases"`
 	UserPurchases int64       `json:"user_purchases"`
@@ -169,7 +165,7 @@ type GetProductRow struct {
 }
 
 func (q *Queries) GetProduct(ctx context.Context, arg GetProductParams) (GetProductRow, error) {
-	row := q.db.QueryRowContext(ctx, getProduct, arg.ProductID, arg.UserID)
+	row := q.db.QueryRow(ctx, getProduct, arg.ProductID, arg.UserID)
 	var i GetProductRow
 	err := row.Scan(
 		&i.ID,
@@ -182,8 +178,10 @@ func (q *Queries) GetProduct(ctx context.Context, arg GetProductParams) (GetProd
 		&i.DescriptionAr,
 		&i.Photo,
 		&i.PriceBaisa,
-		pq.Array(&i.PlannedDates),
-		pq.Array(&i.Photos),
+		&i.PlannedDates,
+		&i.Photos,
+		&i.Longitude,
+		&i.Latitude,
 		&i.LastUpdated,
 		&i.Purchases,
 		&i.UserPurchases,
@@ -219,7 +217,7 @@ type GetProductReviewsRow struct {
 }
 
 func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]GetProductReviewsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getProductReviews,
+	rows, err := q.db.Query(ctx, getProductReviews,
 		arg.ProductID,
 		arg.UserID,
 		arg.Limit,
@@ -243,9 +241,6 @@ func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsPa
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -268,7 +263,7 @@ type InsertPurchaseParams struct {
 }
 
 func (q *Queries) InsertPurchase(ctx context.Context, arg InsertPurchaseParams) error {
-	_, err := q.db.ExecContext(ctx, insertPurchase,
+	_, err := q.db.Exec(ctx, insertPurchase,
 		arg.ID,
 		arg.ProductID,
 		arg.UserID,
@@ -293,7 +288,7 @@ type RateProductParams struct {
 }
 
 func (q *Queries) RateProduct(ctx context.Context, arg RateProductParams) error {
-	_, err := q.db.ExecContext(ctx, rateProduct, arg.ProductID, arg.UserID, arg.Rating)
+	_, err := q.db.Exec(ctx, rateProduct, arg.ProductID, arg.UserID, arg.Rating)
 	return err
 }
 
@@ -312,7 +307,7 @@ type ReviewProductParams struct {
 }
 
 func (q *Queries) ReviewProduct(ctx context.Context, arg ReviewProductParams) error {
-	_, err := q.db.ExecContext(ctx, reviewProduct, arg.ProductID, arg.UserID, arg.Review)
+	_, err := q.db.Exec(ctx, reviewProduct, arg.ProductID, arg.UserID, arg.Review)
 	return err
 }
 
@@ -330,8 +325,10 @@ INSERT INTO products(
   price_baisa,
   planned_dates,
   photos,
+  longitude,
+  latitude,
   last_updated)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -343,7 +340,9 @@ ON CONFLICT (id) DO UPDATE SET
   price_baisa = excluded.price_baisa,
   planned_dates=excluded.planned_dates,
   photos = excluded.photos,
-  last_updated = excluded.last_updated
+  longitude = excluded.longitude,
+  latitute = excluded.latitute,
+  last_updated = CURRENT_DATE
 `
 
 type UpsertProductParams struct {
@@ -359,11 +358,12 @@ type UpsertProductParams struct {
 	PriceBaisa    int32       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
-	LastUpdated   time.Time   `json:"last_updated"`
+	Longitude     float64     `json:"longitude"`
+	Latitude      float64     `json:"latitude"`
 }
 
 func (q *Queries) UpsertProduct(ctx context.Context, arg UpsertProductParams) error {
-	_, err := q.db.ExecContext(ctx, upsertProduct,
+	_, err := q.db.Exec(ctx, upsertProduct,
 		arg.ID,
 		arg.Kind,
 		arg.Title,
@@ -374,9 +374,10 @@ func (q *Queries) UpsertProduct(ctx context.Context, arg UpsertProductParams) er
 		arg.DescriptionAr,
 		arg.Photo,
 		arg.PriceBaisa,
-		pq.Array(arg.PlannedDates),
-		pq.Array(arg.Photos),
-		arg.LastUpdated,
+		arg.PlannedDates,
+		arg.Photos,
+		arg.Longitude,
+		arg.Latitude,
 	)
 	return err
 }
@@ -393,7 +394,7 @@ type UserCanRateProductParams struct {
 }
 
 func (q *Queries) UserCanRateProduct(ctx context.Context, arg UserCanRateProductParams) (bool, error) {
-	row := q.db.QueryRowContext(ctx, userCanRateProduct, arg.UserID, arg.ProductID)
+	row := q.db.QueryRow(ctx, userCanRateProduct, arg.UserID, arg.ProductID)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err

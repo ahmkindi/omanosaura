@@ -87,6 +87,7 @@ func (server *Server) HandlerLogout(c *fiber.Ctx) error {
 }
 
 func (server *Server) UserMiddleware(c *fiber.Ctx) error {
+	fmt.Println("SESSION ID COOKIE", c.Cookies("session_id"))
 	sess, err := server.Store.Get(c)
 	if err != nil {
 		return c.Next()

@@ -12,8 +12,10 @@ INSERT INTO products(
   price_baisa,
   planned_dates,
   photos,
+  longitude,
+  latitude,
   last_updated)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -25,7 +27,9 @@ ON CONFLICT (id) DO UPDATE SET
   price_baisa = excluded.price_baisa,
   planned_dates=excluded.planned_dates,
   photos = excluded.photos,
-  last_updated = excluded.last_updated;
+  longitude = excluded.longitude,
+  latitute = excluded.latitute,
+  last_updated = CURRENT_DATE;
 
 -- name: RateProduct :exec
 INSERT INTO ratings(product_id, user_id, rating, created_at)
@@ -55,9 +59,9 @@ INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_b
 VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE);
 
 -- name: GetAllProducts :many
-SELECT *
+SELECT products.*, COALESCE(rating.rating, 0), COALESCE(rating.rating_count, 0)
 FROM products
-INNER JOIN (SELECT SUM(ratings)/COUNT(*) as rating, product_id FROM ratings GROUP BY product_id) l ON products.id = l.product_id;
+LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM ratings GROUP BY product_id) rating ON products.id = rating.product_id;
 
 -- name: GetProduct :one
 SELECT *,

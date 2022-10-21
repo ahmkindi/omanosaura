@@ -98,19 +98,26 @@ func (server *Server) HandlerUpsertProduct(c *fiber.Ctx) error {
 func (server *Server) HandlerGetAllProducts(c *fiber.Ctx) error {
 	products, err := server.Queries.GetAllProducts(c.Context())
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return err
 	}
 
 	return c.JSON(products)
 }
 
 func (server *Server) HandlerGetProduct(c *fiber.Ctx) error {
+	userID := uuid.Nil
+	user, ok := c.Locals("user").(database.User)
+	if ok {
+		userID = user.ID
+	}
+
+	fmt.Println("HERE", userID, c.Params("id"))
 	product, err := server.Queries.GetProduct(c.Context(), database.GetProductParams{
 		ProductID: c.Params("id"),
-		UserID:    uuid.Nil,
+		UserID:    userID,
 	})
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return err
 	}
 
 	return c.JSON(product)
