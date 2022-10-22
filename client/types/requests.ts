@@ -42,4 +42,5 @@ export interface Product {
   latitude: number
   rating: number
   ratingCount: number
+  reviewCount: number
 }

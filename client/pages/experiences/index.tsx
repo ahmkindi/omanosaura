@@ -16,6 +16,8 @@ import ProductCard from '../../components/ProductCard'
 import { useRouter } from 'next/router'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
+import useSWR, { SWRConfig } from 'swr'
+import { fetcher } from '../../utils/axiosServer'
 
 export async function getServerSideProps() {
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
@@ -23,31 +25,38 @@ export async function getServerSideProps() {
     'http://localhost:3000/server/products'
   )
   return {
-    props: { products }, // will be passed to the page component as props
+    props: {
+      fallback: {
+        'products': products,
+      },
+    },
   }
 }
 
 const geoUrl =
   'https://res.cloudinary.com/dl093kbg1/raw/upload/v1665340389/omn_admbnd_1_ly0tcy.json'
 
-const Experiences = ({ products }: { products: Product[] }) => {
+const Experiences = () => {
   const { t } = useTranslation('experiences')
   const { width, height } = useWindowDimensions()
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
   const { search } = router.query
+  const { data: products } = useSWR('products', fetcher<Product[]>)
 
   const filteredProducts = useMemo(
     () =>
-      products?.filter(
-        (p) =>
-          p.title.includes(search as string) ||
-          p.subtitle.includes(search as string) ||
-          p.description.includes(search as string) ||
-          p.titleAr.includes(search as string) ||
-          p.subtitleAr.includes(search as string) ||
-          p.descriptionAr.includes(search as string)
-      ),
+      search
+        ? products?.filter(
+            (p) =>
+              p.title.includes(search as string) ||
+              p.subtitle.includes(search as string) ||
+              p.description.includes(search as string) ||
+              p.titleAr.includes(search as string) ||
+              p.subtitleAr.includes(search as string) ||
+              p.descriptionAr.includes(search as string)
+          )
+        : products,
     [search, products]
   )
 
@@ -91,7 +100,7 @@ const Experiences = ({ products }: { products: Product[] }) => {
       >
         <ZoomableGroup
           center={[56, 21.5]}
-          zoom={4}
+          zoom={0.7}
           maxZoom={20}
           minZoom={0.3}
           onClick={() => setOpenProduct(undefined)}
@@ -109,7 +118,7 @@ const Experiences = ({ products }: { products: Product[] }) => {
               ))
             }
           </Geographies>
-          {filteredProducts?.map((p) => (
+          {filteredProducts.map((p) => (
             <Marker
               key={p.id}
               coordinates={[p.longitude, p.latitude]}
@@ -132,16 +141,22 @@ const Experiences = ({ products }: { products: Product[] }) => {
                 <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
               </g>
               {openProduct?.id === p.id && (
-                <foreignObject y="10" x="-175" style={{ zIndex: 9000 }}>
-                  <ProductCard product={openProduct} />
-                </foreignObject>
+                <ProductCard product={openProduct} />
               )}
             </Marker>
           ))}
         </ZoomableGroup>
       </ComposableMap>
-    </Layout>
+        </Layout>
   )
 }
 
-export default Experiences
+const Page = ({ fallback }: { fallback: Map<string, Product[]>}) => {
+  return (
+    <SWRConfig value={{ fallback }}>
+      <Experiences />
+    </SWRConfig>
+  ) 
+}
+
+export default Page

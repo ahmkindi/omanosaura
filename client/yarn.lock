@@ -2330,6 +2330,11 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
+yet-another-react-lightbox@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/yet-another-react-lightbox/-/yet-another-react-lightbox-2.2.0.tgz#a6cfecd2c0d0516c66912a12f4fca3c57a47cf6f"
+  integrity sha512-dbpWAXX5L1DmdYCmPQKLvtLdgdA/9IwuFfmMvLXNu5yN3SRMkTG341Lx53ZM0F1k1ZTxs2QtcsjwCRQTeKHvig==
+
 yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"

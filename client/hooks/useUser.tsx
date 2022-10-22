@@ -4,7 +4,14 @@ import { User } from '../types/requests'
 import axiosServer, { fetcher } from '../utils/axiosServer'
 
 const useUser = () => {
-  const { data, error } = useSWR('user', fetcher<User>)
+  const { data, error } = useSWR('user', fetcher<User>, {
+    revalidateIfStale: false,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false
+  })
   const router = useRouter()
 
   return {
