@@ -61,24 +61,28 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE);
 -- name: GetAllProducts :many
 SELECT products.*, COALESCE(rating.rating, 0), COALESCE(rating.rating_count, 0)
 FROM products
-LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM ratings GROUP BY product_id) rating ON products.id = rating.product_id;
+LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM reviews GROUP BY product_id) rating ON products.id = rating.product_id
+LEFT JOIN (SELECT COUNT(*) as review_count FROM reviews WHERE title != '' GROUP BY product_id) rating ON products.id = rating.product_id
 
 -- name: GetProduct :one
 SELECT *,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
-(SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
-(SELECT COUNT(*) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
-(SELECT rating FROM ratings r WHERE r.product_id = $1 AND r.user_id=$2) rating
+(SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
+(SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM ratings r WHERE r.product_id=$1) rating,
+(SELECT COALESCE(COUNT(*), 0) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
+(SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1) review_count
 FROM products;
 
 -- name: GetProductReviews :many
-SELECT r.*, rating FROM products
-INNER JOIN (SELECT * FROM reviews WHERE reviews.product_id = $1 AND reviews.user_id = $2) r ON id = r.product_id
-INNER JOIN ratings ON r.user_id = ratings.user_id AND r.product_id = ratings.product_id
+SELECT * FROM reviews
+WHERE reviews.product_id = $1
 ORDER BY last_updated
-LIMIT $3
-OFFSET $4;
+LIMIT sqlc.arg(page)::int * 10
+OFFSET (sqlc.arg(page)::int - 1) * 10;
+
+-- name: GetUserProductReview :one
+SELECT rating,
+(SELECT review, last_updated FROM reviews WHERE reviews.product_id=$1 AND reviews.user_id=$2) review
+FROM ratings WHERE ratings.product_id=$1 AND ratings.user_id=$2;
 
 -- name: GetBasicProduct :one
 SELECT * FROM products WHERE id = $1;

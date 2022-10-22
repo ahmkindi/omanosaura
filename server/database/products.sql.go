@@ -128,44 +128,37 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 
 const getProduct = `-- name: GetProduct :one
 SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1) purchases,
-(SELECT COUNT(*) FROM purchases p WHERE p.product_id=$1 AND p.user_id=$2) user_purchases,
-(SELECT SUM(ratings)/COUNT(*) as rating FROM ratings r WHERE r.product_id=$1) rating,
-(SELECT COUNT(*) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
-(SELECT rating FROM ratings r WHERE r.product_id = $1 AND r.user_id=$2) rating
+(SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
+(SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM ratings r WHERE r.product_id=$1) rating,
+(SELECT COALESCE(COUNT(*), 0) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
+(SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1) review_count
 FROM products
 `
 
-type GetProductParams struct {
-	ProductID string    `json:"product_id"`
-	UserID    uuid.UUID `json:"user_id"`
-}
-
 type GetProductRow struct {
-	ID            string      `json:"id"`
-	Kind          string      `json:"kind"`
-	Title         string      `json:"title"`
-	TitleAr       string      `json:"title_ar"`
-	Subtitle      string      `json:"subtitle"`
-	SubtitleAr    string      `json:"subtitle_ar"`
-	Description   string      `json:"description"`
-	DescriptionAr string      `json:"description_ar"`
-	Photo         string      `json:"photo"`
-	PriceBaisa    int32       `json:"price_baisa"`
-	PlannedDates  []time.Time `json:"planned_dates"`
-	Photos        []string    `json:"photos"`
-	Longitude     float64     `json:"longitude"`
-	Latitude      float64     `json:"latitude"`
-	LastUpdated   time.Time   `json:"last_updated"`
-	Purchases     int64       `json:"purchases"`
-	UserPurchases int64       `json:"user_purchases"`
-	Rating        int32       `json:"rating"`
-	RatingCount   int64       `json:"rating_count"`
-	Rating_2      float64     `json:"rating_2"`
+	ID             string      `json:"id"`
+	Kind           string      `json:"kind"`
+	Title          string      `json:"title"`
+	TitleAr        string      `json:"title_ar"`
+	Subtitle       string      `json:"subtitle"`
+	SubtitleAr     string      `json:"subtitle_ar"`
+	Description    string      `json:"description"`
+	DescriptionAr  string      `json:"description_ar"`
+	Photo          string      `json:"photo"`
+	PriceBaisa     int32       `json:"price_baisa"`
+	PlannedDates   []time.Time `json:"planned_dates"`
+	Photos         []string    `json:"photos"`
+	Longitude      float64     `json:"longitude"`
+	Latitude       float64     `json:"latitude"`
+	LastUpdated    time.Time   `json:"last_updated"`
+	PurchasesCount interface{} `json:"purchases_count"`
+	Rating         interface{} `json:"rating"`
+	RatingCount    interface{} `json:"rating_count"`
+	ReviewCount    interface{} `json:"review_count"`
 }
 
-func (q *Queries) GetProduct(ctx context.Context, arg GetProductParams) (GetProductRow, error) {
-	row := q.db.QueryRow(ctx, getProduct, arg.ProductID, arg.UserID)
+func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductRow, error) {
+	row := q.db.QueryRow(ctx, getProduct, productID)
 	var i GetProductRow
 	err := row.Scan(
 		&i.ID,
@@ -183,59 +176,41 @@ func (q *Queries) GetProduct(ctx context.Context, arg GetProductParams) (GetProd
 		&i.Longitude,
 		&i.Latitude,
 		&i.LastUpdated,
-		&i.Purchases,
-		&i.UserPurchases,
+		&i.PurchasesCount,
 		&i.Rating,
 		&i.RatingCount,
-		&i.Rating_2,
+		&i.ReviewCount,
 	)
 	return i, err
 }
 
 const getProductReviews = `-- name: GetProductReviews :many
-SELECT r.product_id, r.user_id, r.review, r.last_updated, rating FROM products
-INNER JOIN (SELECT product_id, user_id, review, last_updated FROM reviews WHERE reviews.product_id = $1 AND reviews.user_id = $2) r ON id = r.product_id
-INNER JOIN ratings ON r.user_id = ratings.user_id AND r.product_id = ratings.product_id
+SELECT product_id, user_id, review, last_updated FROM reviews
+WHERE reviews.product_id = $1
 ORDER BY last_updated
-LIMIT $3
-OFFSET $4
+LIMIT $2::int * 10
+OFFSET ($2::int - 1) * 10
 `
 
 type GetProductReviewsParams struct {
-	ProductID string    `json:"product_id"`
-	UserID    uuid.UUID `json:"user_id"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
+	ProductID string `json:"product_id"`
+	Page      int32  `json:"page"`
 }
 
-type GetProductReviewsRow struct {
-	ProductID   string    `json:"product_id"`
-	UserID      uuid.UUID `json:"user_id"`
-	Review      string    `json:"review"`
-	LastUpdated time.Time `json:"last_updated"`
-	Rating      float64   `json:"rating"`
-}
-
-func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]GetProductReviewsRow, error) {
-	rows, err := q.db.Query(ctx, getProductReviews,
-		arg.ProductID,
-		arg.UserID,
-		arg.Limit,
-		arg.Offset,
-	)
+func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]Review, error) {
+	rows, err := q.db.Query(ctx, getProductReviews, arg.ProductID, arg.Page)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetProductReviewsRow{}
+	items := []Review{}
 	for rows.Next() {
-		var i GetProductReviewsRow
+		var i Review
 		if err := rows.Scan(
 			&i.ProductID,
 			&i.UserID,
 			&i.Review,
 			&i.LastUpdated,
-			&i.Rating,
 		); err != nil {
 			return nil, err
 		}
@@ -245,6 +220,29 @@ func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsPa
 		return nil, err
 	}
 	return items, nil
+}
+
+const getUserProductReview = `-- name: GetUserProductReview :one
+SELECT rating,
+(SELECT review, last_updated FROM reviews WHERE reviews.product_id=$1 AND reviews.user_id=$2) review
+FROM ratings WHERE ratings.product_id=$1 AND ratings.user_id=$2
+`
+
+type GetUserProductReviewParams struct {
+	ProductID string    `json:"product_id"`
+	UserID    uuid.UUID `json:"user_id"`
+}
+
+type GetUserProductReviewRow struct {
+	Rating float64 `json:"rating"`
+	Review string  `json:"review"`
+}
+
+func (q *Queries) GetUserProductReview(ctx context.Context, arg GetUserProductReviewParams) (GetUserProductReviewRow, error) {
+	row := q.db.QueryRow(ctx, getUserProductReview, arg.ProductID, arg.UserID)
+	var i GetUserProductReviewRow
+	err := row.Scan(&i.Rating, &i.Review)
+	return i, err
 }
 
 const insertPurchase = `-- name: InsertPurchase :exec

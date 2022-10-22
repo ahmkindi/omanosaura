@@ -42,16 +42,10 @@ CREATE TABLE IF NOT EXISTS purchases (
 CREATE TABLE IF NOT EXISTS reviews (
   product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id),
+  rating FLOAT NOT NULL CHECK (rating > 0 AND rating <= 5),
+  title TEXT NOT NULL,
   review TEXT NOT NULL,
   last_updated DATE NOT NULL DEFAULT CURRENT_DATE,
-  PRIMARY KEY(product_id, user_id)
-);
-
-CREATE TABLE IF NOT EXISTS ratings (
-  product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES users(id),
-  created_at DATE NOT NULL DEFAULT CURRENT_DATE,
-  rating FLOAT NOT NULL CHECK (rating > 0 AND rating <= 5),
   PRIMARY KEY(product_id, user_id)
 );
 

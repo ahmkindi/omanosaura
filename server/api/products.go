@@ -7,6 +7,7 @@ import (
 	"omanosaura/thawani"
 	"omanosaura/thawani/types/mode"
 	"omanosaura/thawani/types/paymentstatus"
+	"strconv"
 	"strings"
 	"time"
 
@@ -105,22 +106,46 @@ func (server *Server) HandlerGetAllProducts(c *fiber.Ctx) error {
 }
 
 func (server *Server) HandlerGetProduct(c *fiber.Ctx) error {
-	userID := uuid.Nil
-	user, ok := c.Locals("user").(database.User)
-	if ok {
-		userID = user.ID
+	product, err := server.Queries.GetProduct(c.Context(), c.Params("id"))
+	if err != nil {
+		return err
 	}
 
-	fmt.Println("HERE", userID, c.Params("id"))
-	product, err := server.Queries.GetProduct(c.Context(), database.GetProductParams{
+	return c.JSON(product)
+}
+
+func (server *Server) HandlerGetProductReviews(c *fiber.Ctx) error {
+	page, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil {
+		return err
+	}
+
+	product, err := server.Queries.GetProductReviews(c.Context(), database.GetProductReviewsParams{
 		ProductID: c.Params("id"),
-		UserID:    userID,
+		Page:      int32(page),
 	})
 	if err != nil {
 		return err
 	}
 
 	return c.JSON(product)
+}
+
+func (server *Server) HandlerGetUserProductReview(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fiber.ErrForbidden
+	}
+
+	productReview, err := server.Queries.GetUserProductReview(c.Context(), database.GetUserProductReviewParams{
+		ProductID: c.Params("id"),
+		UserID:    user.ID,
+	})
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(productReview)
 }
 
 func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
