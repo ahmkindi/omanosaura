@@ -70,7 +70,8 @@ SELECT *,
 FROM products;
 
 -- name: GetProductReviews :many
-SELECT * FROM reviews
+SELECT reviews.*, users.firstname, users.lastname FROM reviews
+INNER JOIN users ON reviews.user_id = users.id
 WHERE reviews.product_id = $1
 ORDER BY last_updated
 LIMIT sqlc.arg(page)::int * 10

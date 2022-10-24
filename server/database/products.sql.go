@@ -188,7 +188,8 @@ func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductR
 }
 
 const getProductReviews = `-- name: GetProductReviews :many
-SELECT product_id, user_id, rating, title, review, last_updated FROM reviews
+SELECT reviews.product_id, reviews.user_id, reviews.rating, reviews.title, reviews.review, reviews.last_updated, users.firstname, users.lastname FROM reviews
+INNER JOIN users ON reviews.user_id = users.id
 WHERE reviews.product_id = $1
 ORDER BY last_updated
 LIMIT $2::int * 10
@@ -200,15 +201,26 @@ type GetProductReviewsParams struct {
 	Page      int32  `json:"page"`
 }
 
-func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]Review, error) {
+type GetProductReviewsRow struct {
+	ProductID   string    `json:"product_id"`
+	UserID      uuid.UUID `json:"user_id"`
+	Rating      float64   `json:"rating"`
+	Title       string    `json:"title"`
+	Review      string    `json:"review"`
+	LastUpdated time.Time `json:"last_updated"`
+	Firstname   string    `json:"firstname"`
+	Lastname    string    `json:"lastname"`
+}
+
+func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsParams) ([]GetProductReviewsRow, error) {
 	rows, err := q.db.Query(ctx, getProductReviews, arg.ProductID, arg.Page)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Review{}
+	items := []GetProductReviewsRow{}
 	for rows.Next() {
-		var i Review
+		var i GetProductReviewsRow
 		if err := rows.Scan(
 			&i.ProductID,
 			&i.UserID,
@@ -216,6 +228,8 @@ func (q *Queries) GetProductReviews(ctx context.Context, arg GetProductReviewsPa
 			&i.Title,
 			&i.Review,
 			&i.LastUpdated,
+			&i.Firstname,
+			&i.Lastname,
 		); err != nil {
 			return nil, err
 		}
