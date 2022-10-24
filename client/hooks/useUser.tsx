@@ -4,7 +4,7 @@ import { User } from '../types/requests'
 import axiosServer, { fetcher } from '../utils/axiosServer'
 
 const useUser = () => {
-  const { data, error } = useSWR('user', fetcher<User>, {
+  const { data, error, mutate } = useSWR('user', fetcher<User>, {
     revalidateIfStale: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
@@ -24,7 +24,8 @@ const useUser = () => {
     login: async () => {
         const response = await axiosServer.get(`login?redirect=${router.pathname}`)
         router.push(response.request.responseURL)
-      }
+      },
+    mutate: mutate
   }
 }
 
