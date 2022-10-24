@@ -1,5 +1,4 @@
 import useTranslation from 'next-translate/useTranslation'
-import { FormEvent, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import PhoneInputWithCountrySelect from 'react-phone-number-input'
 import Layout from '../components/Layout'

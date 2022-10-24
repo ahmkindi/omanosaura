@@ -4,6 +4,8 @@ import styles from '../styles/Layout.module.css'
 import NavBar from './NavBar'
 import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
+import { useGlobal } from '../context/global'
+import { Alert, Toast } from 'react-bootstrap'
 
 type LayoutProps = {
   title?: string
@@ -13,9 +15,24 @@ type LayoutProps = {
 
 export const Layout = (props: LayoutProps): JSX.Element => {
   const { t, lang } = useTranslation()
+  const { alert, setAlert } = useGlobal()
 
   return (
     <div className={styles.layout} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+      {alert && (
+        //TODO: complete reusable toast
+        <Toast
+          variant={alert.type}
+          show={alert !== undefined}
+          onClose={() => setAlert?.(undefined)}
+          dismissible
+        >
+          <Alert.Heading>
+            {alert.substring(0, alertText.indexOf('|'))}
+          </Alert.Heading>
+          <p>{alertText.substring(alertText.indexOf('|') + 1)}</p>
+        </Toast>
+      )}
       <Head>
         <title>{props.title ?? t('common:company')}</title>
         <meta

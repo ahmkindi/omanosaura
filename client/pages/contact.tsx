@@ -141,18 +141,6 @@ const Contact = () => {
           </form>
         </article>
       </Section>
-      {alertText !== '' && (
-        <Alert
-          variant={alertText.includes('oops') ? 'danger' : 'success'}
-          onClose={() => setAlertText('')}
-          dismissible
-        >
-          <Alert.Heading>
-            {alertText.substring(0, alertText.indexOf('|'))}
-          </Alert.Heading>
-          <p>{alertText.substring(alertText.indexOf('|') + 1)}</p>
-        </Alert>
-      )}
       <FlipCard back={'test'} front={'front'} />
     </Layout>
   )

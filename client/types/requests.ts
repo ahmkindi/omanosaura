@@ -45,3 +45,26 @@ export interface Product {
   ratingCount: number
   reviewCount: number
 }
+
+export interface Review {
+  productId: string
+  userId: string
+  rating: number
+  title: string
+  review: string
+  lastUpdated: Date
+  firstname: string
+  lastname: string
+}
+
+export interface UserReview {
+  rating: number
+  title: string
+  review: string
+}
+
+export const emptyUserReview: UserReview = {
+  rating: 5,
+  title: '',
+  review: '',
+}

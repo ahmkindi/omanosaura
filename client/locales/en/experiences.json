@@ -1,3 +1,11 @@
 {
-  "title": "Experiences | Omanosaura"
+  "title": "Experiences | Omanosaura",
+  "reviews": "Customer Reviews",
+  "addReview": "Add Reviews",
+  "loadMore": "Load More",
+  "reviewTitle": "Review Title (optional)",
+  "reviewDesc": "More Details (optional)",
+  "submit": "Submit Review",
+  "close": "Close",
+  "userReview": "{{ user }}'s Review"
 }

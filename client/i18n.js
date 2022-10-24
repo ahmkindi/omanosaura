@@ -6,6 +6,7 @@ module.exports = {
     '/': ['home'],
     '/about': ['about'],
     '/experiences': ['experiences'],
+    '/experiences/[slug]': ['experiences'],
     '/contact': ['contact'],
     '/blog': ['blog'],
   },
