@@ -31,15 +31,12 @@ ON CONFLICT (id) DO UPDATE SET
   latitute = excluded.latitute,
   last_updated = CURRENT_DATE;
 
--- name: RateProduct :exec
-INSERT INTO ratings(product_id, user_id, rating, created_at)
-VALUES ($1, $2, $3, CURRENT_DATE) ON CONFLICT (product_id, user_id) DO
-UPDATE SET rating = excluded.rating, created_at = excluded.created_at;
-
 -- name: ReviewProduct :exec
-INSERT INTO reviews(product_id, user_id, review, last_updated)
-VALUES ($1, $2, $3, CURRENT_DATE) ON CONFLICT (product_id, user_id)
+INSERT INTO reviews(product_id, user_id, rating, title, review, last_updated)
+VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) ON CONFLICT (product_id, user_id)
 DO UPDATE SET
+  rating = excluded.rating,
+  title = excluded.title,
   review = excluded.review,
   last_updated = excluded.last_updated;
 
@@ -59,17 +56,17 @@ INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_b
 VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE);
 
 -- name: GetAllProducts :many
-SELECT products.*, COALESCE(rating.rating, 0), COALESCE(rating.rating_count, 0)
+SELECT products.*, COALESCE(r.rating, 0), COALESCE(r.rating_count, 0), COALESCE(review.review_count, 0)
 FROM products
-LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM reviews GROUP BY product_id) rating ON products.id = rating.product_id
-LEFT JOIN (SELECT COUNT(*) as review_count FROM reviews WHERE title != '' GROUP BY product_id) rating ON products.id = rating.product_id
+LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
+LEFT JOIN (SELECT COUNT(*) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id;
 
 -- name: GetProduct :one
 SELECT *,
 (SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
-(SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM ratings r WHERE r.product_id=$1) rating,
-(SELECT COALESCE(COUNT(*), 0) as rating_count FROM ratings r WHERE r.product_id=$1) rating_count,
-(SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1) review_count
+(SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM reviews r WHERE r.product_id=$1) rating,
+(SELECT COALESCE(COUNT(*), 0) as rating_count FROM reviews r WHERE r.product_id=$1) rating_count,
+(SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1 AND title != '') review_count
 FROM products;
 
 -- name: GetProductReviews :many
@@ -80,9 +77,7 @@ LIMIT sqlc.arg(page)::int * 10
 OFFSET (sqlc.arg(page)::int - 1) * 10;
 
 -- name: GetUserProductReview :one
-SELECT rating,
-(SELECT review, last_updated FROM reviews WHERE reviews.product_id=$1 AND reviews.user_id=$2) review
-FROM ratings WHERE ratings.product_id=$1 AND ratings.user_id=$2;
+SELECT rating, review, last_updated FROM reviews WHERE product_id=$1 AND user_id=$2;
 
 -- name: GetBasicProduct :one
 SELECT * FROM products WHERE id = $1;

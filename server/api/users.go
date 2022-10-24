@@ -6,6 +6,7 @@ import (
 	"omanosaura/database"
 	"omanosaura/utils"
 
+	"github.com/FusionAuth/go-client/pkg/fusionauth"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -28,6 +29,34 @@ func (server *Server) HandlerUserLogin(c *fiber.Ctx) error {
 	fmt.Print(redirectTo)
 
 	return c.Redirect(redirectTo)
+}
+
+func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fiber.ErrNotFound
+	}
+
+	updatedUser := new(database.UpsertUserParams)
+	if err := c.BodyParser(updatedUser); err != nil {
+		return fiber.ErrBadRequest
+	}
+	updatedUser.ID = user.ID
+
+	resp, fusionErr, err := server.FusionClient.UpdateUser(user.ID.String(), fusionauth.UserRequest{
+		ApplicationId: server.Config.FusionApplicationID,
+		User: fusionauth.User{
+			FirstName:   updatedUser.Firstname,
+			LastName:    updatedUser.Lastname,
+			Email:       updatedUser.Email,
+			MobilePhone: updatedUser.Phone,
+		},
+	})
+	if resp.StatusCode != 200 || fusionErr != nil || err != nil {
+		return fmt.Errorf("failed to update user: %d %+v %w", resp.StatusCode, fusionErr, err)
+	}
+
+	return server.Queries.UpsertUser(c.Context(), *updatedUser)
 }
 
 func (server *Server) HandlerOauthCallback(c *fiber.Ctx) error {

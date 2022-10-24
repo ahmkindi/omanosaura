@@ -39,26 +39,21 @@ type Purchase struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
-type Rating struct {
-	ProductID string    `json:"product_id"`
-	UserID    uuid.UUID `json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
-	Rating    float64   `json:"rating"`
-}
-
 type Review struct {
 	ProductID   string    `json:"product_id"`
 	UserID      uuid.UUID `json:"user_id"`
+	Rating      float64   `json:"rating"`
+	Title       string    `json:"title"`
 	Review      string    `json:"review"`
 	LastUpdated time.Time `json:"last_updated"`
 }
 
 type User struct {
-	ID        uuid.UUID   `json:"id"`
-	Email     interface{} `json:"email"`
-	Firstname string      `json:"firstname"`
-	Lastname  string      `json:"lastname"`
-	Phone     string      `json:"phone"`
+	ID        uuid.UUID `json:"id"`
+	Email     string    `json:"email"`
+	Firstname string    `json:"firstname"`
+	Lastname  string    `json:"lastname"`
+	Phone     string    `json:"phone"`
 }
 
 type UserCustomerID struct {

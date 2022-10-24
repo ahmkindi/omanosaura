@@ -26,9 +26,9 @@ func main() {
 
 	users := app.Group("/user", server.UserMiddleware)
 	users.Get("/", server.HandlerGetUser)
+	users.Put("/", server.HandlerUpdateUser)
 	users.Get("/logout", server.HandlerLogout)
 
-	users.Post("/products/rate", server.HandlerRateProduct)
 	users.Post("/products/review", server.HandlerReviewProduct)
 	users.Get("/products/:id/review", server.HandlerGetUserProductReview)
 	users.Delete("/products/:id/review", server.HandlerDeleteReviewProduct)

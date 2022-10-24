@@ -19,31 +19,6 @@ func (server *Server) HandlerDeleteProduct(c *fiber.Ctx) error {
 	return server.Queries.DeleteProduct(c.Context(), c.Params("id"))
 }
 
-func (server *Server) HandlerRateProduct(c *fiber.Ctx) error {
-	rating := new(database.RateProductParams)
-	if err := c.BodyParser(rating); err != nil {
-		return fiber.ErrBadRequest
-	}
-
-	user, ok := c.Locals("user").(database.User)
-	if !ok {
-		return fiber.ErrNotFound
-	}
-
-	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
-		ProductID: rating.ProductID,
-		UserID:    user.ID,
-	})
-	if err != nil {
-		return err
-	}
-	if !canRate {
-		return fiber.ErrUnauthorized
-	}
-
-	return server.Queries.RateProduct(c.Context(), *rating)
-}
-
 func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 	review := new(database.ReviewProductParams)
 	if err := c.BodyParser(review); err != nil {

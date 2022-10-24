@@ -1,7 +1,5 @@
 BEGIN;
 
-CREATE EXTENSION citext;
-
 CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY,
   kind TEXT NOT NULL CHECK (kind IN ('adventure', 'trip')),
@@ -22,7 +20,7 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY,
-	email CITEXT UNIQUE NOT NULL,
+	email TEXT UNIQUE NOT NULL,
   firstname TEXT NOT NULL,
   lastname TEXT NOT NULL,
 	phone TEXT NOT NULL

@@ -50,11 +50,11 @@ ON CONFLICT (id) DO UPDATE SET
 `
 
 type UpsertUserParams struct {
-	ID        uuid.UUID   `json:"id"`
-	Email     interface{} `json:"email"`
-	Firstname string      `json:"firstname"`
-	Lastname  string      `json:"lastname"`
-	Phone     string      `json:"phone"`
+	ID        uuid.UUID `json:"id"`
+	Email     string    `json:"email"`
+	Firstname string    `json:"firstname"`
+	Lastname  string    `json:"lastname"`
+	Phone     string    `json:"phone"`
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
