@@ -21,7 +21,7 @@ func main() {
 	app.Get("/login", server.HandlerUserLogin)
 	app.Get("/oauth-callback", server.HandlerOauthCallback)
 	app.Get("/products", server.HandlerGetAllProducts)
-	app.Get("/products/reviews", server.HandlerGetProductReviews)
+	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
 	app.Get("/products/:id", server.HandlerGetProduct)
 
 	users := app.Group("/user", server.UserMiddleware)

@@ -36,10 +36,10 @@ func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductRevi
 }
 
 const getAllProducts = `-- name: GetAllProducts :many
-SELECT products.id, products.kind, products.title, products.title_ar, products.subtitle, products.subtitle_ar, products.description, products.description_ar, products.photo, products.price_baisa, products.planned_dates, products.photos, products.longitude, products.latitude, products.last_updated, COALESCE(r.rating, 0), COALESCE(r.rating_count, 0), COALESCE(review.review_count, 0)
+SELECT products.id, products.kind, products.title, products.title_ar, products.subtitle, products.subtitle_ar, products.description, products.description_ar, products.photo, products.price_baisa, products.planned_dates, products.photos, products.longitude, products.latitude, products.last_updated, r.rating, r.rating_count, review.review_count
 FROM products
-LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
-LEFT JOIN (SELECT COUNT(*) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id
+LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
+LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id
 `
 
 type GetAllProductsRow struct {
@@ -58,9 +58,9 @@ type GetAllProductsRow struct {
 	Longitude     float64     `json:"longitude"`
 	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
-	Rating        int32       `json:"rating"`
-	RatingCount   int64       `json:"rating_count"`
-	ReviewCount   int64       `json:"review_count"`
+	Rating        interface{} `json:"rating"`
+	RatingCount   interface{} `json:"rating_count"`
+	ReviewCount   interface{} `json:"review_count"`
 }
 
 func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, error) {

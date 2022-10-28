@@ -56,10 +56,10 @@ INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_b
 VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE);
 
 -- name: GetAllProducts :many
-SELECT products.*, COALESCE(r.rating, 0), COALESCE(r.rating_count, 0), COALESCE(review.review_count, 0)
+SELECT products.*, r.rating, r.rating_count, review.review_count
 FROM products
-LEFT JOIN (SELECT SUM(rating)/COUNT(*) as rating, product_id, COUNT(*) AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
-LEFT JOIN (SELECT COUNT(*) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id;
+LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
+LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id;
 
 -- name: GetProduct :one
 SELECT *,
