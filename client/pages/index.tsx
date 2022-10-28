@@ -1,18 +1,26 @@
 import type { NextPage } from 'next'
-import useSWR from 'swr'
+import useTranslation from 'next-translate/useTranslation'
+import Link from 'next/link'
+import { Button } from 'react-bootstrap'
+import Box from '../components/Box'
 import Layout from '../components/Layout'
-import ProductCard from '../components/ProductCard'
 import Smartphone from '../components/Smartphone'
-import { Product } from '../types/requests'
-import { fetcher } from '../utils/axiosServer'
+import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
-  const { data: products} = useSWR('products', fetcher<Product[]>)
-  if (!products) return null
+  const { t } = useTranslation()
   return (
     <Layout>
-      <ProductCard product={products[products.length-1]} />
-      <Smartphone />
+      <Box>
+        <div>
+          <div className={styles.omanSlogan}>{t('omanSlogan')}</div>
+          <div className={styles.contact}>{t('introText')}</div>
+          <Link href="/experiences" passHref>
+            <Button className={styles.myButton}>{t('contactText')}</Button>
+          </Link>
+        </div>
+        <Smartphone />
+      </Box>
     </Layout>
   )
 }

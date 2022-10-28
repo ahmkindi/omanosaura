@@ -7,12 +7,5 @@
 }
 
 .nonFooter {
-  paddin-bottom: var(--footer-height);
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: var(--footer-height);
+  padding-bottom: calc(var(--footer-height) + 2rem);
 }

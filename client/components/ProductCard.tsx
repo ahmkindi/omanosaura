@@ -8,6 +8,7 @@ import { BsCashCoin } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
 import { Rating } from 'react-simple-star-rating'
 import Link from 'next/link'
+import { RatingWithCount } from './RatingWithCount'
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { lang } = useTranslation()
@@ -23,24 +24,10 @@ const ProductCard = ({ product }: { product: Product }) => {
           <Link passHref href={`/experiences/${product.id}`}>
             <h2>{isAr ? product.titleAr : product.title}</h2>
           </Link>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '0.9rem',
-            }}
-          >
-            <Rating
-              initialValue={product.rating}
-              allowFraction
-              size={23}
-              fillColor="var(--orange)"
-              readonly
-            />
-            <div>{`( ${product.ratingCount} ratings )`}</div>
-          </div>
+          <RatingWithCount
+            rating={product.rating}
+            ratingCount={product.ratingCount}
+          />
         </div>
         <p>{isAr ? product.subtitleAr : product.subtitle}</p>
         <div className={styles.info}>

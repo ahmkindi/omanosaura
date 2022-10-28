@@ -6,18 +6,20 @@ import {
   AiOutlineInstagram,
   AiFillPhone,
 } from 'react-icons/ai'
-import { Alert, Spinner } from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap'
 import { useState } from 'react'
 import axiosServer from '../utils/axiosServer'
 import { EmptyEmailForm } from '../types/requests'
-import styles from '../styles/contact.module.css'
+import styles from '../styles/contact.module.scss'
 import FlipCard from '../components/FlipCard'
+import { useGlobal } from '../context/global'
 
 const failedEmail = `oops! we couldn't send the email 😭| Try again, or contact us using one of the social icons above`
 const successEmail = `Check your email to ensure we got your message 😇|`
 
 const Contact = () => {
   const { t, lang } = useTranslation('contact')
+  const { setAlert } = useGlobal()
   const [formOpen, setFormOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState(EmptyEmailForm)
@@ -32,19 +34,17 @@ const Contact = () => {
     try {
       const response = await axiosServer.post('send', form)
       if (response.status === 200) {
-        setAlertText(successEmail)
+        setAlert?.({ type: 'success', message: successEmail })
       } else {
-        setAlertText(failedEmail)
+        setAlert?.({ type: 'warning', message: failedEmail })
       }
     } catch (error) {
-      setAlertText(failedEmail)
+      setAlert?.({ type: 'warning', message: failedEmail })
     } finally {
       setLoading(false)
       setFormOpen(false)
     }
   }
-
-  const [alertText, setAlertText] = useState('')
 
   return (
     <Layout title={t('title')}>
@@ -70,7 +70,7 @@ const Contact = () => {
               href="tel:+96892767527"
               onClick={() => {
                 navigator.clipboard.writeText('0096892767527')
-                setAlertText('Phone Number Copied 😎|')
+                setAlert?.({ type: 'light', message: successEmail })
               }}
             >
               <AiFillPhone />
