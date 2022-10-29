@@ -53,4 +53,16 @@ CREATE TABLE IF NOT EXISTS user_customer_id (
   customer_id TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS blogs (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  title_ar TEXT NOT NULL,
+  description_ar TEXT NOT NULL,
+  page TEXT NOT NULL,
+  page_ar TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id),
+  created_at DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
 COMMIT;

@@ -10,6 +10,18 @@ import (
 	"github.com/google/uuid"
 )
 
+type Blog struct {
+	ID            string    `json:"id"`
+	Title         string    `json:"title"`
+	Description   string    `json:"description"`
+	TitleAr       string    `json:"title_ar"`
+	DescriptionAr string    `json:"description_ar"`
+	Page          string    `json:"page"`
+	PageAr        string    `json:"page_ar"`
+	UserID        uuid.UUID `json:"user_id"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
 type Product struct {
 	ID            string      `json:"id"`
 	Kind          string      `json:"kind"`

@@ -25,6 +25,8 @@ func main() {
 	app.Get("/products", server.HandlerGetAllProducts)
 	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
 	app.Get("/products/:id", server.HandlerGetProduct)
+	app.Get("/blogs", server.HandlerGetAllBlogs)
+	app.Get("/blogs/:id", server.HandlerGetBlog)
 
 	users := app.Group("/user", server.UserMiddleware)
 	users.Get("/", server.HandlerGetUser)
@@ -41,7 +43,8 @@ func main() {
 	admin := users.Group("/admin", server.AdminMiddleware)
 	admin.Delete("/products/:id", server.HandlerDeleteProduct)
 	admin.Post("/products", server.HandlerUpsertProduct)
-	users.Get("/products/purchases", server.HandlerGetAllPurchases)
+	admin.Post("/blogs", server.HandlerUpsertBlog)
+	admin.Get("/products/purchases", server.HandlerGetAllPurchases)
 
 	app.Listen(":8081")
 }
