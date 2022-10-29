@@ -9,9 +9,11 @@ import Smartphone from '../components/Smartphone'
 import Testimonial from '../components/Testimonial'
 import styles from '../styles/Home.module.css'
 import WhatWeOffer from '../components/WhatWeOfferCard'
+import WhyUsCard from '../components/WhyUsCard'
+import { whatWeOffer, whyUsOptions } from '../types/whyUsOptions'
 
 const Home: NextPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('home')
 
   return (
     <Layout>
@@ -26,21 +28,38 @@ const Home: NextPage = () => {
         <Smartphone />
       </Box>
       <Section title={t('services')}>
-        {whatWeOffer.map((w) => (
-          <WhatWeOffer icon={w.icon} text={w.text} key={w.text} />
-        ))}
+        <div
+          style={{
+            display: 'flex',
+            gap: '3rem',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {whatWeOffer.map((w) => (
+            <WhatWeOffer
+              icon={w.icon}
+              text={w.text}
+              key={w.text}
+              href={w.href}
+            />
+          ))}
+        </div>
       </Section>
       <Section title={t('whyUs')}>
-        {whyUsOptions.map((w) => (
-          <WhyUsCard
-            icon={w.icon}
-            header={w.header}
-            desc={w.desc}
-            key={w.header}
-          />
-        ))}
+        <div className={styles.whyUs}>
+          {whyUsOptions.map((w) => (
+            <WhyUsCard
+              icon={w.icon}
+              header={w.header}
+              desc={w.desc}
+              key={w.header}
+            />
+          ))}
+        </div>
       </Section>
-      <Section title={t('review')}>
+      <Section title={t('reviews')}>
         <Testimonial />
       </Section>
     </Layout>

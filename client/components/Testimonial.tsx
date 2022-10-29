@@ -4,7 +4,7 @@ import styles from '../styles/Testimonial.module.scss'
 import Switch from 'react-switch'
 
 const Testimonial = () => {
-  const { t, lang } = useTranslation()
+  const { t, lang } = useTranslation('home')
   const [translate, setTranslate] = useState(false)
 
   return (

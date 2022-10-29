@@ -25,10 +25,12 @@ export const whyUsOptions = [
 export const whatWeOffer = [
   {
     icon: <Map />,
-    text: 'premade',
+    text: 'service1',
+    href: '/experiences',
   },
   {
     icon: <Adventurer />,
-    text: 'custom',
+    text: 'service2',
+    href: '/contact',
   },
 ]
