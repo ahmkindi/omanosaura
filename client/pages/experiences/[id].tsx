@@ -17,8 +17,9 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import styles from '../../styles/experiences.module.scss'
 import Box from '../../components/Box'
 import Reviews from '../../components/Reviews'
-import { Button } from 'react-bootstrap'
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import PurchaseModal from '../../components/PurchaseModal'
+import useUser from '../../hooks/useUser'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -50,6 +51,7 @@ const SingleExperience = () => {
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>) 
   const [openModal, setOpenModal] = useState(ModalTypes.none)
   const isAr = lang === 'ar'
+  const { user } = useUser()
 
   if (!product) return null
 
@@ -77,9 +79,18 @@ isAr ? product?.descriptionAr : product?.description
       <Button variant="outline-secondary" onClick={() => setOpenModal(ModalTypes.gallery)}>
           {t('gallery')}
       </Button>
-      <Button variant="outline-primary" onClick={() => setOpenModal(ModalTypes.purchase)}>
+   {user ?
+      <Button disabled={user === undefined} variant="outline-primary" onClick={() => setOpenModal(ModalTypes.purchase)}>
           {t('purchase')}
       </Button>
+   :
+       <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t('loginFirst')}</Tooltip>}>
+      <span className="d-inline-block">
+      <Button disabled variant="outline-primary">
+          {t('purchase')}
+      </Button>
+      </span>
+    </OverlayTrigger> } 
         </div>
       </div>
     </Box>

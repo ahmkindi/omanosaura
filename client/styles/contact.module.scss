@@ -276,19 +276,11 @@
 }
 
 .footer {
-  position: absolute;
-  height: 4rem;
-  width: 100%;
-}
-
-.footer {
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 0;
   width: 100%;
-  padding: 16px;
   height: var(--footer-height);
-  bottom: 2rem;
+  bottom: 20px;
 }

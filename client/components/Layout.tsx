@@ -5,7 +5,8 @@ import NavBar from './NavBar'
 import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
 import { useGlobal } from '../context/global'
-import { Alert, Toast } from 'react-bootstrap'
+import { Toast } from 'react-bootstrap'
+import Image from 'next/image'
 
 type LayoutProps = {
   title?: string
@@ -20,17 +21,27 @@ export const Layout = (props: LayoutProps): JSX.Element => {
   return (
     <div className={styles.layout} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       {alert && (
-        //TODO: complete reusable toast
         <Toast
-          variant={alert.type}
-          show={alert !== undefined}
           onClose={() => setAlert?.(undefined)}
-          dismissible
+          style={{
+            position: 'fixed',
+            right: '10px',
+            top: '10px',
+            zIndex: '900',
+          }}
         >
-          <Alert.Heading>
-            {alert.substring(0, alertText.indexOf('|'))}
-          </Alert.Heading>
-          <p>{alertText.substring(alertText.indexOf('|') + 1)}</p>
+          <Toast.Header>
+            <Image
+              src="/colored_small.png"
+              className="rounded mr-2"
+              alt="colored small omanosaura logo"
+              width={20}
+              height={20}
+            />
+            <strong className="me-auto">{t('common:company')}</strong>
+            <small>{alert.type}</small>
+          </Toast.Header>
+          <Toast.Body>{alert.message}</Toast.Body>
         </Toast>
       )}
       <Head>

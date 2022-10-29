@@ -1,9 +1,8 @@
 .mobile {
-  height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: end;
 }
+
 .phone {
   display: flex;
   justify-content: center;
@@ -14,6 +13,7 @@
   border-radius: 30px;
   padding: 10px;
 }
+
 .phoneMirror {
   position: relative;
   width: 328px;

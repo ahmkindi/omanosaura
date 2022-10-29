@@ -5,6 +5,7 @@ import (
 	"omanosaura/api"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -17,6 +18,7 @@ func main() {
 
 	app := fiber.New()
 	app.Use(logger.New())
+	app.Use(cors.New())
 	app.Post("/send", server.HandlerSendEmail)
 	app.Get("/login", server.HandlerUserLogin)
 	app.Get("/oauth-callback", server.HandlerOauthCallback)
@@ -33,11 +35,13 @@ func main() {
 	users.Get("/products/:id/review", server.HandlerGetUserProductReview)
 	users.Delete("/products/:id/review", server.HandlerDeleteReviewProduct)
 	users.Post("/products/purchase", server.HandlerPurchaseProduct)
-	users.Post("/purchase/success/:id", server.HandlerPurchaseSuccess)
+	users.Get("/products/purchase", server.HandlerGetUserPurchases)
+	users.Get("/purchase/success/:id", server.HandlerPurchaseSuccess)
 
 	admin := users.Group("/admin", server.AdminMiddleware)
 	admin.Delete("/products/:id", server.HandlerDeleteProduct)
 	admin.Post("/products", server.HandlerUpsertProduct)
+	users.Get("/products/purchases", server.HandlerGetAllPurchases)
 
 	app.Listen(":8081")
 }

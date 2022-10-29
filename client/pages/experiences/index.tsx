@@ -7,8 +7,6 @@ import {
   Marker,
   ZoomableGroup,
 } from 'react-simple-maps'
-import { InputGroup, Form, Button } from 'react-bootstrap'
-import { FiSearch } from 'react-icons/fi'
 import useWindowDimensions from '../../hooks/useWindowDimentions'
 import { Product } from '../../types/requests'
 import { useMemo, useState } from 'react'
@@ -18,10 +16,11 @@ import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
 import useSWR, { SWRConfig } from 'swr'
 import { fetcher } from '../../utils/axiosServer'
+import SearchBar from '../../components/SearchBar'
 
 export async function getServerSideProps() {
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
-  const { data: products }: AxiosResponse<Product[]> = await axios(
+  const { data: products }: AxiosResponse<Product[]> = await axios.get(
     'http://localhost:3000/server/products'
   )
   return {
@@ -41,7 +40,7 @@ const Experiences = () => {
   const { width, height } = useWindowDimensions()
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
-  const { search } = router.query
+  const { search, view } = router.query
   const { data: products } = useSWR('products', fetcher<Product[]>)
 
   const filteredProducts = useMemo(
@@ -62,20 +61,10 @@ const Experiences = () => {
 
   return (
     <Layout title={t('title')}>
-      <InputGroup className="mb-4 mt-4 p-2">
-        <Form.Control
-          placeholder="Search Experiences"
-          aria-label="Search Experiences"
-          onChange={(e) => {
-            router.query.search = e.target.value
-            router.push(router)
-          }}
-          value={search}
-        />
-        <Button variant="secondary">
-          <FiSearch />
-        </Button>
-      </InputGroup>
+      <SearchBar />
+      {view === "list" ? <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap'}}>
+        {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
+      </div> : 
       <ComposableMap
         projectionConfig={{
           scale: 10000,
@@ -118,7 +107,7 @@ const Experiences = () => {
               ))
             }
           </Geographies>
-          {filteredProducts.map((p) => (
+          {filteredProducts?.map((p) => (
             <Marker
               key={p.id}
               coordinates={[p.longitude, p.latitude]}
@@ -147,6 +136,7 @@ const Experiences = () => {
           ))}
         </ZoomableGroup>
       </ComposableMap>
+    }
         </Layout>
   )
 }

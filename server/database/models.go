@@ -36,6 +36,7 @@ type Purchase struct {
 	Paid              bool      `json:"paid"`
 	CostBaisa         int32     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
+	Complete          bool      `json:"complete"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 

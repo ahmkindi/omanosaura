@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS purchases (
   paid BOOLEAN NOT NULL,
   cost_baisa INTEGER NOT NULL,
   chosen_date DATE NOT NULL,
+  complete BOOLEAN NOT NULL,
   created_at DATE NOT NULL DEFAULT CURRENT_DATE
 );
 

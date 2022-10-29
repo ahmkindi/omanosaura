@@ -6,7 +6,6 @@ import { BiTrip } from 'react-icons/bi'
 import { GiMountainClimbing } from 'react-icons/gi'
 import { BsCashCoin } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
-import { Rating } from 'react-simple-star-rating'
 import Link from 'next/link'
 import { RatingWithCount } from './RatingWithCount'
 

@@ -27,13 +27,13 @@ type SessionMetaData struct {
 }
 
 type CreateSessionReq struct {
-	ClientReferenceId string      `json:"client_reference_id"`
-	Mode              mode.Type   `json:"mode"`
-	Products          []Product   `json:"products"`
-	SuccessUrl        string      `json:"success_url"`
-	CancelUrl         string      `json:"cancel_url"`
-	CustomerId        string      `json:"customer_id"`
-	Metadata          interface{} `json:"metadata"`
+	ClientReferenceId string            `json:"client_reference_id"`
+	Mode              mode.Type         `json:"mode"`
+	Products          []Product         `json:"products"`
+	SuccessUrl        string            `json:"success_url"`
+	CancelUrl         string            `json:"cancel_url"`
+	CustomerId        string            `json:"customer_id"`
+	Metadata          map[string]string `json:"metadata"`
 }
 
 type CustomerData struct {
@@ -67,6 +67,6 @@ type CreateCustomerResp struct {
 
 type Session struct {
 	BasicResponse
-	Data     SessionData `json:"data"`
-	Metadata interface{} `json:"metadata"`
+	Data     SessionData            `json:"data"`
+	Metadata map[string]interface{} `json:"metadata"`
 }

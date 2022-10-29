@@ -52,8 +52,8 @@ SELECT EXISTS (
 );
 
 -- name: InsertPurchase :exec
-INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE);
+INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE);
 
 -- name: GetAllProducts :many
 SELECT products.*, r.rating, r.rating_count, review.review_count
@@ -82,3 +82,15 @@ SELECT rating, review, last_updated FROM reviews WHERE product_id=$1 AND user_id
 
 -- name: GetBasicProduct :one
 SELECT * FROM products WHERE id = $1;
+
+-- name: CompletePurchase :exec
+UPDATE purchases SET complete=true WHERE id=$1;
+
+-- name: GetUserPurchases :many
+SELECT * FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 ORDER BY purchases.created_at;
+
+-- name: GetAllPurchases :many
+SELECT * FROM purchases
+INNER JOIN products on purchases.product_id = products.id
+INNER JOIN users on users.id = purchases.user_id
+ORDER BY purchases.chosen_date;

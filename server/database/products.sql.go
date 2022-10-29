@@ -12,6 +12,15 @@ import (
 	"github.com/google/uuid"
 )
 
+const completePurchase = `-- name: CompletePurchase :exec
+UPDATE purchases SET complete=true WHERE id=$1
+`
+
+func (q *Queries) CompletePurchase(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, completePurchase, id)
+	return err
+}
+
 const deleteProduct = `-- name: DeleteProduct :exec
 DELETE FROM products WHERE id = $1
 `
@@ -91,6 +100,95 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 			&i.Rating,
 			&i.RatingCount,
 			&i.ReviewCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllPurchases = `-- name: GetAllPurchases :many
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, users.id, email, firstname, lastname, phone FROM purchases
+INNER JOIN products on purchases.product_id = products.id
+INNER JOIN users on users.id = purchases.user_id
+ORDER BY purchases.chosen_date
+`
+
+type GetAllPurchasesRow struct {
+	ID                uuid.UUID   `json:"id"`
+	ProductID         string      `json:"product_id"`
+	UserID            uuid.UUID   `json:"user_id"`
+	NumOfParticipants int32       `json:"num_of_participants"`
+	Paid              bool        `json:"paid"`
+	CostBaisa         int32       `json:"cost_baisa"`
+	ChosenDate        time.Time   `json:"chosen_date"`
+	Complete          bool        `json:"complete"`
+	CreatedAt         time.Time   `json:"created_at"`
+	ID_2              string      `json:"id_2"`
+	Kind              string      `json:"kind"`
+	Title             string      `json:"title"`
+	TitleAr           string      `json:"title_ar"`
+	Subtitle          string      `json:"subtitle"`
+	SubtitleAr        string      `json:"subtitle_ar"`
+	Description       string      `json:"description"`
+	DescriptionAr     string      `json:"description_ar"`
+	Photo             string      `json:"photo"`
+	PriceBaisa        int32       `json:"price_baisa"`
+	PlannedDates      []time.Time `json:"planned_dates"`
+	Photos            []string    `json:"photos"`
+	Longitude         float64     `json:"longitude"`
+	Latitude          float64     `json:"latitude"`
+	LastUpdated       time.Time   `json:"last_updated"`
+	ID_3              uuid.UUID   `json:"id_3"`
+	Email             string      `json:"email"`
+	Firstname         string      `json:"firstname"`
+	Lastname          string      `json:"lastname"`
+	Phone             string      `json:"phone"`
+}
+
+func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, error) {
+	rows, err := q.db.Query(ctx, getAllPurchases)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetAllPurchasesRow{}
+	for rows.Next() {
+		var i GetAllPurchasesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProductID,
+			&i.UserID,
+			&i.NumOfParticipants,
+			&i.Paid,
+			&i.CostBaisa,
+			&i.ChosenDate,
+			&i.Complete,
+			&i.CreatedAt,
+			&i.ID_2,
+			&i.Kind,
+			&i.Title,
+			&i.TitleAr,
+			&i.Subtitle,
+			&i.SubtitleAr,
+			&i.Description,
+			&i.DescriptionAr,
+			&i.Photo,
+			&i.PriceBaisa,
+			&i.PlannedDates,
+			&i.Photos,
+			&i.Longitude,
+			&i.Latitude,
+			&i.LastUpdated,
+			&i.ID_3,
+			&i.Email,
+			&i.Firstname,
+			&i.Lastname,
+			&i.Phone,
 		); err != nil {
 			return nil, err
 		}
@@ -263,9 +361,85 @@ func (q *Queries) GetUserProductReview(ctx context.Context, arg GetUserProductRe
 	return i, err
 }
 
+const getUserPurchases = `-- name: GetUserPurchases :many
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 ORDER BY purchases.created_at
+`
+
+type GetUserPurchasesRow struct {
+	ID                uuid.UUID   `json:"id"`
+	ProductID         string      `json:"product_id"`
+	UserID            uuid.UUID   `json:"user_id"`
+	NumOfParticipants int32       `json:"num_of_participants"`
+	Paid              bool        `json:"paid"`
+	CostBaisa         int32       `json:"cost_baisa"`
+	ChosenDate        time.Time   `json:"chosen_date"`
+	Complete          bool        `json:"complete"`
+	CreatedAt         time.Time   `json:"created_at"`
+	ID_2              string      `json:"id_2"`
+	Kind              string      `json:"kind"`
+	Title             string      `json:"title"`
+	TitleAr           string      `json:"title_ar"`
+	Subtitle          string      `json:"subtitle"`
+	SubtitleAr        string      `json:"subtitle_ar"`
+	Description       string      `json:"description"`
+	DescriptionAr     string      `json:"description_ar"`
+	Photo             string      `json:"photo"`
+	PriceBaisa        int32       `json:"price_baisa"`
+	PlannedDates      []time.Time `json:"planned_dates"`
+	Photos            []string    `json:"photos"`
+	Longitude         float64     `json:"longitude"`
+	Latitude          float64     `json:"latitude"`
+	LastUpdated       time.Time   `json:"last_updated"`
+}
+
+func (q *Queries) GetUserPurchases(ctx context.Context, userID uuid.UUID) ([]GetUserPurchasesRow, error) {
+	rows, err := q.db.Query(ctx, getUserPurchases, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetUserPurchasesRow{}
+	for rows.Next() {
+		var i GetUserPurchasesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProductID,
+			&i.UserID,
+			&i.NumOfParticipants,
+			&i.Paid,
+			&i.CostBaisa,
+			&i.ChosenDate,
+			&i.Complete,
+			&i.CreatedAt,
+			&i.ID_2,
+			&i.Kind,
+			&i.Title,
+			&i.TitleAr,
+			&i.Subtitle,
+			&i.SubtitleAr,
+			&i.Description,
+			&i.DescriptionAr,
+			&i.Photo,
+			&i.PriceBaisa,
+			&i.PlannedDates,
+			&i.Photos,
+			&i.Longitude,
+			&i.Latitude,
+			&i.LastUpdated,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertPurchase = `-- name: InsertPurchase :exec
-INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE)
+INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
 `
 
 type InsertPurchaseParams struct {
@@ -276,6 +450,7 @@ type InsertPurchaseParams struct {
 	Paid              bool      `json:"paid"`
 	CostBaisa         int32     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
+	Complete          bool      `json:"complete"`
 }
 
 func (q *Queries) InsertPurchase(ctx context.Context, arg InsertPurchaseParams) error {
@@ -287,6 +462,7 @@ func (q *Queries) InsertPurchase(ctx context.Context, arg InsertPurchaseParams) 
 		arg.Paid,
 		arg.CostBaisa,
 		arg.ChosenDate,
+		arg.Complete,
 	)
 	return err
 }

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import useUser from '../hooks/useUser'
-import styles from '../styles/Navbar.module.css'
+import styles from '../styles/Navbar.module.scss'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import { navoptions } from '../types/navoptions'
 import { useGlobal } from '../context/global'
@@ -23,13 +23,14 @@ const NavBar = () => {
     <header className={styles.header}>
       <div className={`${styles.navbar} ${isAr ? styles.navbarAr : null}`}>
         <Link href={'/'}>
-          <Image
-            src={isAr ? '/logo_ar.png' : '/main_logo.png'}
-            alt="omanosaura"
-            width={320}
-            height={85.97}
-            layout="intrinsic"
-          />
+          <div className={styles.imageContainer}>
+            <Image
+              src={isAr ? '/logo_ar.png' : '/main_logo.png'}
+              alt="omanosaura"
+              width={320}
+              height={85.97}
+            />
+          </div>
         </Link>
         <svg className={styles.navSVG}>
           <defs>

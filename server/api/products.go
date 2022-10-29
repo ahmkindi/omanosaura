@@ -13,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 )
 
 func (server *Server) HandlerDeleteProduct(c *fiber.Ctx) error {
@@ -123,6 +124,29 @@ func (server *Server) HandlerGetUserProductReview(c *fiber.Ctx) error {
 	return c.JSON(productReview)
 }
 
+func (server *Server) HandlerGetUserPurchases(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fiber.ErrForbidden
+	}
+
+	purchases, err := server.Queries.GetUserPurchases(c.Context(), user.ID)
+	if err != nil {
+		return fmt.Errorf("failed to get user purchases: %w", err)
+	}
+
+	return c.JSON(purchases)
+}
+
+func (server *Server) HandlerGetAllPurchases(c *fiber.Ctx) error {
+	purchases, err := server.Queries.GetAllPurchases(c.Context())
+	if err != nil {
+		return fmt.Errorf("failed to get all purchases: %w", err)
+	}
+
+	return c.JSON(purchases)
+}
+
 func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 	req := new(PurchaseProductReq)
 	if err := c.BodyParser(req); err != nil {
@@ -140,15 +164,13 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 
 	user, ok := c.Locals("user").(database.User)
 	if !ok {
-		return fiber.ErrInternalServerError
+		return fiber.ErrUnauthorized
 	}
 
 	// 25% off for trips if 4 or more people are attending
-	if product.Kind == "t" && req.Quantity >= 4 {
+	if product.Kind == "trip" && req.Quantity >= 4 {
 		product.PriceBaisa /= 4
 	}
-
-	//TODO: if its in a planned date then whats the discount?
 
 	purchase := database.InsertPurchaseParams{
 		ID:                uuid.New(),
@@ -158,79 +180,71 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		Paid:              false,
 		ChosenDate:        req.ChosenDate,
 		CostBaisa:         int32(req.Quantity) * product.PriceBaisa,
+		Complete:          req.Cash,
+	}
+	err = server.Queries.InsertPurchase(c.Context(), purchase)
+	if err != nil {
+		return fmt.Errorf("failed to insert purchase: %w", err)
 	}
 	if req.Cash {
-		return server.Queries.InsertPurchase(c.Context(), purchase)
+		return nil
 	}
 
 	customerId, err := server.Queries.GetUserCustomerId(c.Context(), user.ID)
-	if err != nil && err != sql.ErrNoRows {
-		return err
+	if err != nil && err != pgx.ErrNoRows {
+		return fmt.Errorf("failed to get customer id: %w", err)
 	}
 	if err != sql.ErrNoRows {
 		customer, err := server.ThawaniClient.CreateCustomer(thawani.CreateCustomerReq{
 			ClientCustomerId: user.ID.String(),
 		})
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create customer: %w", err)
 		}
 		customerId = customer.Data.Id
 	}
 
-	referenceId := uuid.NewString()
-
+	fmt.Printf("purchase created is: %+v", purchase)
 	newSessionReq := thawani.CreateSessionReq{
-		ClientReferenceId: referenceId,
+		ClientReferenceId: purchase.ID.String(),
 		Mode:              mode.Payment,
 		Products: []thawani.Product{{
 			Name:       product.Title,
 			Quantity:   req.Quantity,
 			UnitAmount: int(product.PriceBaisa),
 		}},
-		SuccessUrl: fmt.Sprintf("%s/server/user/purchase/success/%s", server.Config.BaseUrl, referenceId),
-		CancelUrl:  fmt.Sprintf("%s/trips/%s", server.Config.BaseUrl, product.ID),
+		SuccessUrl: fmt.Sprintf("%s/server/user/purchase/success/%s", server.Config.BaseUrl, purchase.ID),
+		CancelUrl:  fmt.Sprintf("%s/experiences/%s", server.Config.BaseUrl, product.ID),
 		CustomerId: customerId,
-		Metadata:   purchase,
 	}
 
-	_, redirectTo, err := server.ThawaniClient.CreateSession(newSessionReq)
+	_, redirectURI, err := server.ThawaniClient.CreateSession(newSessionReq)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create thawani session: %w", err)
 	}
 
-	return c.Redirect(redirectTo)
+	// return c.Redirect(fmt.Sprintf("%s/pay/%s?key=%s", server.Config.BaseUrl, s.Data.SessionId, server.Config.ThawaniPublishableKey))
+	return c.JSON(redirectURI)
 }
 
 func (server *Server) HandlerPurchaseSuccess(c *fiber.Ctx) error {
-	// Get session by client reference
-	user, ok := c.Locals("user").(database.User)
-	if !ok {
-		return fiber.ErrNotFound
-	}
-
-	customerId, err := server.Queries.GetUserCustomerId(c.Context(), user.ID)
+	session, err := server.ThawaniClient.GetSessionByClientReference(c.Params("id"))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get session from client reference: %w", err)
 	}
 
-	session, err := server.ThawaniClient.GetSessionByClientReference(customerId)
+	purchaseID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
-		return err
-	}
-
-	purchase, ok := session.Metadata.(database.InsertPurchaseParams)
-	if !ok {
-		return fmt.Errorf("Failed to get purchase metadata from session")
+		return fmt.Errorf("failed to parse client reference id into uuid: %w", err)
 	}
 
 	if session.Data.PaymentStatus == paymentstatus.Paid {
-		purchase.Paid = true
-		err = server.Queries.InsertPurchase(c.Context(), purchase)
+		err = server.Queries.CompletePurchase(c.Context(), purchaseID)
 		if err != nil {
-			return fmt.Errorf("Failed to insert new purchase: %w", err)
+			return fmt.Errorf("Failed to update purchase to complete: %w", err)
 		}
 	}
 
 	// TODO: Maybe if cancelled or unpaid go to a different page
-	return c.Redirect(fmt.Sprintf("%s/user/%s/purchases", server.Config.BaseUrl, user.ID))
+	return c.Redirect(fmt.Sprintf("%s/purchases", server.Config.BaseUrl))
 }

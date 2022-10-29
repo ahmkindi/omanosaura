@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Rating } from "react-simple-star-rating";
 import useSWRInfinite from "swr/infinite";
 import {
@@ -29,7 +29,7 @@ const Reviews = ({ product }: { product: Product }) => {
   };
 
   const ReviewSchema = Yup.object().shape({
-    title: Yup.string().min(1, t('common:tooShort')).max(50, t('common:tooLong')).optional(),
+    title: Yup.string().min(1, t('common:tooShort')).max(30, t('common:tooLong')).optional(),
     review: Yup.string().min(2, t('common:tooShort')).optional(),
   });
 
@@ -46,7 +46,6 @@ const Reviews = ({ product }: { product: Product }) => {
   const handleSubmit = async (values: UserReview) => {
     try {
       const response = await axiosServer.post('user/products/review', values)
-      //TODO: Use reusable toast
       if (response.status === 200) {
         setAlert?.({ type: 'success', message: t('experiences:successfulReview')})
       } else {
@@ -69,7 +68,15 @@ const Reviews = ({ product }: { product: Product }) => {
             ratingCount={product.ratingCount}
           />
         </div>
-        {user && <Button variant="outline-primary" onClick={() => setOpenModal(true)}>{t('addReview')}</Button>}
+
+   {user ?
+<Button variant="outline-primary" onClick={() => setOpenModal(true)}>{t('addReview')}</Button>
+   :
+       <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t('loginFirst')}</Tooltip>}>
+      <span className="d-inline-block">
+<Button variant="outline-primary" disabled>{t('addReview')}</Button>
+      </span>
+    </OverlayTrigger> } 
       </div>
         {reviews ?
 <ResponsiveMasonry
@@ -93,7 +100,7 @@ const Reviews = ({ product }: { product: Product }) => {
             onSubmit={handleSubmit}
             validationSchema={ReviewSchema}
           >
-            {({ errors, handleChange, values, setValues }) => (
+            {({ errors, handleChange, values, setValues, touched }) => (
               <FormikForm>
                 <Rating
                   initialValue={values.rating}
@@ -108,12 +115,12 @@ const Reviews = ({ product }: { product: Product }) => {
                 <Form.Group className="mb-4 mt-4">
                   <Form.Label>{t('experiences:reviewTitle')}</Form.Label>
                   <Form.Control
-                    name="tilte"
+                    name="title"
                     value={values.title}
                     type="text"
                     placeholder="Enter short title"
                     onChange={handleChange}
-                    isInvalid={errors.title !== undefined}
+                    isInvalid={errors.title !== undefined && (errors.title.length > 0) && touched.title}
                   />
                   <Form.Text className="invalid-feedback">
                     {errors.title}
@@ -126,18 +133,14 @@ const Reviews = ({ product }: { product: Product }) => {
                     name="review"
                     value={values.review}
                     onChange={handleChange}
-                    isInvalid={errors.rating !== undefined}
+                    isInvalid={errors.review !== undefined && (errors.review.length > 0) && touched.review}
                     as="textarea"
                     rows={4}
                   />
                   <Form.Text className="invalid-feedback">
-                    {errors.rating}
+                    {errors.review}
                   </Form.Text>
                 </Form.Group>
-              </FormikForm>
-            )}
-          </Formik>
-        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setOpenModal(false)}>
             {t('close')}
@@ -146,6 +149,10 @@ const Reviews = ({ product }: { product: Product }) => {
             {t('submit')}
           </Button>
         </Modal.Footer>
+              </FormikForm>
+            )}
+          </Formik>
+        </Modal.Body>
       </Modal>
     }
     </div>
