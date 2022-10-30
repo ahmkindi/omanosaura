@@ -39,7 +39,6 @@ export const Layout = (props: LayoutProps): JSX.Element => {
               height={20}
             />
             <strong className="me-auto">{t('common:company')}</strong>
-            <small>{alert.type}</small>
           </Toast.Header>
           <Toast.Body>{alert.message}</Toast.Body>
         </Toast>

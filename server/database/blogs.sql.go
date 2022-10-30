@@ -13,7 +13,7 @@ import (
 )
 
 const getBlog = `-- name: GetBlog :one
-SELECT blogs.id, title, description, title_ar, description_ar, page, page_ar, user_id, created_at, users.id, email, firstname, lastname, phone
+SELECT blogs.id, title, description, title_ar, description_ar, page, page_ar, user_id, created_at, users.id, email, firstname, lastname, phone, roles
 FROM blogs INNER JOIN users ON users.id = blogs.user_id
 WHERE blogs.id = $1
 `
@@ -33,6 +33,7 @@ type GetBlogRow struct {
 	Firstname     string    `json:"firstname"`
 	Lastname      string    `json:"lastname"`
 	Phone         string    `json:"phone"`
+	Roles         []string  `json:"roles"`
 }
 
 func (q *Queries) GetBlog(ctx context.Context, id string) (GetBlogRow, error) {
@@ -53,12 +54,13 @@ func (q *Queries) GetBlog(ctx context.Context, id string) (GetBlogRow, error) {
 		&i.Firstname,
 		&i.Lastname,
 		&i.Phone,
+		&i.Roles,
 	)
 	return i, err
 }
 
 const getBlogs = `-- name: GetBlogs :many
-SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, users.id, users.email, users.firstname, users.lastname, users.phone
+SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, users.id, users.email, users.firstname, users.lastname, users.phone, users.roles
 FROM blogs INNER JOIN users ON users.id = blogs.user_id
 ORDER BY created_at
 `
@@ -75,6 +77,7 @@ type GetBlogsRow struct {
 	Firstname     string    `json:"firstname"`
 	Lastname      string    `json:"lastname"`
 	Phone         string    `json:"phone"`
+	Roles         []string  `json:"roles"`
 }
 
 func (q *Queries) GetBlogs(ctx context.Context) ([]GetBlogsRow, error) {
@@ -98,6 +101,7 @@ func (q *Queries) GetBlogs(ctx context.Context) ([]GetBlogsRow, error) {
 			&i.Firstname,
 			&i.Lastname,
 			&i.Phone,
+			&i.Roles,
 		); err != nil {
 			return nil, err
 		}

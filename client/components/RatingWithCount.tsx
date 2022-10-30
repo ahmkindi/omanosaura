@@ -1,3 +1,4 @@
+import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
 import { Rating } from 'react-simple-star-rating'
 
@@ -8,6 +9,8 @@ export const RatingWithCount = ({
   rating: number
   ratingCount: number
 }) => {
+  const { t } = useTranslation('common')
+
   return (
     <div
       style={{
@@ -25,7 +28,7 @@ export const RatingWithCount = ({
         fillColor="var(--orange)"
         readonly
       />
-      <div>{`( ${ratingCount} ratings )`}</div>
+      <div>{t('ratings', { ratingCount: ratingCount })}</div>
     </div>
   )
 }

@@ -20,7 +20,7 @@ import { RatingWithCount } from "./RatingWithCount";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
 const Reviews = ({ product }: { product: Product }) => {
-  const { t, lang } = useTranslation();
+  const { t, lang } = useTranslation('experiences');
   const { setAlert } = useGlobal()
 
   const getKey = (pageIndex: number, previousPageData: Review[]) => {
@@ -90,9 +90,9 @@ const Reviews = ({ product }: { product: Product }) => {
 : <h4>No customer reviews yet 😔</h4>
       }
       {openModal && 
-      <Modal show onHide={() => setOpenModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('experiences:userReview', {name: user?.firstname})}</Modal.Title>
+      <Modal show onHide={() => setOpenModal(false)} dir={isAr ? 'rtl' : 'ltr'}>
+        <Modal.Header closeButton={!isAr}>
+          <Modal.Title>{t('userReview', {name: user?.firstname})}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
@@ -118,7 +118,6 @@ const Reviews = ({ product }: { product: Product }) => {
                     name="title"
                     value={values.title}
                     type="text"
-                    placeholder="Enter short title"
                     onChange={handleChange}
                     isInvalid={errors.title !== undefined && (errors.title.length > 0) && touched.title}
                   />
@@ -142,10 +141,10 @@ const Reviews = ({ product }: { product: Product }) => {
                   </Form.Text>
                 </Form.Group>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setOpenModal(false)}>
+          <Button variant="outline-secondary" onClick={() => setOpenModal(false)}>
             {t('close')}
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="outline-primary" type="submit">
             {t('submit')}
           </Button>
         </Modal.Footer>

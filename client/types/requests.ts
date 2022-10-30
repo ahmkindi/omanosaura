@@ -6,6 +6,7 @@ export interface User {
   firstname: string
   lastname: string
   phone: string
+  roles: string[]
 }
 
 export interface EmailForm {
@@ -97,3 +98,5 @@ export interface Purchase extends ProductDetails {
   chosenDate: Date
   createdAt: Date
 }
+
+export interface UserPurchase extends Purchase, User {}

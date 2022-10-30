@@ -12,7 +12,7 @@ import (
 )
 
 const getUser = `-- name: GetUser :one
-SELECT id, email, firstname, lastname, phone FROM users WHERE id = $1
+SELECT id, email, firstname, lastname, phone, roles FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
@@ -24,6 +24,7 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Firstname,
 		&i.Lastname,
 		&i.Phone,
+		&i.Roles,
 	)
 	return i, err
 }

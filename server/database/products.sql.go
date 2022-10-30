@@ -112,7 +112,7 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 }
 
 const getAllPurchases = `-- name: GetAllPurchases :many
-SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, users.id, email, firstname, lastname, phone FROM purchases
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, users.id, email, firstname, lastname, phone, roles FROM purchases
 INNER JOIN products on purchases.product_id = products.id
 INNER JOIN users on users.id = purchases.user_id
 ORDER BY purchases.chosen_date
@@ -148,6 +148,7 @@ type GetAllPurchasesRow struct {
 	Firstname         string      `json:"firstname"`
 	Lastname          string      `json:"lastname"`
 	Phone             string      `json:"phone"`
+	Roles             []string    `json:"roles"`
 }
 
 func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, error) {
@@ -189,6 +190,7 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 			&i.Firstname,
 			&i.Lastname,
 			&i.Phone,
+			&i.Roles,
 		); err != nil {
 			return nil, err
 		}

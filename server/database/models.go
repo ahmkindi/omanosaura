@@ -67,6 +67,7 @@ type User struct {
 	Firstname string    `json:"firstname"`
 	Lastname  string    `json:"lastname"`
 	Phone     string    `json:"phone"`
+	Roles     []string  `json:"roles"`
 }
 
 type UserCustomerID struct {

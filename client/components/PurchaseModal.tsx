@@ -13,8 +13,10 @@ import { getTomorrow } from '../utils/dates'
 import axiosServer from '../utils/axiosServer'
 import { useGlobal } from '../context/global'
 import { useRouter } from 'next/router'
-import ReactDatePicker from 'react-datepicker'
+import ReactDatePicker, { registerLocale } from 'react-datepicker'
+import ar from 'date-fns/locale/ar'
 import 'react-datepicker/dist/react-datepicker.css'
+import { getTotalPrice } from '../utils/price'
 
 const PurchaseModal = ({
   product,
@@ -23,8 +25,10 @@ const PurchaseModal = ({
   product: Product
   setOpenModal: React.Dispatch<React.SetStateAction<ModalTypes>>
 }) => {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation('experiences')
   const { setAlert } = useGlobal()
+  const isAr = lang === 'ar'
+  registerLocale('ar', ar)
 
   const PurchaseSchema = Yup.object().shape({
     quantity: Yup.number()
@@ -32,7 +36,7 @@ const PurchaseModal = ({
       .min(1, t('common:tooLittle'))
       .max(500, t('common:tooMany'))
       .required(),
-    chosenDate: Yup.date().min(getTomorrow(), t('common:tooShort')).required(),
+    chosenDate: Yup.date().min(getTomorrow(), t('common:tooEarly')).required(),
   })
   const router = useRouter()
 
@@ -46,34 +50,34 @@ const PurchaseModal = ({
       if (response.status === 200 && values.cash) {
         setAlert?.({
           type: 'success',
-          message: t('experiences:successfulPurchase'),
+          message: t('successfulPurchase'),
         })
       } else if (response.status === 200 && !values.cash) {
         router.push(response.data)
       } else {
         setAlert?.({
           type: 'warning',
-          message: t('experiences:failedPurchase'),
+          message: t('failedPurchase'),
         })
       }
     } catch (error) {
-      setAlert?.({ type: 'warning', message: t('experiences:failedPurchase') })
+      setAlert?.({ type: 'warning', message: t('failedPurchase') })
     } finally {
       setOpenModal(ModalTypes.none)
     }
   }
 
-  const highlightDates = [
-    {
-      'react-datepicker__day--highlighted-custom-1': product.plannedDates,
-    },
-  ]
-
   return (
-    <Modal show onHide={() => setOpenModal(ModalTypes.none)}>
-      <Modal.Header closeButton>
+    <Modal
+      show
+      onHide={() => setOpenModal(ModalTypes.none)}
+      dir={isAr ? 'rtl' : 'ltr'}
+    >
+      <Modal.Header>
         <Modal.Title>
-          {t('experiences:purchase', { product: product.title })}
+          {t('purchaseTitle', {
+            product: isAr ? product.titleAr : product.title,
+          })}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -85,8 +89,9 @@ const PurchaseModal = ({
           {({ errors, handleChange, values, setValues, touched }) => (
             <FormikForm>
               <Form.Group className="mb-4">
-                <Form.Label>{t('experiences:numOfParticipants')}</Form.Label>
+                <Form.Label>{t('numOfParticipants')}</Form.Label>
                 <Form.Control
+                  step={1}
                   name="quantity"
                   value={values.quantity}
                   type="number"
@@ -102,7 +107,7 @@ const PurchaseModal = ({
                 </Form.Text>
               </Form.Group>
               <Form.Group className="mb-4">
-                <Form.Label>{t('experiences:reviewDesc')}</Form.Label>
+                <Form.Label>{t('chosenDate')}</Form.Label>
                 <ReactDatePicker
                   selected={values.chosenDate}
                   onChange={(date) =>
@@ -110,31 +115,43 @@ const PurchaseModal = ({
                   }
                   minDate={getTomorrow()}
                   highlightDates={product.plannedDates.map((d) => new Date(d))}
+                  locale={lang}
                 />
                 <Form.Text className="invalid-feedback">
                   {getIn(errors, 'chosenDate')}
                 </Form.Text>
-                <Form.Text className="muted">
-                  {t('experiences:explainGreen')}
-                </Form.Text>
+                <Form.Text className="muted">{t('explainGreen')}</Form.Text>
               </Form.Group>
               <Form.Group className="mb-4">
-                <Form.Label>{t('experiences:payCash')}</Form.Label>
+                <Form.Label>{t('payCash')}</Form.Label>
                 <Form.Check
                   type="switch"
-                  label={t('cash')}
+                  label={values.cash ? t('cash') : t('card')}
                   name="cash"
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, cash: !prev.cash }))
+                  }
                 />
               </Form.Group>
+              <div className="mb-4" style={{ fontSize: '1.2rem'}}>
+                {t('totalPrice')}
+                <span style={{ fontWeight: 'bold'}}>
+                  {getTotalPrice(
+                    lang,
+                    product,
+                    values.quantity,
+                    values.chosenDate
+                  )}
+                </span>
+              </div>
               <Modal.Footer>
                 <Button
-                  variant="secondary"
+                  variant="outline-secondary"
                   onClick={() => setOpenModal(ModalTypes.none)}
                 >
                   {t('close')}
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button variant="outline-primary" type="submit">
                   {t('submit')}
                 </Button>
               </Modal.Footer>

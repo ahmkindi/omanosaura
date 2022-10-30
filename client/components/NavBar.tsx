@@ -15,7 +15,19 @@ const NavBar = () => {
   const { user, isLoading, login } = useUser()
   const { menuOpen, setMenuOpen } = useGlobal()
   const { lang, t } = useTranslation('common')
-  const { pathname } = useRouter()
+  const router = useRouter()
+  const { pathname, asPath, query } = router
+
+  const changeLocale = (locale: string) => {
+    router.push(
+      {
+        pathname,
+        query,
+      },
+      asPath,
+      { locale }
+    )
+  }
 
   const isAr = lang === 'ar'
 
@@ -134,22 +146,18 @@ const NavBar = () => {
               aria-label="lang buttons"
               style={{ direction: 'ltr' }}
             >
-              <Link href="" locale="ar" passHref>
-                <Button
-                  className={isAr ? styles.langButtonActive : styles.langButton}
-                >
-                  AR
-                </Button>
-              </Link>
-              <Link href="" locale="en" passHref>
-                <Button
-                  className={
-                    !isAr ? styles.langButtonActive : styles.langButton
-                  }
-                >
-                  EN
-                </Button>
-              </Link>
+              <Button
+                className={isAr ? styles.langButtonActive : styles.langButton}
+                onClick={() => changeLocale('ar')}
+              >
+                AR
+              </Button>
+              <Button
+                className={!isAr ? styles.langButtonActive : styles.langButton}
+                onClick={() => changeLocale('en')}
+              >
+                EN
+              </Button>
             </ButtonGroup>
           </div>
           <div

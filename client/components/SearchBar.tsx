@@ -16,14 +16,15 @@ import { useRouter } from 'next/router'
 const popoverStyle = { display: 'flex', gap: '1rem', marginBottom: '0.5rem' }
 
 const SearchBar = () => {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation('experiences')
   const router = useRouter()
   const { search, view } = router.query
+  const isAr = lang === 'ar'
 
   return (
     <InputGroup className="mb-4 mt-4 p-2">
       <Form.Control
-        placeholder="Search Experiences"
+        placeholder={t('searchExp')}
         aria-label="Search Experiences"
         onChange={(e) => {
           router.query.search = e.target.value
@@ -39,7 +40,7 @@ const SearchBar = () => {
             router.push(router)
           }}
         >
-          Map View <FiMap />
+          {t('mapView')} <FiMap />
         </Button>
       ) : (
         <Button
@@ -49,14 +50,14 @@ const SearchBar = () => {
             router.push(router)
           }}
         >
-          List View <FiList />
+          {t('listView')} <FiList />
         </Button>
       )}
       <OverlayTrigger
         trigger="click"
         placement="bottom"
         overlay={
-          <Popover>
+          <Popover dir={isAr ? 'rtl' : 'ltr'}>
             <Popover.Header as="h3">{t('twoProducts')}</Popover.Header>
             <Popover.Body>
               <div style={popoverStyle}>

@@ -130,7 +130,9 @@ const Experiences = () => {
                 <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
               </g>
               {openProduct?.id === p.id && (
-                <ProductCard product={openProduct} />
+                    <foreignObject width={350} height={500} y={5} x={-175}>
+              <ProductCard product={openProduct} />
+                    </foreignObject>
               )}
             </Marker>
           ))}

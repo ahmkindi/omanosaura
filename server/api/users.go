@@ -116,7 +116,6 @@ func (server *Server) HandlerLogout(c *fiber.Ctx) error {
 }
 
 func (server *Server) UserMiddleware(c *fiber.Ctx) error {
-	fmt.Println("SESSION ID COOKIE", c.Cookies("session_id"))
 	sess, err := server.Store.Get(c)
 	if err != nil {
 		return c.Next()
@@ -149,18 +148,18 @@ func (server *Server) UserMiddleware(c *fiber.Ctx) error {
 		Firstname: user.User.FirstName,
 		Lastname:  user.User.LastName,
 		Phone:     user.User.MobilePhone,
+		Roles:     utils.GetRoles(user.User.Registrations, server.Config.FusionApplicationID),
 	})
-	c.Locals("roles", utils.GetRoles(user.User.Registrations, server.Config.FusionApplicationID))
 
 	return c.Next()
 }
 
 func (server *Server) AdminMiddleware(c *fiber.Ctx) error {
-	roles, ok := c.Locals("roles").([]string)
+	user, ok := c.Locals("user").(database.User)
 	if !ok {
-		return fiber.ErrForbidden
+		return fmt.Errorf("failed to get user from local in admin middleware")
 	}
-	if !utils.Contains(roles, "admin") {
+	if !utils.Contains(user.Roles, "admin") {
 		return fiber.ErrForbidden
 	}
 

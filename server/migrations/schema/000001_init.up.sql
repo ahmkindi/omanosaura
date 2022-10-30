@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS users (
 	email TEXT UNIQUE NOT NULL,
   firstname TEXT NOT NULL,
   lastname TEXT NOT NULL,
-	phone TEXT NOT NULL
+	phone TEXT NOT NULL,
+  roles TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[]
 );
 
 CREATE TABLE IF NOT EXISTS purchases (

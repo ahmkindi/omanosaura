@@ -4,7 +4,6 @@ import styles from '../styles/ProductCard.module.scss'
 import { FaComment } from 'react-icons/fa'
 import { BiTrip } from 'react-icons/bi'
 import { GiMountainClimbing } from 'react-icons/gi'
-import { BsCashCoin } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
 import Link from 'next/link'
 import { RatingWithCount } from './RatingWithCount'
@@ -28,15 +27,21 @@ const ProductCard = ({ product }: { product: Product }) => {
             ratingCount={product.ratingCount}
           />
         </div>
-        <p>{isAr ? product.subtitleAr : product.subtitle}</p>
+        <p className={isAr ? styles.ar : undefined}>
+          {isAr ? product.subtitleAr : product.subtitle}
+        </p>
         <div className={styles.info}>
           <div>
-            <FaComment style={{ marginRight: '10px' }} />
+            <FaComment
+              style={isAr ? { marginLeft: '10px' } : { marginRight: '10px' }}
+            />
             {product.ratingCount}
           </div>
-          <div>
-            <BsCashCoin style={{ marginRight: '10px' }} />
-            {`${product.priceBaisa * 1000} omr`}
+          <div style={{ fontSize: '1.2rem' }}>
+            {`${new Intl.NumberFormat(lang, {
+              style: 'currency',
+              currency: 'OMR',
+            }).format(product.priceBaisa / 1000)}`}
           </div>
           {product.kind === ProductKind.trip ? (
             <BiTrip size={70} />

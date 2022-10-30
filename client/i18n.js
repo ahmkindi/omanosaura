@@ -5,9 +5,9 @@ module.exports = {
     '*': ['common'],
     '/': ['home'],
     '/about': ['about'],
-    '/experiences': ['experiences'],
-    '/experiences/[slug]': ['experiences'],
+    'rgx:/experiences+': ['experiences'],
     '/contact': ['contact'],
-    '/blog': ['blog'],
+    'rgx:/blog+': ['blog'],
+    'rgx:/purchases+': ['purchases'],
   },
 }
