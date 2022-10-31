@@ -9,5 +9,6 @@ module.exports = {
     '/contact': ['contact'],
     'rgx:/blog+': ['blog'],
     'rgx:/purchases+': ['purchases'],
+    'rgx:/profile+': ['profile'],
   },
 }

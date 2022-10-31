@@ -17,6 +17,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import ar from 'date-fns/locale/ar'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getTotalPrice } from '../utils/price'
+import Link from 'next/link'
 
 const PurchaseModal = ({
   product,
@@ -37,6 +38,7 @@ const PurchaseModal = ({
       .max(500, t('common:tooMany'))
       .required(),
     chosenDate: Yup.date().min(getTomorrow(), t('common:tooEarly')).required(),
+    terms: Yup.boolean().isTrue(t('common:acceptTerms')),
   })
   const router = useRouter()
 
@@ -82,7 +84,7 @@ const PurchaseModal = ({
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={emptyPurchaseProduct}
+          initialValues={{ ...emptyPurchaseProduct, terms: false }}
           onSubmit={handleSubmit}
           validationSchema={PurchaseSchema}
         >
@@ -131,11 +133,38 @@ const PurchaseModal = ({
                   onChange={(e) =>
                     setValues((prev) => ({ ...prev, cash: !prev.cash }))
                   }
+                  checked={values.cash}
                 />
               </Form.Group>
-              <div className="mb-4" style={{ fontSize: '1.2rem'}}>
+              <Form.Group className="mb-4">
+                <Form.Label>
+                  <Link href="/terms.pdf">
+                    <a target="_blank">{t('readTerms')}</a>
+                  </Link>
+                </Form.Label>
+                <Form.Check
+                  label={t('terms')}
+                  name="terms"
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, terms: !prev.terms }))
+                  }
+                  checked={values.terms}
+                  isInvalid={
+                    errors.terms !== undefined &&
+                    errors.terms.length > 0 &&
+                    touched.terms
+                  }
+                />
+                {errors.terms !== undefined &&
+                  touched.terms && (
+                    <Form.Text style={{ color: 'red' }}>
+                      {errors.terms}
+                    </Form.Text>
+                  )}
+              </Form.Group>
+              <div className="mb-4" style={{ fontSize: '1.2rem' }}>
                 {t('totalPrice')}
-                <span style={{ fontWeight: 'bold'}}>
+                <span style={{ fontWeight: 'bold' }}>
                   {getTotalPrice(
                     lang,
                     product,

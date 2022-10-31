@@ -6,7 +6,7 @@ import FlipCard from './FlipCard'
 import ProductCard from './ProductCard'
 
 const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
-  const { t } = useTranslation('purchases')
+  const { t, lang } = useTranslation('purchases')
 
   return (
     <FlipCard
@@ -21,12 +21,17 @@ const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
             <h4>{new Date(purchase.chosenDate).toDateString()}</h4>
           </div>
           <div>
-            <p>{t('numOfParticipant')}</p>
+            <p>{t('numOfParticipants')}</p>
             <h4>{purchase.numOfParticipants}</h4>
           </div>
           <div>
             <p>{t('totalPrice')}</p>
-            <h4>{`${purchase.costBaisa * 1000} omr`}</h4>
+            <h4>
+              {new Intl.NumberFormat(lang, {
+                style: 'currency',
+                currency: 'OMR',
+              }).format(purchase.priceBaisa / 1000)}
+            </h4>
           </div>
         </div>
       }

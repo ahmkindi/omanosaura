@@ -14,5 +14,6 @@
   "tooLittle": "We need more participants than that",
   "tooMany": "yikes! Thats too many participants, even for us",
   "tooEarly": "the selected date is too early, we need time to prepare",
-  "loginFirst": "Login to view the contents of this page"
+  "loginFirst": "Login to view the contents of this page",
+  "acceptTerms": "Please read and accept the terms and conditions before purchasing"
 }

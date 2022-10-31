@@ -27,5 +27,7 @@
   "payCash": "Pay cash or card?",
   "cash": "cash",
   "card": "card",
-  "totalPrice": "Total Price: "
+  "totalPrice": "Total Price: ",
+  "readTerms": "Terms and Conditions",
+  "terms": "I accept terms"
 }

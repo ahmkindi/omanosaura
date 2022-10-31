@@ -38,10 +38,10 @@ const ProductCard = ({ product }: { product: Product }) => {
             {product.ratingCount}
           </div>
           <div style={{ fontSize: '1.2rem' }}>
-            {`${new Intl.NumberFormat(lang, {
+            {new Intl.NumberFormat(lang, {
               style: 'currency',
               currency: 'OMR',
-            }).format(product.priceBaisa / 1000)}`}
+            }).format(product.priceBaisa / 1000)}
           </div>
           {product.kind === ProductKind.trip ? (
             <BiTrip size={70} />

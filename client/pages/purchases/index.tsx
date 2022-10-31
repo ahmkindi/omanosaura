@@ -35,6 +35,10 @@ const Purchases = () => {
 
   return (
     <Layout title={t('title')}>
+            {user?.roles.includes('admin') &&      <Link href="/purchases/all" passHref>
+      <Button variant="outline-secondary" className="mx-4">{t('allPurchases')}</Button>
+      </Link>
+            }
       {user && purchases ? (
       purchases.length > 0 ? 
     <>
@@ -45,10 +49,6 @@ const Purchases = () => {
     >
       <Button variant="outline-secondary">?</Button>
     </OverlayTrigger>
-            {user.roles.includes('admin') &&      <Link href="/purchases/all" passHref>
-      <Button variant="outline-secondary" className="mx-4">{t('allPurchases')}</Button>
-      </Link>
-            }
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '2rem', marginBottom: '2rem'}}>
          {purchases.map(p =>
           <PurchaseCard key={p.id} purchase={p} />

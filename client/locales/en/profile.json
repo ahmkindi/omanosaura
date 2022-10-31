@@ -1,0 +1,13 @@
+{
+  "title": "Profile | Omanosaura",
+  "tooShort": "thats too short!",
+  "tooLong": "thats too long!",
+  "invalidEmail": "the email doesn't look right",
+  "emailAdr": "Email Address",
+  "firstname": "First Name",
+  "lastname": "Last Name",
+  "phone": "Phone Number",
+  "update": "Update",
+  "successUpdate": "successfully updated your profile",
+  "failedUpdate": "oops, something went wrong while updating your profile"
+}

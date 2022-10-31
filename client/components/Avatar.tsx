@@ -22,7 +22,11 @@ const Avatar = ({ user }: { user: User }) => {
         {user.lastname[0]?.toUpperCase()}
       </p>
       {profileOpen && (
-        <div className={`${styles.userBox} ${lang === 'ar' ? styles.userBoxAr : null}`}>
+        <div
+          className={`${styles.userBox} ${
+            lang === 'ar' ? styles.userBoxAr : null
+          }`}
+        >
           <div className={styles.profile}>
             <h5>{`${user.firstname} ${user.lastname}`}</h5>
             <div>{user.email}</div>
@@ -34,7 +38,7 @@ const Avatar = ({ user }: { user: User }) => {
             </Link>
           </div>
           <div className={styles.actions}>
-            <Link passHref href="purchases">
+            <Link passHref href="/purchases">
               <div>{t('purchases')}</div>
             </Link>
             <div onClick={() => logout()}>{t('logout')}</div>
