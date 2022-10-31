@@ -24,7 +24,9 @@ const Reviews = ({ product }: { product: Product }) => {
   const { setAlert } = useGlobal()
 
   const getKey = (pageIndex: number, previousPageData: Review[]) => {
-    if (previousPageData && !previousPageData.length) return null;
+    if (previousPageData && !previousPageData.length) {
+      return null
+    } 
     return `products/${product.id}/reviews?page=${pageIndex+1}`;
   };
 
@@ -39,7 +41,7 @@ const Reviews = ({ product }: { product: Product }) => {
     user ? `user/products/${product.id}/review` : null,
     fetcher<UserReview>
   );
-  const { data: reviews, setSize } = useSWRInfinite(getKey, fetcher<Review[]>);
+  const { data: reviews, size, setSize } = useSWRInfinite(getKey, fetcher<Review[]>);
 
   const isAr = lang === "ar";
 
@@ -72,21 +74,23 @@ const Reviews = ({ product }: { product: Product }) => {
    {user ?
 <Button variant="outline-primary" onClick={() => setOpenModal(true)}>{t('addReview')}</Button>
    :
-       <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t('loginFirst')}</Tooltip>}>
+       <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{t('common:loginFirst')}</Tooltip>}>
       <span className="d-inline-block">
 <Button variant="outline-primary" disabled>{t('addReview')}</Button>
       </span>
     </OverlayTrigger> } 
       </div>
         {reviews ?
+        <>
 <ResponsiveMasonry
                 columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}
             >
         <Masonry> 
             {reviews.flat().map(r => <SingleReview key={r.userId} review={r} />)}
         </Masonry> 
-      <Button onClick={() => setSize((prev) => prev + 1)}>{t('loadMore')}</Button>
       </ResponsiveMasonry>
+      {size <= reviews.length && <Button onClick={() => setSize((prev) => prev + 1)}>{t('loadMore')}</Button>}
+      </>
 : <h4>No customer reviews yet 😔</h4>
       }
       {openModal && 

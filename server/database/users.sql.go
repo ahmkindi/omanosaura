@@ -41,13 +41,14 @@ func (q *Queries) GetUserCustomerId(ctx context.Context, userID uuid.UUID) (stri
 }
 
 const upsertUser = `-- name: UpsertUser :exec
-INSERT INTO users(id, email, firstname, lastname, phone)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO users(id, email, firstname, lastname, phone, roles)
+VALUES ($1, $2, $3, $4, $5, $6)
 ON CONFLICT (id) DO UPDATE SET
 	email = excluded.email,
 	firstname = excluded.firstname,
   lastname = excluded.lastname,
-  phone = excluded.phone
+  phone = excluded.phone,
+  roles = excluded.roles
 `
 
 type UpsertUserParams struct {
@@ -56,6 +57,7 @@ type UpsertUserParams struct {
 	Firstname string    `json:"firstname"`
 	Lastname  string    `json:"lastname"`
 	Phone     string    `json:"phone"`
+	Roles     []string  `json:"roles"`
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
@@ -65,6 +67,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
 		arg.Firstname,
 		arg.Lastname,
 		arg.Phone,
+		arg.Roles,
 	)
 	return err
 }

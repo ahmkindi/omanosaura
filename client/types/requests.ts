@@ -100,3 +100,20 @@ export interface Purchase extends ProductDetails {
 }
 
 export interface UserPurchase extends Purchase, User {}
+
+export const emptyProduct: ProductDetails = {
+  kind: ProductKind.adventure,
+  title: '',
+  titleAr: '',
+  subtitle: '',
+  subtitleAr: '',
+  description: '',
+  descriptionAr: '',
+  photo: '',
+  priceBaisa: 1000,
+  plannedDates: [],
+  photos: [],
+  lastUpdated: new Date(),
+  longitude: 0,
+  latitude: 0,
+}

@@ -25,10 +25,10 @@ ON CONFLICT (id) DO UPDATE SET
   description_ar = excluded.description_ar,
   photo = excluded.photo,
   price_baisa = excluded.price_baisa,
-  planned_dates=excluded.planned_dates,
+  planned_dates = excluded.planned_dates,
   photos = excluded.photos,
   longitude = excluded.longitude,
-  latitute = excluded.latitute,
+  latitude = excluded.latitude,
   last_updated = CURRENT_DATE;
 
 -- name: ReviewProduct :exec
@@ -44,7 +44,7 @@ DO UPDATE SET
 DELETE FROM reviews WHERE product_id = $1 AND user_id = $2;
 
 -- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1;
+UPDATE products SET is_deleted = true WHERE id = $1;
 
 -- name: UserCanRateProduct :one
 SELECT EXISTS (
@@ -56,10 +56,10 @@ INSERT INTO purchases(id, product_id, user_id, num_of_participants, paid, cost_b
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE);
 
 -- name: GetAllProducts :many
-SELECT products.*, r.rating, r.rating_count, review.review_count
-FROM products
-LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
-LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id;
+SELECT available_products.*, r.rating, r.rating_count, review.review_count
+FROM available_products
+LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON available_products.id = r.product_id
+LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON available_products.id = review.product_id;
 
 -- name: GetProduct :one
 SELECT *,

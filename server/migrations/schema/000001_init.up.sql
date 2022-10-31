@@ -10,12 +10,13 @@ CREATE TABLE IF NOT EXISTS products (
 	description TEXT NOT NULL,
 	description_ar TEXT NOT NULL,
   photo TEXT NOT NULL,
-  price_baisa INT NOT NULL,
+  price_baisa BIGINT NOT NULL,
   planned_dates DATE[] NOT NULL DEFAULT ARRAY[]::DATE[],
   photos TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   longitude FLOAT NOT NULL,
   latitude FLOAT NOT NULL,
-  last_updated DATE NOT NULL
+  last_updated DATE NOT NULL,
+  is_deleted BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS purchases (
   user_id UUID NOT NULL REFERENCES users(id),
   num_of_participants INTEGER NOT NULL,
   paid BOOLEAN NOT NULL,
-  cost_baisa INTEGER NOT NULL,
+  cost_baisa BIGINT NOT NULL,
   chosen_date DATE NOT NULL,
   complete BOOLEAN NOT NULL,
   created_at DATE NOT NULL DEFAULT CURRENT_DATE
@@ -65,5 +66,8 @@ CREATE TABLE IF NOT EXISTS blogs (
   user_id UUID NOT NULL REFERENCES users(id),
   created_at DATE NOT NULL DEFAULT CURRENT_DATE
 );
+
+CREATE VIEW available_products AS
+SELECT * FROM products WHERE is_deleted = false;
 
 COMMIT;

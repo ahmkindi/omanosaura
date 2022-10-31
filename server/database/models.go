@@ -32,7 +32,7 @@ type Product struct {
 	Description   string      `json:"description"`
 	DescriptionAr string      `json:"description_ar"`
 	Photo         string      `json:"photo"`
-	PriceBaisa    int32       `json:"price_baisa"`
+	PriceBaisa    int64       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
 	Longitude     float64     `json:"longitude"`
@@ -46,7 +46,7 @@ type Purchase struct {
 	UserID            uuid.UUID `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
-	CostBaisa         int32     `json:"cost_baisa"`
+	CostBaisa         int64     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
 	Complete          bool      `json:"complete"`
 	CreatedAt         time.Time `json:"created_at"`

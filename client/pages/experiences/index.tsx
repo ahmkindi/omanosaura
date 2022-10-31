@@ -21,7 +21,7 @@ import SearchBar from '../../components/SearchBar'
 export async function getServerSideProps() {
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: products }: AxiosResponse<Product[]> = await axios.get(
-    'http://localhost:3000/server/products'
+    `${process.env.SERVER_URL}products`
   )
   return {
     props: {

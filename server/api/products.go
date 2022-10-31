@@ -60,13 +60,13 @@ func (server *Server) HandlerDeleteReviewProduct(c *fiber.Ctx) error {
 func (server *Server) HandlerUpsertProduct(c *fiber.Ctx) error {
 	product := new(database.UpsertProductParams)
 	if err := c.BodyParser(product); err != nil {
-		return fiber.ErrBadRequest
+		return fmt.Errorf("Failed to parse product to upsert: %w", err)
 	}
 
 	product.ID = strings.ReplaceAll(strings.ToLower(product.Title), " ", "-")
 
 	if err := server.Queries.UpsertProduct(c.Context(), *product); err != nil {
-		return fiber.ErrInternalServerError
+		return fmt.Errorf("failed to upsert product: %w", err)
 	}
 
 	return nil
@@ -179,7 +179,7 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		NumOfParticipants: int32(req.Quantity),
 		Paid:              false,
 		ChosenDate:        req.ChosenDate,
-		CostBaisa:         int32(req.Quantity) * product.PriceBaisa,
+		CostBaisa:         int64(req.Quantity) * product.PriceBaisa,
 		Complete:          req.Cash,
 	}
 	err = server.Queries.InsertPurchase(c.Context(), purchase)

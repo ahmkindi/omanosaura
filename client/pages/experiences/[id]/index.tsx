@@ -1,32 +1,32 @@
 import { GetServerSideProps } from 'next'
 import useTranslation from 'next-translate/useTranslation'
-import Layout from '../../components/Layout'
+import Layout from '../../../components/Layout'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
-import { Product } from '../../types/requests'
+import { Product } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import "yet-another-react-lightbox/styles.css";
 import { useRouter } from 'next/router'
-import { fetcher } from '../../utils/axiosServer'
+import { fetcher } from '../../../utils/axiosServer'
 import Image from 'next/image'
 import { useState } from 'react'
 import Lightbox, { SlideImage } from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import styles from '../../styles/experiences.module.scss'
-import Box from '../../components/Box'
-import Reviews from '../../components/Reviews'
+import styles from '../../../styles/experiences.module.scss'
+import Box from '../../../components/Box'
+import Reviews from '../../../components/Reviews'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import PurchaseModal from '../../components/PurchaseModal'
-import useUser from '../../hooks/useUser'
+import PurchaseModal from '../../../components/PurchaseModal'
+import useUser from '../../../hooks/useUser'
+import Link from 'next/link'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
   const { session_id } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: product }: AxiosResponse<Product> = await axios.get(
-    `http://localhost:3000/server/products/${id}`,
+    `${process.env.SERVER_URL}products/${id}`,
     { headers: { Cookie: `session_id=${session_id}` } }
   )
   return {
@@ -76,6 +76,13 @@ isAr ? product?.subtitleAr : product?.subtitle
 isAr ? product?.descriptionAr : product?.description
         }</p>
         <div  style={{ display: 'flex', justifyContent: 'end', alignItems: 'end', alignSelf: 'end',  gap: '1rem'}}>
+      {user?.roles.includes('admin') && 
+      <Link href={`/experiences/${id}/edit`} passHref>
+      <Button variant="primary">
+          {t('edit')}
+      </Button>
+      </Link>
+      }
       <Button variant="outline-secondary" onClick={() => setOpenModal(ModalTypes.gallery)}>
           {t('gallery')}
       </Button>
@@ -99,7 +106,7 @@ isAr ? product?.descriptionAr : product?.description
         open={openModal === ModalTypes.gallery}
         close={() => setOpenModal(ModalTypes.none)}
         slides={[getSlide(product?.photo), ...product?.photos.map(p => getSlide(p))]}
-        plugins={[Fullscreen, Thumbnails, Zoom]}
+        plugins={[Fullscreen, Zoom]}
       />
       {openModal === ModalTypes.purchase && <PurchaseModal product={product} setOpenModal={setOpenModal} />}
   </Layout>

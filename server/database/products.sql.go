@@ -61,7 +61,7 @@ type GetAllProductsRow struct {
 	Description   string      `json:"description"`
 	DescriptionAr string      `json:"description_ar"`
 	Photo         string      `json:"photo"`
-	PriceBaisa    int32       `json:"price_baisa"`
+	PriceBaisa    int64       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
 	Longitude     float64     `json:"longitude"`
@@ -124,7 +124,7 @@ type GetAllPurchasesRow struct {
 	UserID            uuid.UUID   `json:"user_id"`
 	NumOfParticipants int32       `json:"num_of_participants"`
 	Paid              bool        `json:"paid"`
-	CostBaisa         int32       `json:"cost_baisa"`
+	CostBaisa         int64       `json:"cost_baisa"`
 	ChosenDate        time.Time   `json:"chosen_date"`
 	Complete          bool        `json:"complete"`
 	CreatedAt         time.Time   `json:"created_at"`
@@ -137,7 +137,7 @@ type GetAllPurchasesRow struct {
 	Description       string      `json:"description"`
 	DescriptionAr     string      `json:"description_ar"`
 	Photo             string      `json:"photo"`
-	PriceBaisa        int32       `json:"price_baisa"`
+	PriceBaisa        int64       `json:"price_baisa"`
 	PlannedDates      []time.Time `json:"planned_dates"`
 	Photos            []string    `json:"photos"`
 	Longitude         float64     `json:"longitude"`
@@ -248,7 +248,7 @@ type GetProductRow struct {
 	Description    string      `json:"description"`
 	DescriptionAr  string      `json:"description_ar"`
 	Photo          string      `json:"photo"`
-	PriceBaisa     int32       `json:"price_baisa"`
+	PriceBaisa     int64       `json:"price_baisa"`
 	PlannedDates   []time.Time `json:"planned_dates"`
 	Photos         []string    `json:"photos"`
 	Longitude      float64     `json:"longitude"`
@@ -373,7 +373,7 @@ type GetUserPurchasesRow struct {
 	UserID            uuid.UUID   `json:"user_id"`
 	NumOfParticipants int32       `json:"num_of_participants"`
 	Paid              bool        `json:"paid"`
-	CostBaisa         int32       `json:"cost_baisa"`
+	CostBaisa         int64       `json:"cost_baisa"`
 	ChosenDate        time.Time   `json:"chosen_date"`
 	Complete          bool        `json:"complete"`
 	CreatedAt         time.Time   `json:"created_at"`
@@ -386,7 +386,7 @@ type GetUserPurchasesRow struct {
 	Description       string      `json:"description"`
 	DescriptionAr     string      `json:"description_ar"`
 	Photo             string      `json:"photo"`
-	PriceBaisa        int32       `json:"price_baisa"`
+	PriceBaisa        int64       `json:"price_baisa"`
 	PlannedDates      []time.Time `json:"planned_dates"`
 	Photos            []string    `json:"photos"`
 	Longitude         float64     `json:"longitude"`
@@ -450,7 +450,7 @@ type InsertPurchaseParams struct {
 	UserID            uuid.UUID `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
-	CostBaisa         int32     `json:"cost_baisa"`
+	CostBaisa         int64     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
 	Complete          bool      `json:"complete"`
 }
@@ -525,10 +525,10 @@ ON CONFLICT (id) DO UPDATE SET
   description_ar = excluded.description_ar,
   photo = excluded.photo,
   price_baisa = excluded.price_baisa,
-  planned_dates=excluded.planned_dates,
+  planned_dates = excluded.planned_dates,
   photos = excluded.photos,
   longitude = excluded.longitude,
-  latitute = excluded.latitute,
+  latitude = excluded.latitude,
   last_updated = CURRENT_DATE
 `
 
@@ -542,7 +542,7 @@ type UpsertProductParams struct {
 	Description   string      `json:"description"`
 	DescriptionAr string      `json:"description_ar"`
 	Photo         string      `json:"photo"`
-	PriceBaisa    int32       `json:"price_baisa"`
+	PriceBaisa    int64       `json:"price_baisa"`
 	PlannedDates  []time.Time `json:"planned_dates"`
 	Photos        []string    `json:"photos"`
 	Longitude     float64     `json:"longitude"`

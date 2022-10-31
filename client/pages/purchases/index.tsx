@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { session_id } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: purchases }: AxiosResponse<Purchase[]> = await axios.get(
-    'http://localhost:3000/server/user/products/purchase',
+    `${process.env.SERVER_URL}user/products/purchase`,
     { headers: { Cookie: `session_id=${session_id}` } }
   )
   return {
