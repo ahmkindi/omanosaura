@@ -28,7 +28,7 @@ export const RatingWithCount = ({
         fillColor="var(--orange)"
         readonly
       />
-      <div>{t('ratings', { ratingCount: ratingCount })}</div>
+      <div>{t('ratings', { ratingCount: ratingCount ?? 0 })}</div>
     </div>
   )
 }

@@ -93,8 +93,22 @@
     }
   }
 
-  div:first-child {
-    border-right: 0px;
-    border-left: var(--orange) 1px solid;
+  .actions {
+    div:first-child {
+      border-left: var(--orange) 1px solid;
+    }
+
+    div {
+      border-right: unset !important;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .userBox {
+    left: -55px;
+  }
+  .userBoxAr {
+    right: -55px;
   }
 }

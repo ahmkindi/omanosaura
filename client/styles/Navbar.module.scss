@@ -3,13 +3,8 @@
   align-items: center;
   margin: 8px;
   justify-content: space-between;
-  position: relative;
-
-  & .imageContainer {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
+  flex-direction: column;
+  width: 100%;
 }
 
 .langButton {
@@ -50,15 +45,7 @@
 }
 
 .navOptions {
-  visibility: hidden;
-  display: flex;
-  flex-direction: row;
-  position: relative;
-}
-
-.navOptionsColumn {
-  position: absolute;
-  z-index: 100;
+  z-index: 1000;
   background-color: var(--tertiary);
   display: flex;
   flex-direction: column;
@@ -66,37 +53,26 @@
   width: 100%;
   align-self: center;
   text-align: center;
-  opacity: 0;
   padding: 0;
+  opacity: 0;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease-in-out;
 
-  & .active {
-    max-height: 1000px;
-    opacity: 1;
-    padding: 20px 0;
-    transition: max-height 0.5s ease-in-out, opacity 0.25s ease-in-out;
+  div {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 8px;
+    cursor: pointer;
   }
 }
 
-.navOptionsColumn div {
-  color: var(--primary);
-  font-weight: bold;
-  font-size: 1.1rem;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.navOptions div {
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 0.3em 0.4em;
-  border-radius: 4px;
-  color: var(--primary);
-  margin: 8px;
-  font-weight: bold;
-  text-decoration: none;
+.navOptions.active {
+  max-height: 1000px;
+  opacity: 1;
+  padding: 20px 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.25s ease-in-out;
 }
 
 .navInactive:hover {
@@ -109,63 +85,96 @@
   color: var(--secondary) !important;
 }
 
-.navSVG,
-.burger,
-.x {
-  height: 50px;
-  width: 50px;
-  right: 20px;
-  top: 5px;
-  position: absolute;
-  visibility: visible;
-  cursor: pointer;
-}
-
-.navbarAr {
-  .navSVG,
-  .burger,
-  .x {
-    left: 20px;
-    right: auto;
-  }
-
-  .imageContainer {
-    right: 0;
-    left: auto;
-  }
-}
-
-@media all and (min-width: 800px) {
-  .navSVG,
-  .burger,
-  .x {
-    visibility: hidden;
-  }
-
-  .navOptions {
-    visibility: visible;
-  }
-
-  .navOptionsColumn {
-    visibility: hidden;
-  }
-
-  .logo {
-    width: 300px;
-  }
+.topLevelOptions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
 }
 
 .plate {
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
+  position: relative;
+
+  .navSVG {
+    position: absolute;
+    z-index: -5;
+    top: 0;
+    right: 0;
+  }
 }
+
+.burger,
+.x {
+  visibility: visible;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.x {
+  position: absolute;
+}
+
+.active {
+  .burger {
+    position: absolute;
+  }
+  .x {
+    position: static;
+  }
+}
+
+@media all and (min-width: 768px) {
+  .plate {
+    visibility: hidden;
+    position: absolute;
+    .x,
+    .burger {
+      visibility: hidden;
+      position: absolute;
+    }
+  }
+
+  .topLevelOptions {
+    align-self: end;
+    gap: 0.5rem;
+  }
+
+  .navbar {
+    flex-direction: row;
+  }
+
+  .navOptions {
+    background-color: transparent;
+    justify-content: unset;
+    width: unset;
+    align-self: unset;
+    text-align: unset;
+    opacity: unset;
+    padding: unset;
+    max-height: unset;
+    flex-direction: row;
+    div {
+      font-size: 1.1rem;
+      padding: 0.3em 0.4em;
+      border-radius: 4px;
+      margin: 8px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
+}
+
 .burger {
   filter: url(#gooeyness);
 }
+
 .x {
   transform: scale(0);
   transition: transform 400ms;
 }
+
 .line {
   fill: none;
   stroke: var(--primary);

@@ -67,7 +67,7 @@ const Experiences = () => {
       </div> : 
       <ComposableMap
         projectionConfig={{
-          scale: 10000,
+          scale: 9000,
           rotate: [-15, 5, -15],
         }}
         height={
@@ -88,8 +88,8 @@ const Experiences = () => {
         }}
       >
         <ZoomableGroup
-          center={[56, 21.5]}
-          zoom={0.7}
+          center={[(width && width > 900) ? 56 : 59, 21.6]}
+          zoom={0.4}
           maxZoom={20}
           minZoom={0.3}
           onClick={() => setOpenProduct(undefined)}
@@ -103,6 +103,7 @@ const Experiences = () => {
                   fill="#043c6c"
                   stroke="#e1eced"
                   strokeWidth={0.05}
+                  onTouchEndCapture={(e) => {e.preventDefault(); setOpenProduct(undefined)}}
                 />
               ))
             }
@@ -121,7 +122,7 @@ const Experiences = () => {
               <g
                 fill="none"
                 stroke="var(--orange)"
-                strokeWidth="2"
+                strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 transform="translate(-12, -24)"

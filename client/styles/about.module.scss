@@ -1,0 +1,11 @@
+.aboutImg {
+  img {
+    border-radius: 10px;
+  }
+  filter: drop-shadow(5px 5px 0.25rem var(--orange));
+  transition: filter 0.3s ease-in-out;
+}
+.aboutImg:hover {
+  filter: drop-shadow(-5px -5px 0.25rem var(--primary));
+  transition: filter 0.3s ease-in-out;
+}

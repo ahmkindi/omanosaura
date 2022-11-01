@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
-import styles from '../styles/about.module.css'
+import styles from '../styles/about.module.scss'
 import Layout from '../components/Layout'
 import Box from '../components/Box'
 import Section from '../components/Section'
@@ -19,9 +19,8 @@ const About = () => {
             <Image
               src="/jaifar.png"
               alt="omanosaura founder Jaifar Al Kindi"
-              layout="responsive"
-              width={350}
-              height={350}
+              width={520}
+              height={520}
             />
           </div>
           <div>
