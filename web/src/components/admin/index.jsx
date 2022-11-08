@@ -1,7 +1,0 @@
-export { default as AdminHome } from './AdminHome'
-export { default as AdminTrips } from './AdminTrips'
-export { default as AdminAdventures } from './AdminAdventures'
-export { default as AdminEvents } from './AdminEvents'
-export { default as AdminUsers } from './AdminUsers'
-export { default as AdminTripPhotos } from './AdminTripPhotos'
-export { default as AdminNavigation } from './AdminNavigation'
