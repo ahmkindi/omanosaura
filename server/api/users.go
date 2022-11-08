@@ -42,6 +42,7 @@ func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 	updatedUser.ID = user.ID
+	updatedUser.Roles = user.Roles
 
 	resp, fusionErr, err := server.FusionClient.UpdateUser(user.ID.String(), fusionauth.UserRequest{
 		ApplicationId: server.Config.FusionApplicationID,
@@ -97,7 +98,11 @@ func (server *Server) HandlerOauthCallback(c *fiber.Ctx) error {
 		Firstname: user.User.FirstName,
 		Lastname:  user.User.LastName,
 		Phone:     user.User.MobilePhone,
+		Roles:     utils.GetRoles(user.User.Registrations, server.Config.FusionApplicationID),
 	})
+	if err != nil {
+		return fmt.Errorf("failed to upsert user: %w", err)
+	}
 
 	return c.Redirect(server.Config.BaseUrl)
 }

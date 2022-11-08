@@ -27,7 +27,7 @@ const Contact = () => {
     lang === 'ar' ? styles.inputWrapperAR : null
   }`
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     setLoading(true)

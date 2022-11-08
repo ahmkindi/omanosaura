@@ -167,9 +167,9 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fiber.ErrUnauthorized
 	}
 
-	// 25% off for trips if 4 or more people are attending
-	if product.Kind == "trip" && req.Quantity >= 4 {
-		product.PriceBaisa /= 4
+	// 20% off for trips if more than 4 are attending
+	if product.Kind == "trip" && req.Quantity > 4 {
+		product.PriceBaisa = product.PriceBaisa * 80 / 100
 	}
 
 	purchase := database.InsertPurchaseParams{

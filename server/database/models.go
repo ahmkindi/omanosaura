@@ -10,6 +10,25 @@ import (
 	"github.com/google/uuid"
 )
 
+type AvailableProduct struct {
+	ID            string      `json:"id"`
+	Kind          string      `json:"kind"`
+	Title         string      `json:"title"`
+	TitleAr       string      `json:"title_ar"`
+	Subtitle      string      `json:"subtitle"`
+	SubtitleAr    string      `json:"subtitle_ar"`
+	Description   string      `json:"description"`
+	DescriptionAr string      `json:"description_ar"`
+	Photo         string      `json:"photo"`
+	PriceBaisa    int64       `json:"price_baisa"`
+	PlannedDates  []time.Time `json:"planned_dates"`
+	Photos        []string    `json:"photos"`
+	Longitude     float64     `json:"longitude"`
+	Latitude      float64     `json:"latitude"`
+	LastUpdated   time.Time   `json:"last_updated"`
+	IsDeleted     bool        `json:"is_deleted"`
+}
+
 type Blog struct {
 	ID            string    `json:"id"`
 	Title         string    `json:"title"`
@@ -38,6 +57,7 @@ type Product struct {
 	Longitude     float64     `json:"longitude"`
 	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
+	IsDeleted     bool        `json:"is_deleted"`
 }
 
 type Purchase struct {

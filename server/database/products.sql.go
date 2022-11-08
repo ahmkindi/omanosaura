@@ -22,7 +22,7 @@ func (q *Queries) CompletePurchase(ctx context.Context, id uuid.UUID) error {
 }
 
 const deleteProduct = `-- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1
+UPDATE products SET is_deleted = true WHERE id = $1
 `
 
 func (q *Queries) DeleteProduct(ctx context.Context, id string) error {
@@ -45,10 +45,10 @@ func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductRevi
 }
 
 const getAllProducts = `-- name: GetAllProducts :many
-SELECT products.id, products.kind, products.title, products.title_ar, products.subtitle, products.subtitle_ar, products.description, products.description_ar, products.photo, products.price_baisa, products.planned_dates, products.photos, products.longitude, products.latitude, products.last_updated, r.rating, r.rating_count, review.review_count
-FROM products
-LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON products.id = r.product_id
-LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON products.id = review.product_id
+SELECT available_products.id, available_products.kind, available_products.title, available_products.title_ar, available_products.subtitle, available_products.subtitle_ar, available_products.description, available_products.description_ar, available_products.photo, available_products.price_baisa, available_products.planned_dates, available_products.photos, available_products.longitude, available_products.latitude, available_products.last_updated, available_products.is_deleted, r.rating, r.rating_count, review.review_count
+FROM available_products
+LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON available_products.id = r.product_id
+LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON available_products.id = review.product_id
 `
 
 type GetAllProductsRow struct {
@@ -67,6 +67,7 @@ type GetAllProductsRow struct {
 	Longitude     float64     `json:"longitude"`
 	Latitude      float64     `json:"latitude"`
 	LastUpdated   time.Time   `json:"last_updated"`
+	IsDeleted     bool        `json:"is_deleted"`
 	Rating        interface{} `json:"rating"`
 	RatingCount   interface{} `json:"rating_count"`
 	ReviewCount   interface{} `json:"review_count"`
@@ -97,6 +98,7 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 			&i.Longitude,
 			&i.Latitude,
 			&i.LastUpdated,
+			&i.IsDeleted,
 			&i.Rating,
 			&i.RatingCount,
 			&i.ReviewCount,
@@ -112,9 +114,10 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 }
 
 const getAllPurchases = `-- name: GetAllPurchases :many
-SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, users.id, email, firstname, lastname, phone, roles FROM purchases
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, users.id, email, firstname, lastname, phone, roles FROM purchases
 INNER JOIN products on purchases.product_id = products.id
 INNER JOIN users on users.id = purchases.user_id
+WHERE complete = true
 ORDER BY purchases.chosen_date
 `
 
@@ -143,6 +146,7 @@ type GetAllPurchasesRow struct {
 	Longitude         float64     `json:"longitude"`
 	Latitude          float64     `json:"latitude"`
 	LastUpdated       time.Time   `json:"last_updated"`
+	IsDeleted         bool        `json:"is_deleted"`
 	ID_3              uuid.UUID   `json:"id_3"`
 	Email             string      `json:"email"`
 	Firstname         string      `json:"firstname"`
@@ -185,6 +189,7 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 			&i.Longitude,
 			&i.Latitude,
 			&i.LastUpdated,
+			&i.IsDeleted,
 			&i.ID_3,
 			&i.Email,
 			&i.Firstname,
@@ -203,7 +208,7 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 }
 
 const getBasicProduct = `-- name: GetBasicProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated FROM products WHERE id = $1
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted FROM products WHERE id = $1
 `
 
 func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, error) {
@@ -225,12 +230,13 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 		&i.Longitude,
 		&i.Latitude,
 		&i.LastUpdated,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated,
+SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted,
 (SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
 (SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM reviews r WHERE r.product_id=$1) rating,
 (SELECT COALESCE(COUNT(*), 0) as rating_count FROM reviews r WHERE r.product_id=$1) rating_count,
@@ -254,6 +260,7 @@ type GetProductRow struct {
 	Longitude      float64     `json:"longitude"`
 	Latitude       float64     `json:"latitude"`
 	LastUpdated    time.Time   `json:"last_updated"`
+	IsDeleted      bool        `json:"is_deleted"`
 	PurchasesCount interface{} `json:"purchases_count"`
 	Rating         interface{} `json:"rating"`
 	RatingCount    interface{} `json:"rating_count"`
@@ -279,6 +286,7 @@ func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductR
 		&i.Longitude,
 		&i.Latitude,
 		&i.LastUpdated,
+		&i.IsDeleted,
 		&i.PurchasesCount,
 		&i.Rating,
 		&i.RatingCount,
@@ -364,7 +372,7 @@ func (q *Queries) GetUserProductReview(ctx context.Context, arg GetUserProductRe
 }
 
 const getUserPurchases = `-- name: GetUserPurchases :many
-SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 ORDER BY purchases.created_at
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 AND complete = true ORDER BY purchases.created_at
 `
 
 type GetUserPurchasesRow struct {
@@ -392,6 +400,7 @@ type GetUserPurchasesRow struct {
 	Longitude         float64     `json:"longitude"`
 	Latitude          float64     `json:"latitude"`
 	LastUpdated       time.Time   `json:"last_updated"`
+	IsDeleted         bool        `json:"is_deleted"`
 }
 
 func (q *Queries) GetUserPurchases(ctx context.Context, userID uuid.UUID) ([]GetUserPurchasesRow, error) {
@@ -428,6 +437,7 @@ func (q *Queries) GetUserPurchases(ctx context.Context, userID uuid.UUID) ([]Get
 			&i.Longitude,
 			&i.Latitude,
 			&i.LastUpdated,
+			&i.IsDeleted,
 		); err != nil {
 			return nil, err
 		}
@@ -514,8 +524,10 @@ INSERT INTO products(
   photos,
   longitude,
   latitude,
-  last_updated)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE)
+  last_updated,
+  is_deleted
+)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE, false)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -529,6 +541,7 @@ ON CONFLICT (id) DO UPDATE SET
   photos = excluded.photos,
   longitude = excluded.longitude,
   latitude = excluded.latitude,
+  is_deleted = excluded.is_deleted,
   last_updated = CURRENT_DATE
 `
 

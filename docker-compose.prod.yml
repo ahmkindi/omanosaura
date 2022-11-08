@@ -17,6 +17,7 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ahmkind19@gmail.com -d omanosaura.com --agree-tos
 
   server:
     image: omanosaura-server-prod

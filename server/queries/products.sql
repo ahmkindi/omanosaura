@@ -14,8 +14,10 @@ INSERT INTO products(
   photos,
   longitude,
   latitude,
-  last_updated)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE)
+  last_updated,
+  is_deleted
+)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE, false)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -29,6 +31,7 @@ ON CONFLICT (id) DO UPDATE SET
   photos = excluded.photos,
   longitude = excluded.longitude,
   latitude = excluded.latitude,
+  is_deleted = excluded.is_deleted,
   last_updated = CURRENT_DATE;
 
 -- name: ReviewProduct :exec
@@ -87,10 +90,11 @@ SELECT * FROM products WHERE id = $1;
 UPDATE purchases SET complete=true WHERE id=$1;
 
 -- name: GetUserPurchases :many
-SELECT * FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 ORDER BY purchases.created_at;
+SELECT * FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 AND complete = true ORDER BY purchases.created_at;
 
 -- name: GetAllPurchases :many
 SELECT * FROM purchases
 INNER JOIN products on purchases.product_id = products.id
 INNER JOIN users on users.id = purchases.user_id
+WHERE complete = true
 ORDER BY purchases.chosen_date;

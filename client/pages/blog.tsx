@@ -2,25 +2,25 @@ import useTranslation from 'next-translate/useTranslation'
 import { useState } from 'react'
 import Layout from '../components/Layout'
 import 'react-quill/dist/quill.snow.css'
-const ReactQuill =
-  typeof window === 'object' ? require('react-quill') : () => false
-import EditorToolbar, { modules, formats } from '../components/EditorToolbar'
-import 'react-quill/dist/quill.snow.css'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+/* const EditorToolbar = dynamic(() => import('../components/EditorToolbar'), { */
+/*   ssr: false, */
+/* }) */
+/* import { modules, formats } from '../components/EditorToolbar' */
 
 const Blog = () => {
-  const { t } = useTranslation('about')
+  const { t } = useTranslation('blog')
   const [value, setValue] = useState('')
-  console.log(value)
 
   return (
     <Layout title={t('title')}>
-      <EditorToolbar />
       <ReactQuill
         theme="snow"
         value={value}
         onChange={setValue}
-        modules={modules}
-        formats={formats}
+        /* modules={modules} */
+        /* formats={formats} */
       />
     </Layout>
   )

@@ -36,12 +36,7 @@ type Email struct {
 }
 
 func CreateServer() (*Server, error) {
-	connStr := fmt.Sprintf(
-		"postgres://%v:%v@%v/?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_HOST"),
-	)
+	connStr := fmt.Sprintf("host=db port=5432 user=%s password=%s dbname=postgres sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
 
 	db, err := pgxpool.Connect(context.TODO(), connStr)
 	if err != nil {

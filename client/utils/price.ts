@@ -11,9 +11,9 @@ export const getTotalPrice = (
     product.plannedDates
       .map((d) => new Date(d))
       .includes(new Date(chosenDate)) ||
-    (quantity >= 4 && product.kind === ProductKind.trip)
+    (quantity > 4 && product.kind === ProductKind.trip)
   ) {
-    total /= 4
+    total *= 0.8
   }
 
   return new Intl.NumberFormat(lang, {

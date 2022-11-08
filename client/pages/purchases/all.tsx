@@ -86,9 +86,9 @@ const columns = [
   )
 }
 
-const Export = ({ onExport }) => {
+const Export = ({ onExport }: { onExport: () => void }) => {
   const { t } = useTranslation('purchases')
-return <Button onClick={e => onExport(e.target.value)}>{t('export')}</Button>;
+  return <Button onClick={() => onExport()}>{t('export')}</Button>;
 } 
 
 const Page = ({ fallback }: { fallback: Map<string, UserPurchase[]> }) => {

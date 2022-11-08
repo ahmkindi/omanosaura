@@ -5,6 +5,7 @@ const nextVideos = require('next-videos')
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: 'standalone',
   rewrites: () => {
     return [
       {
@@ -18,7 +19,7 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ['images.unsplash.com', 'picsum.photos'],
+    domains: ['images.unsplash.com', 'picsum.photos', 'i.imgur.com'],
   },
 }
 

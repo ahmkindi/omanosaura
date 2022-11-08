@@ -50,17 +50,8 @@ const NavBar = () => {
         }}
       >
         <div className={styles.topLevelOptions}>
-          {isLoading ? null : true ? (
-            <Avatar
-              user={{
-                firstname: 'Ahmed',
-                lastname: 'Kindi',
-                roles: [],
-                id: 'a',
-                email: 'a@a.com',
-                phone: 'b',
-              }}
-            />
+          {isLoading ? null : user ? (
+            <Avatar user={user} />
           ) : (
             <Button
               style={{
