@@ -1,110 +1,172 @@
 package api
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
-	"net/http"
-	"omanosaura/models"
+	"omanosaura/database"
+	"omanosaura/utils"
 
+	"github.com/FusionAuth/go-client/pkg/fusionauth"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
-func (server *Server) HandlerRegisterUser(w http.ResponseWriter, r *http.Request) {
-	log.Print("Registering A User")
-	var user models.User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		log.Println("failed to decode request", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+func (server *Server) HandlerGetUser(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fiber.ErrNotFound
 	}
-
-	user.Id = uuid.Must(uuid.NewRandom())
-
-	insertedUser, err := server.usersSotre.InsertOrUpdateUser(r.Context(), user)
-	if err != nil {
-		log.Println("failed to insert user into db", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-		return
-	}
-
-	eventId, err := uuid.Parse(mux.Vars(r)["event_id"])
-	if err != nil {
-		log.Println("failed to convert event id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	if err := server.usersSotre.InsertEventUser(r.Context(), models.EventUser{UserId: insertedUser.Id, EventId: eventId}); err != nil {
-		log.Println("failed to insert user event into db", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-	}
-
-	w.WriteHeader(http.StatusOK)
+	return c.JSON(user)
 }
 
-func (server *Server) HandlerGetAllUsers(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting Users")
-	users, err := server.usersSotre.GetAllUsers(r.Context())
-	if err != nil {
-		log.Println("failed to get users from db", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-		return
-	}
+func (server *Server) HandlerUserLogin(c *fiber.Ctx) error {
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(users); err != nil {
-		log.Println("failed to encode users", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-		return
-	}
+	redirectTo := fmt.Sprintf(`%s/fa/oauth2/authorize?client_id=%s&redirect_uri=%s/server/oauth-callback&response_type=code`,
+		server.Config.BaseUrl,
+		server.Config.FusionClientID,
+		server.Config.BaseUrl)
+
+	fmt.Print(redirectTo)
+
+	return c.Redirect(redirectTo)
 }
 
-func (server *Server) HandlerInterestedUsers(w http.ResponseWriter, r *http.Request) {
-	log.Print("Getting Interested Users")
+func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fiber.ErrNotFound
+	}
 
-	eventId, err := uuid.Parse(mux.Vars(r)["event_id"])
+	updatedUser := new(database.UpsertUserParams)
+	if err := c.BodyParser(updatedUser); err != nil {
+		return fiber.ErrBadRequest
+	}
+	updatedUser.ID = user.ID
+	updatedUser.Roles = user.Roles
+
+	resp, fusionErr, err := server.FusionClient.UpdateUser(user.ID.String(), fusionauth.UserRequest{
+		ApplicationId: server.Config.FusionApplicationID,
+		User: fusionauth.User{
+			FirstName:   updatedUser.Firstname,
+			LastName:    updatedUser.Lastname,
+			Email:       updatedUser.Email,
+			MobilePhone: updatedUser.Phone,
+		},
+	})
+	if resp.StatusCode != 200 || fusionErr != nil || err != nil {
+		return fmt.Errorf("failed to update user: %d %+v %w", resp.StatusCode, fusionErr, err)
+	}
+
+	return server.Queries.UpsertUser(c.Context(), *updatedUser)
+}
+
+func (server *Server) HandlerOauthCallback(c *fiber.Ctx) error {
+	token, fusionErr, err := server.FusionClient.ExchangeOAuthCodeForAccessToken(
+		c.Query("code"),
+		server.Config.FusionClientID,
+		server.Config.FusionClientSecret,
+		fmt.Sprintf("%s/server/oauth-callback", server.Config.BaseUrl),
+	)
+	if err != nil || fusionErr != nil {
+		return fiber.ErrInternalServerError
+	}
+
+	sess, err := server.Store.Get(c)
 	if err != nil {
-		log.Println("failed to convert event id into uuid", err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
+		return err
 	}
 
-	users, err := server.usersSotre.GetAllUsersForEvent(r.Context(), eventId)
+	sess.Set("token", token.AccessToken)
+	err = sess.Save()
 	if err != nil {
-		log.Println("failed to get interested users from db", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-		return
+		return err
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(users); err != nil {
-		log.Println("failed to encoding events", err)
-		http.Error(
-			w,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError,
-		)
-		return
+	user, authErr, err := server.FusionClient.RetrieveUserUsingJWT(token.AccessToken)
+	if err != nil || authErr != nil {
+		log.Println("Failed to get user from access token ", authErr, err)
+		return err
 	}
+	userID, err := uuid.Parse(user.User.Id)
+	if err != nil {
+		log.Println("failed to parse user id to uuid", user.User.Id, err)
+		return err
+	}
+	err = server.Queries.UpsertUser(c.Context(), database.UpsertUserParams{
+		ID:        userID,
+		Email:     user.User.Email,
+		Firstname: user.User.FirstName,
+		Lastname:  user.User.LastName,
+		Phone:     user.User.MobilePhone,
+		Roles:     utils.GetRoles(user.User.Registrations, server.Config.FusionApplicationID),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to upsert user: %w", err)
+	}
+
+	return c.Redirect(server.Config.BaseUrl)
+}
+
+func (server *Server) HandlerLogout(c *fiber.Ctx) error {
+	sess, err := server.Store.Get(c)
+	if err != nil {
+		return c.Next()
+	}
+
+	sess.Destroy()
+	return c.Redirect(fmt.Sprintf("%s/fa/oauth2/logout?client_id=%s",
+		server.Config.BaseUrl,
+		server.Config.FusionClientID,
+	))
+}
+
+func (server *Server) UserMiddleware(c *fiber.Ctx) error {
+	sess, err := server.Store.Get(c)
+	if err != nil {
+		return c.Next()
+	}
+	if !utils.Contains(sess.Keys(), "token") {
+		log.Println("No token found in session")
+		return c.Next()
+	}
+	token := fmt.Sprintf("%+v", sess.Get("token"))
+
+	valid, err := server.FusionClient.ValidateJWT(token)
+	if err != nil {
+		log.Println("failed to validate token")
+		return c.Next()
+	}
+	if valid.StatusCode != 200 {
+		log.Println("token is invalid")
+		sess.Destroy()
+		return c.Next()
+	}
+
+	user, fusionErr, err := server.FusionClient.RetrieveUserUsingJWT(token)
+	if err != nil || fusionErr != nil {
+		log.Println("Failed to get user from access token ", fusionErr, err)
+		return c.Next()
+	}
+	c.Locals("user", database.User{
+		ID:        uuid.MustParse(user.User.Id),
+		Email:     user.User.Email,
+		Firstname: user.User.FirstName,
+		Lastname:  user.User.LastName,
+		Phone:     user.User.MobilePhone,
+		Roles:     utils.GetRoles(user.User.Registrations, server.Config.FusionApplicationID),
+	})
+
+	return c.Next()
+}
+
+func (server *Server) AdminMiddleware(c *fiber.Ctx) error {
+	user, ok := c.Locals("user").(database.User)
+	if !ok {
+		return fmt.Errorf("failed to get user from local in admin middleware")
+	}
+	if !utils.Contains(user.Roles, "admin") {
+		return fiber.ErrForbidden
+	}
+
+	return c.Next()
 }

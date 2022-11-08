@@ -1,0 +1,11 @@
+.layout {
+  text-align: center;
+  max-width: 1124px;
+  margin: auto;
+  position: relative;
+  min-height: 100vh;
+}
+
+.nonFooter {
+  padding-bottom: calc(var(--footer-height) + 20px);
+}

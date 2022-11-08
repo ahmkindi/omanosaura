@@ -1,21 +1,30 @@
 package api
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"net/smtp"
+	"net/url"
+	"omanosaura/database"
 	"omanosaura/migrations"
-	"omanosaura/store"
+	"omanosaura/thawani"
 	"os"
+	"time"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/FusionAuth/go-client/pkg/fusionauth"
+	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Server struct {
-	Email           Email
-	tripsStore      store.TripsStore
-	adventuresStore store.AdventuresStore
-	eventsStore     store.EventsStore
-	usersSotre      store.UsersStore
+	Email         Email
+	Config        Config
+	Queries       *database.Queries
+	DB            *pgxpool.Pool
+	FusionClient  *fusionauth.FusionAuthClient
+	Store         *session.Store
+	ThawaniClient *thawani.ThawaniClient
 }
 
 type Email struct {
@@ -27,23 +36,40 @@ type Email struct {
 }
 
 func CreateServer() (*Server, error) {
-	connStr := fmt.Sprintf(
-		"postgres://%v:%v@%v/?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_HOST"),
-	)
+	connStr := fmt.Sprintf("host=db port=5432 user=%s password=%s dbname=postgres sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
 
-	db, err := sqlx.Connect("postgres", connStr)
+	db, err := pgxpool.Connect(context.TODO(), connStr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err = migrations.Migrate(db.DB); err != nil {
+	if err = migrations.Migrate(connStr); err != nil {
 		return nil, fmt.Errorf("failed to migrate: %w", err)
 	}
 	username := os.Getenv("EMAIL_USERNAME")
 	password := os.Getenv("EMAIL_PASSWORD")
+
+	config := Config{
+		FusionClientID:        os.Getenv("FUSION_CLIENT_ID"),
+		FusionClientSecret:    os.Getenv("FUSION_CLIENT_SECRET"),
+		FusionApplicationID:   os.Getenv("FUSION_APPLICATION_ID"),
+		FusionAPIKey:          os.Getenv("FUSION_API_KEY"),
+		ThawaniAPIKey:         os.Getenv("THAWANI_API_KEY"),
+		ThawaniBaseUrl:        os.Getenv("THAWANI_BASE_URL"),
+		ThawaniPublishableKey: os.Getenv("THAWANI_PUBLISHABLE_KEY"),
+		BaseUrl:               os.Getenv("BASE_URL"),
+	}
+
+	fusionauthHost, err := url.Parse("http://fusionauth:9011")
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse fusion auth url: %w", err)
+	}
+
+	thawaniHost, err := url.Parse(config.ThawaniBaseUrl)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse thawani url: %w", err)
+	}
+
 	return &Server{
 		Email: Email{
 			Username: username,
@@ -52,9 +78,11 @@ func CreateServer() (*Server, error) {
 			Headers:  "MIME-version: 1.0;\nContent-Type: text/html;",
 			SmtpURL:  "smtppro.zoho.com:587",
 		},
-		tripsStore:      store.NewTripsStore(db),
-		adventuresStore: store.NewAdventuresStore(db),
-		eventsStore:     store.NewEventsStore(db),
-		usersSotre:      store.NewUsersStore(db),
+		Queries:       database.New(db),
+		DB:            db,
+		FusionClient:  fusionauth.NewClient(&http.Client{Timeout: time.Second * 10}, fusionauthHost, config.FusionAPIKey),
+		ThawaniClient: thawani.NewClient(&http.Client{Timeout: time.Second * 20}, thawaniHost, config.ThawaniAPIKey, config.ThawaniPublishableKey),
+		Config:        config,
+		Store:         session.New(),
 	}, nil
 }

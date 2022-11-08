@@ -1,38 +1,13 @@
 package main
 
 import (
-	"crypto/sha256"
-	"crypto/subtle"
 	"log"
-	"net/http"
 	"omanosaura/api"
-	"os"
 
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
-
-func basicAuth(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		log.Println("authenticating")
-		username, password, ok := r.BasicAuth()
-		if ok {
-			usernameHash := sha256.Sum256([]byte(username))
-			passwordHash := sha256.Sum256([]byte(password))
-			expectedUsernameHash := sha256.Sum256([]byte(os.Getenv("ADMIN_USERNAME")))
-			expectedPasswordHash := sha256.Sum256([]byte(os.Getenv("ADMIN_PASSWORD")))
-			usernameMatch := (subtle.ConstantTimeCompare(usernameHash[:], expectedUsernameHash[:]) == 1)
-			passwordMatch := (subtle.ConstantTimeCompare(passwordHash[:], expectedPasswordHash[:]) == 1)
-			if usernameMatch && passwordMatch {
-				next.ServeHTTP(w, r)
-				return
-			}
-		}
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-	}
-
-	return http.HandlerFunc(fn)
-}
 
 func main() {
 
@@ -41,31 +16,35 @@ func main() {
 		log.Fatal(err)
 	}
 
-	r := mux.NewRouter()
-	r.HandleFunc("/send", server.HandlerSendEmail).Methods("POST")
-	r.HandleFunc("/trips", server.HandlerGetAllTrips).Methods("GET")
-	r.HandleFunc("/trips/photos/{id}", server.HandlerGetTripPhotos).Methods("GET")
-	r.HandleFunc("/adventures", server.HandlerGetAllAdventures).Methods("GET")
-	r.HandleFunc("/current/events", server.HandlerGetCurrentEvents).Methods("GET")
-	r.HandleFunc("/users/interested/{event_id}", server.HandlerRegisterUser).Methods("POST")
+	app := fiber.New()
+	app.Use(logger.New())
+	app.Use(cors.New())
+	app.Post("/send", server.HandlerSendEmail)
+	app.Get("/login", server.HandlerUserLogin)
+	app.Get("/oauth-callback", server.HandlerOauthCallback)
+	app.Get("/products", server.HandlerGetAllProducts)
+	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
+	app.Get("/products/:id", server.HandlerGetProduct)
+	app.Get("/blogs", server.HandlerGetAllBlogs)
+	app.Get("/blogs/:id", server.HandlerGetBlog)
 
-	protected := r.PathPrefix("/admin").Subrouter()
-	protected.Use(basicAuth)
-	protected.HandleFunc("/trips", server.HandlerInsertOrUpdateTrip).Methods("POST")
-	protected.HandleFunc("/trips/delete/{id}", server.HandlerDeleteTrip).Methods("POST")
-	protected.HandleFunc("/trips/photos", server.HandlerInsertTripPhotos).Methods("POST")
-	protected.HandleFunc("/trips/photos/{id}", server.HandlerDeleteTripPhoto).Methods("POST")
-	protected.HandleFunc("/adventures", server.HandlerInsertOrUpdateAdventure).Methods("POST")
-	protected.HandleFunc("/adventures/delete/{id}", server.HandlerDeleteAdventure).Methods("POST")
-	protected.HandleFunc("/events", server.HandlerInsertOrUpdateEvent).Methods("POST")
-	protected.HandleFunc("/events", server.HandlerGetAllEvents).Methods("GET")
-	protected.HandleFunc("/events/delete/{id}", server.HandlerDeleteEvent).Methods("POST")
-	protected.HandleFunc("/users", server.HandlerGetAllUsers).Methods("GET")
-	protected.HandleFunc("/users/{event_id}", server.HandlerInterestedUsers).
-		Methods("GET")
-	protected.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	}).Methods("POST")
+	users := app.Group("/user", server.UserMiddleware)
+	users.Get("/", server.HandlerGetUser)
+	users.Put("/", server.HandlerUpdateUser)
+	users.Get("/logout", server.HandlerLogout)
 
-	http.ListenAndServe(":8081", r)
+	users.Post("/products/review", server.HandlerReviewProduct)
+	users.Get("/products/:id/review", server.HandlerGetUserProductReview)
+	users.Delete("/products/:id/review", server.HandlerDeleteReviewProduct)
+	users.Post("/products/purchase", server.HandlerPurchaseProduct)
+	users.Get("/products/purchase", server.HandlerGetUserPurchases)
+	users.Get("/purchase/success/:id", server.HandlerPurchaseSuccess)
+
+	admin := users.Group("/admin", server.AdminMiddleware)
+	admin.Delete("/products/:id", server.HandlerDeleteProduct)
+	admin.Post("/products", server.HandlerUpsertProduct)
+	admin.Post("/blogs", server.HandlerUpsertBlog)
+	admin.Get("/products/purchases", server.HandlerGetAllPurchases)
+
+	app.Listen(":8081")
 }

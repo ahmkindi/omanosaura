@@ -1,0 +1,12 @@
+.front {
+  width: 350px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1rem;
+  p {
+    margin-bottom: 0px;
+    font-weight: bold;
+  }
+}

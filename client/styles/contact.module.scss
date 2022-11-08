@@ -1,0 +1,286 @@
+@import url(https://fonts.googleapis.com/css?family=Oswald:400,700);
+
+.contact {
+  width: 500px;
+  margin: 2em auto;
+  position: relative;
+  line-height: 1.5em;
+  border-radius: 5px;
+  color: var(--primary);
+}
+
+.contact article {
+  text-align: center;
+  padding: 1em;
+}
+
+.contact h1 {
+  text-align: center;
+  font-size: 2.4rem;
+}
+
+.contactbutton {
+  border-radius: 10px;
+  background: var(--primary);
+  -webkit-box-shadow: 1px 1px 0 0 var(--secondary), 2px 2px 0 0 var(--secondary),
+    3px 3px 0 0 var(--secondary);
+  box-shadow: 1px 1px 0 0 var(--secondary), 2px 2px 0 0 var(--secondary),
+    3px 3px 0 0 var(--secondary);
+  text-align: center;
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+.contactbutton:hover {
+  -webkit-box-shadow: 1px 1px 0 0 var(--secondary), 0px 0px 0 0 var(--secondary),
+    0px 0px 0 0 var(--secondary);
+  box-shadow: 1px 1px 0 0 var(--secondary), 0px 0px 0 0 var(--secondary),
+    0px 0px 0 0 var(--secondary);
+  margin-top: 22px;
+  margin-left: 2px;
+  margin-bottom: 0px;
+}
+
+.mail {
+  margin-top: 11px;
+  font-size: 15px;
+  display: inline-block;
+  border-top: 2em solid transparent;
+  border-left: 2.6em solid var(--secondary);
+  height: 0;
+  width: 0;
+  position: relative;
+}
+
+.mail:before {
+  content: '';
+  top: -2.5em;
+  left: -2.95em;
+  display: block;
+  position: absolute;
+  border-top: 1.2em solid var(--secondary);
+  border-left: 1.6em solid transparent;
+  border-right: 1.6em solid transparent;
+  border-bottom: 1em solid transparent;
+  font-size: 0.8em;
+}
+
+.mail::after {
+  display: block;
+  content: '';
+  position: absolute;
+  border-top: 2em solid transparent;
+  border-right: 2.6em solid var(--secondary);
+  height: 0;
+  width: 0;
+  left: -2.18em;
+  bottom: 0;
+}
+
+.checkcontact {
+  position: absolute;
+  left: -9999px;
+}
+
+.contactform {
+  overflow: hidden;
+  max-height: 0px;
+  -webkit-transition: all linear 1s;
+  -moz-transition: all linear 1s;
+  -o-transition: all linear 1s;
+  -ms-transition: all linear 1s;
+  transition: all linear 1s;
+}
+
+.checkcontact:checked + .contactform {
+  max-height: 1000px;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.textareaWrapper textarea {
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  background: white;
+  border: 1px solid #dadada;
+  box-shadow: 0 0 1px 0 #e4e4e4;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 1em;
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  -o-transition: all 250ms ease;
+  transition: all 250ms ease;
+  color: #5e5e5e;
+}
+
+.inputWrapper input[type='text'] {
+  border-radius: 10px;
+  margin-top: 1em;
+  display: block;
+  width: 100%;
+  background: white;
+  border: 1px solid #dadada;
+  box-shadow: 0 0 1px 0 #e4e4e4;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 1em;
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  -o-transition: all 250ms ease;
+  transition: all 250ms ease;
+  color: #5e5e5e;
+  text-indent: 15%;
+}
+
+.inputWrapper input[type='text']:focus {
+  box-shadow: inset 2px 2px 5px 0 #dadada;
+  outline: none;
+  text-indent: 0;
+}
+
+.inputWrapper label {
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--primary);
+  color: white;
+  box-sizing: border-box;
+  width: 15%;
+  text-align: center;
+  line-height: 3em;
+  font-size: 0.9em;
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  -o-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+
+.inputWrapper input[type='text']:focus + label {
+  left: 85%;
+}
+
+.inputWrapperAR label {
+  left: auto !important;
+  right: 0 !important;
+  font-size: 1em;
+}
+
+.inputWrapperAR input[type='text']:focus + label {
+  right: 85% !important;
+}
+
+.textareaWrapper textarea {
+  border-radius: 10px;
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  background: white;
+  border: 1px solid #dadada;
+  box-shadow: 0 0 1px 0 #e4e4e4;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 1em;
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  -o-transition: all 250ms ease;
+  transition: all 250ms ease;
+  color: #5e5e5e;
+}
+
+.textareaWrapper textarea:focus {
+  box-shadow: inset 2px 2px 5px 0 #dadada;
+  outline: none;
+}
+
+.submitWrapper {
+  text-align: center;
+}
+
+.submitWrapper input {
+  border-radius: 10px;
+  text-align: center;
+  display: inline-block;
+  width: 40%;
+  height: 50px;
+  margin-top: 1em;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  font-size: 1em;
+  border: none;
+  -webkit-box-shadow: 1px 1px 0 0 var(--secondary), 2px 2px 0 0 var(--secondary),
+    3px 3px 0 0 var(--secondary);
+  box-shadow: 1px 1px 0 0 var(--secondary), 2px 2px 0 0 var(--secondary),
+    3px 3px 0 0 var(--secondary);
+  -webkit-appearance: none;
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  -o-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+
+.submitWrapper input:hover {
+  -webkit-box-shadow: 1px 1px 0 0 var(--secondary), 0px 0px 0 0 var(--secondary),
+    0px 0px 0 0 var(--secondary);
+  box-shadow: 1px 1px 0 0 var(--secondary), 0px 0px 0 0 var(--secondary),
+    0px 0px 0 0 var(--secondary);
+  margin-top: 22px;
+  margin-left: 2px;
+  margin-bottom: 0px;
+}
+
+@media (max-width: 500px) {
+  .contact {
+    width: 100%;
+  }
+  .inputWrapper label {
+    line-height: 3.5em;
+    font-size: 0.8em;
+  }
+}
+
+.socials {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.4rem;
+}
+
+.socials a {
+  color: var(--primary);
+}
+
+.socials svg:hover {
+  color: var(--orange);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: var(--footer-height);
+  bottom: 20px;
+}

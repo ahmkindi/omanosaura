@@ -1,0 +1,114 @@
+.circle {
+  display: inline-block;
+  background-color: #00d53b;
+  border-radius: 50%;
+  background-color: var(--primary);
+  cursor: pointer;
+  position: relative;
+}
+
+.inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  height: 40px;
+  width: 40px;
+  color: var(--secondary) !important;
+}
+
+.userBox {
+  position: absolute;
+  background-color: var(--primary);
+  border-radius: 10px;
+  color: white;
+  z-index: 9000;
+  right: 0;
+  top: 40px;
+  width: 300px;
+
+  .profile {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 1rem;
+    padding: 12px;
+    position: relative;
+
+    p {
+      color: white;
+    }
+
+    h5 {
+      color: var(--secondary);
+    }
+
+    a {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    color: var(--orange);
+    height: 40px;
+    box-shadow: 0px 24px 3px -24px var(--orange);
+
+    div:first-child {
+      border-right: var(--orange) 1px solid;
+    }
+
+    div {
+      flex: 1;
+      padding: 5px;
+      font-weight: bold;
+    }
+
+    div:hover {
+      color: black;
+      background-color: var(--orange);
+      -webkit-transition: background-color 0.25s linear;
+      -ms-transition: background-color 0.25s linear;
+      transition: background-color 0.25s linear;
+    }
+  }
+}
+
+.userBoxAr {
+  left: 0;
+  right: auto;
+
+  .profile {
+    text-align: right;
+
+    a {
+      left: 12px;
+      right: auto;
+    }
+  }
+
+  .actions {
+    div:first-child {
+      border-left: var(--orange) 1px solid;
+    }
+
+    div {
+      border-right: unset !important;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .userBox {
+    left: -55px;
+  }
+  .userBoxAr {
+    right: -55px;
+  }
+}

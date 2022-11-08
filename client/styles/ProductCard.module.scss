@@ -1,0 +1,57 @@
+@mixin bottom {
+  position: absolute;
+  right: 0;
+  left: 0;
+}
+
+.container {
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: cover !important;
+  width: 350px;
+  height: 500px;
+  position: relative;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.315);
+  .profile {
+    background-color: var(--tertiary);
+    padding: 8px;
+    padding-bottom: 12px;
+    @include bottom();
+    bottom: 0;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      text-align: left;
+      h2 {
+        color: var(--primary);
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+      h2:hover {
+        text-decoration: underline;
+      }
+    }
+    p {
+      color: var(--orange);
+      font-size: 1rem;
+      padding: 1rem 2rem 0.5rem 0px;
+      font-weight: bold;
+      text-align: left;
+    }
+    .ar {
+      padding: 1rem 0rem 0.5rem 2rem;
+      text-align: right;
+    }
+    .info {
+      @include bottom;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 8px;
+      bottom: 0;
+      svg {
+        color: var(--primary);
+      }
+    }
+  }
+}

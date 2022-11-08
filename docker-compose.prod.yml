@@ -1,31 +1,76 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  web:
-    image: web-prod
-    ports:
-      - 80:80
-      - 443:443
+  client:
+    image: omanosaura-client-prod
+
+  nginx:
+    image: omanosaura-nginx-prod
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/nginx/ssl/:ro
+    ports:
+      - 80:80
+
   certbot:
     image: certbot/certbot:latest
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ahmkind19@gmail.com -d omanosaura.com --agree-tos
+
   server:
-    image: server-prod
+    image: omanosaura-server-prod
     ports:
-     - 8081:8081
-    env_file:
-      - .env
+      - 8081:8081
     depends_on:
       - db
+      - fusionauth
+
   db:
     image: postgres:13.2-alpine
     ports:
-     - 5432:5432
+      - 5432:5432
     env_file:
-     - .env
+      - .env
+    restart: unless-stopped
+    volumes:
+      - primary_db_data:/var/lib/postgresql/data
+
+  fusiondb:
+    image: postgres:13.2-alpine
+    env_file:
+      - .env
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+
+  fusionauth:
+    image: fusionauth/fusionauth-app:1.40.2
+    depends_on:
+      fusiondb:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://fusiondb:5432/fusionauth
+      DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      FUSIONAUTH_APP_RUNTIME_MODE: production
+      FUSIONAUTH_APP_URL: http://fusionauth:9011
+      SEARCH_TYPE: database
+    restart: unless-stopped
+    ports:
+      - 9011:9011
+    volumes:
+      - fusionauth_config:/usr/local/fusionauth/config
+
+volumes:
+  primary_db_data:
+  auth_db_data:
+  fusionauth_config:

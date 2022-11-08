@@ -5,37 +5,40 @@ import (
 	"embed"
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-	"github.com/golang-migrate/migrate/v4/source/httpfs"
+	"github.com/golang-migrate/migrate/v4/database/pgx"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/pkg/errors"
 )
 
-//go:embed sql
-var migrations embed.FS
+//go:embed schema
+var schema embed.FS
 
 // Migrate migrates the datbase to the latest revision.
-func Migrate(db *sql.DB) error {
-	sourceInstance, err := httpfs.New(http.FS(migrations), "sql")
+func Migrate(connStr string) error {
+	sourceDriver, err := iofs.New(schema, "schema")
 	if err != nil {
-		return fmt.Errorf("failed to create source instance, got: %w", err)
+		return fmt.Errorf("failed to create driver: %w", err)
 	}
 
-	targetInstance, err := postgres.WithInstance(db, &postgres.Config{})
-
+	db, err := sql.Open("pgx", connStr)
 	if err != nil {
-		return fmt.Errorf("failed to create database instance, got: %w", err)
+		return err
+	}
+	defer db.Close()
+
+	databaseDriver, err := pgx.WithInstance(db, &pgx.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create database driver: %w", err)
 	}
 
 	migrateInstance, err := migrate.NewWithInstance(
-		"httpfs", sourceInstance,
-		"postgres", targetInstance,
+		"iofs", sourceDriver,
+		"postgres", databaseDriver,
 	)
-
 	if err != nil {
-		return fmt.Errorf("failed to create migrations, got: %w", err)
+		return fmt.Errorf("failed to create migrate instance: %w", err)
 	}
 
 	err = migrateInstance.Up()
