@@ -10,7 +10,14 @@ const Smartphone = () => {
             <div className={styles.camera}></div>
             <div className={styles.lineRec}></div>
           </div>
-          <video src={'/video.mp4'} autoPlay loop width={312} height={535} />
+          <video
+            src={'/homeVideo.mp4'}
+            controls
+            autoPlay
+            loop
+            width={312}
+            height={535}
+          />
         </div>
       </div>
     </div>
