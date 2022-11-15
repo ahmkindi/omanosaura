@@ -117,3 +117,21 @@ export const emptyProduct: ProductDetails = {
   longitude: 0,
   latitude: 0,
 }
+
+export interface BlogPreface {
+  id: string
+  userId: string
+  firstname: string
+  lastname: string
+  title: string
+  titleAr: string
+  description: string
+  descriptionAr: string
+  photo: string
+  createdAt: string
+}
+
+export interface Blog extends BlogPreface {
+  page: string
+  pageAr: string
+}

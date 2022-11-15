@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS blogs (
   description TEXT NOT NULL,
   title_ar TEXT NOT NULL,
   description_ar TEXT NOT NULL,
+  photo TEXT NOT NULL,
   page TEXT NOT NULL,
   page_ar TEXT NOT NULL,
   user_id UUID NOT NULL REFERENCES users(id),

@@ -1,50 +1,48 @@
-import { GetServerSideProps } from 'next'
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../../components/Layout'
-import ProductForm from '../../../components/ProductForm'
+import BlogForm from '../../../components/BlogForm'
 import applyConverters from 'axios-case-converter'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
-import { Product } from '../../../types/requests'
+import { GetServerSideProps } from 'next'
+import { Blog } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
-import { fetcher } from '../../../utils/axiosServer'
 import { useRouter } from 'next/router'
+import { fetcher } from '../../../utils/axiosServer'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
   const { session_id } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
-  const { data: product }: AxiosResponse<Product> = await axios.get(
-    `${process.env.SERVER_URL}products/${id}`,
+  const { data: blog }: AxiosResponse<Blog> = await axios.get(
+    `${process.env.SERVER_URL}blogs/${id}`,
     { headers: { Cookie: `session_id=${session_id}` } }
   )
   return {
     props: {
       fallback: {
-        [`products/${id}`]: product,
+        [`blogs/${id}`]: blog,
       },
     },
   }
 }
 
-const Experience = () => {
-  const { t } = useTranslation('experiences')
+const Blog = () => {
+  const { t } = useTranslation('blog')
   const router = useRouter()
   const { id } = router.query
-  const { data: product } = useSWR(`products/${id}`, fetcher<Product>) 
-
-  if (!product) return null
+  const { data: blog } = useSWR(`blogs/${id}`, fetcher<Blog>) 
 
   return (
     <Layout title={t('title')}>
-      <ProductForm product={product} id={product.id} />
+      <BlogForm blog={blog} />
     </Layout>
   )
 }
 
-const Page = ({ fallback }: { fallback: Map<string, Product> }) => {
+const Page = ({ fallback }: { fallback: Map<string, Blog> }) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <Experience />
+      <Blog />
     </SWRConfig>
   )
 }
