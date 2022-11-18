@@ -8,6 +8,9 @@ import { Blog } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '../../../utils/axiosServer'
+import useUser from '../../../hooks/useUser'
+import { useEffect } from 'react'
+import { Spinner } from 'react-bootstrap'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -29,12 +32,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Blog = () => {
   const { t } = useTranslation('blog')
   const router = useRouter()
+  const { user, isLoading } = useUser()
   const { id } = router.query
   const { data: blog } = useSWR(`blogs/${id}`, fetcher<Blog>) 
 
+  useEffect(() => {
+    if (!isLoading && !user?.roles.includes('admin')) {
+      router.push('/blogs')
+    }
+  }, [user, isLoading, router])
+
+  if (!blog) {
+    return null
+  }
+
   return (
     <Layout title={t('title')}>
-      <BlogForm blog={blog} />
+     {isLoading || !user ? <Spinner animation="border" /> : <BlogForm blog={blog} id={blog.id} />} 
     </Layout>
   )
 }

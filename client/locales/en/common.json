@@ -4,7 +4,7 @@
   "experiences": "Experiences",
   "about": "About",
   "contact": "Contact",
-  "blog": "Blog",
+  "blogs": "Blogs",
   "login": "Sign In",
   "logout": "Sign Out",
   "profile": "Profile",
@@ -15,5 +15,7 @@
   "tooMany": "yikes! Thats too many participants, even for us",
   "tooEarly": "the selected date is too early, we need time to prepare",
   "loginFirst": "Login to view the contents of this page",
-  "acceptTerms": "Please read and accept the terms and conditions before purchasing"
+  "acceptTerms": "Please read and accept the terms and conditions before purchasing",
+  "tooShort": "thats too short!",
+  "tooLong": "thats too long!"
 }

@@ -35,6 +35,7 @@ type Blog struct {
 	Description   string    `json:"description"`
 	TitleAr       string    `json:"title_ar"`
 	DescriptionAr string    `json:"description_ar"`
+	Photo         string    `json:"photo"`
 	Page          string    `json:"page"`
 	PageAr        string    `json:"page_ar"`
 	UserID        uuid.UUID `json:"user_id"`

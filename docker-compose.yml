@@ -76,12 +76,6 @@ services:
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
 
-  mailcatcher:
-    image: yappabe/mailcatcher
-    ports:
-      - '1025:1025'
-      - '1080:1080'
-
 volumes:
   auth_db_data:
   fusionauth_config:

@@ -1,5 +1,14 @@
 {
   "title": "Blog | Omanosaura",
   "readMore": "Read More",
-  "sharing": "Sharing The Beauty of Oman"
+  "sharing": "Sharing The Beauty of Oman",
+  "newBlog": "New Blog",
+  "photoUrl": "Photo URL",
+  "engTitle": "English Title",
+  "engDesc": "English Description",
+  "arTitle": "Arabic Title",
+  "arDesc": "Arabic Description",
+  "submit": "Submit",
+  "delete": "Delete",
+  "edit": "edit"
 }

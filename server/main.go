@@ -44,6 +44,7 @@ func main() {
 	admin.Delete("/products/:id", server.HandlerDeleteProduct)
 	admin.Post("/products", server.HandlerUpsertProduct)
 	admin.Post("/blogs", server.HandlerUpsertBlog)
+	admin.Delete("/blogs/:id", server.HandlerDeleteBlog)
 	admin.Get("/products/purchases", server.HandlerGetAllPurchases)
 
 	app.Listen(":8081")

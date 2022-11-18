@@ -8,6 +8,9 @@ import { Product } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import { fetcher } from '../../../utils/axiosServer'
 import { useRouter } from 'next/router'
+import useUser from '../../../hooks/useUser'
+import { useEffect } from 'react'
+import { Spinner } from 'react-bootstrap'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -31,12 +34,19 @@ const Experience = () => {
   const router = useRouter()
   const { id } = router.query
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>) 
+  const { user, isLoading } = useUser()
+
+  useEffect(() => {
+    if (!isLoading && !user?.roles.includes('admin')) {
+      router.push('/blogs')
+    }
+  }, [user, isLoading, router])
 
   if (!product) return null
 
   return (
     <Layout title={t('title')}>
-      <ProductForm product={product} id={product.id} />
+      {isLoading || !user ? <Spinner animation="border" /> : <ProductForm product={product} id={product.id} />}
     </Layout>
   )
 }

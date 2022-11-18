@@ -187,6 +187,7 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to insert purchase: %w", err)
 	}
 	if req.Cash {
+		go server.NotifyOfPurchase(purchase.ID)
 		return nil
 	}
 
@@ -244,6 +245,8 @@ func (server *Server) HandlerPurchaseSuccess(c *fiber.Ctx) error {
 			return fmt.Errorf("Failed to update purchase to complete: %w", err)
 		}
 	}
+
+	go server.NotifyOfPurchase(purchaseID)
 
 	// TODO: Maybe if cancelled or unpaid go to a different page
 	return c.Redirect(fmt.Sprintf("%s/purchases", server.Config.BaseUrl))

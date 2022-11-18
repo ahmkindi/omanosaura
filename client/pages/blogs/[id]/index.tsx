@@ -1,7 +1,6 @@
 import useTranslation from "next-translate/useTranslation"
 import { useRouter } from "next/router"
 import Layout from '../../../components/Layout'
-import BlogForm from '../../../components/BlogForm'
 import applyConverters from 'axios-case-converter'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import { GetServerSideProps } from 'next'
@@ -17,11 +16,11 @@ import Link from "next/link"
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
-  const { data: product }: AxiosResponse<Blog> = await axios.get(`${process.env.SERVER_URL}products/${id}`)
+  const { data: blog }: AxiosResponse<Blog> = await axios.get(`${process.env.SERVER_URL}blogs/${id}`)
   return {
     props: {
       fallback: {
-        [`products/${id}`]: product,
+        [`blogs/${id}`]: blog,
       },
     },
   }
@@ -40,16 +39,17 @@ const Blog = () => {
   }
 
   return (
-    <Layout title={t('title')}>
-      <Section title={isAr ? blog.title : blog.titleAr}>
+    <Layout title={isAr ? blog.titleAr : blog.title}>
+      <Section title={isAr ? blog.titleAr : blog.title}>
 <div dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
         <div>
-          <p>{blog.firstname} {blog.lastname}</p>
+          <div style={{ textAlign: isAr ? 'right' : 'left', marginTop: '5rem', marginBottom: '1rem'}}>
+          <h5>{blog.firstname} {blog.lastname}</h5>
           <p>{format(new Date(blog.createdAt), 'dd/MM/yyyy')}</p>
-          {user?.id === blog.userId && <Link href='edit'>{t('edit')}</Link>}
+          {user?.id === blog.userId && <Link href={`/blogs/${id}/edit`}>{t('edit')}</Link>}
+          </div>
         </div>
       </Section>
-      <BlogForm blog={blog} />
     </Layout>
   )
 }

@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <style>
+    body {
+      background-color: #e1eced;
+      color: #043c6c;
+      padding: 1rem;
+      margin: 1rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: #f58a07;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Thanks For Joining Our Experience</h1>
+
+  <h4>
+    You chose to try
+    <a target="_blank" href="https://omanosaura.com/experiences/{{ .product_id }}">{{ .title }}</a>
+  </h4>
+
+  {{if .paid}}
+  <p>
+    Thanks for paying the {{ .cost }} online, we will be waiting for you on
+    the {{ .chosen_date }}
+  </p>
+
+  <p>{{ else }}</p>
+
+  <p>
+    we will be waiting for you on the {{ .chosen_date }}, don't forget that
+    you have preffered the cash option to pay {{ .cost }}
+  </p>
+
+  <p>{{end}} - Omanosaura Team</p>
+</body>
+
+</html>

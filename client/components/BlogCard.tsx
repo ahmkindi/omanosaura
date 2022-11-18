@@ -12,22 +12,39 @@ const BlogCard = ({ blogPreface }: { blogPreface: BlogPreface }) => {
   const isAr = lang === 'ar'
 
   return (
-    <div className={styles.card}>
-      <Image
-        src={blogPreface.photo}
-        width={300}
-        height={400}
-        alt={blogPreface.title}
-      />
-      <h1>{isAr ? blogPreface.titleAr : blogPreface.title}</h1>
-      <h4>{format(new Date(blogPreface.createdAt), 'dd/MM/YYYY')}</h4>
-      <p>
-        {blogPreface.firstname} {blogPreface.lastname}
-      </p>
-      <Link href={blogPreface.id} passHref>
-        <Button>{t('readMore')}</Button>
+    <article className={`${styles.postcard} ${styles.dark} ${styles.blue}`}>
+      <Link className={styles.postcardImgLink} href={blogPreface.id} passHref>
+        <Image
+          className={styles.postcardImg}
+          src={blogPreface.photo}
+          alt={isAr ? blogPreface.titleAr : blogPreface.title}
+          width={300}
+          height={300}
+        />
       </Link>
-    </div>
+      <div className={styles.postcardText}>
+        <h1 className={`${styles.postcardTitle} ${styles.blue}`}>
+          <Link href={blogPreface.id}>
+            {isAr ? blogPreface.titleAr : blogPreface.title}
+          </Link>
+        </h1>
+        <div className={`${styles.postcardSubtitle} ${styles.small}`}>
+          {`${blogPreface.firstname} ${blogPreface.lastname} | ${format(
+            new Date(blogPreface.createdAt),
+            'dd/MM/yyyy'
+          )}`}
+        </div>
+        <div className={styles.postcardBar} />
+        <div className={styles.postcardPreviewText}>
+          {isAr ? blogPreface.descriptionAr : blogPreface.description}
+        </div>
+        <ul className={styles.postcardTagbox}>
+          <Link href={blogPreface.id} passHref>
+            <Button>{t('readMore')}</Button>
+          </Link>
+        </ul>
+      </div>
+    </article>
   )
 }
 

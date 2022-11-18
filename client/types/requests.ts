@@ -128,10 +128,25 @@ export interface BlogPreface {
   description: string
   descriptionAr: string
   photo: string
-  createdAt: string
+  createdAt: Date
 }
 
 export interface Blog extends BlogPreface {
   page: string
   pageAr: string
+}
+
+export const EmptyBlog: Blog = {
+  id: '',
+  userId: '00000000-0000-0000-0000-000000000000',
+  firstname: '',
+  lastname: '',
+  title: '',
+  titleAr: '',
+  description: '',
+  descriptionAr: '',
+  photo: '',
+  createdAt: new Date(),
+  page: '',
+  pageAr: '',
 }

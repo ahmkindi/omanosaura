@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"net/smtp"
 	"text/template"
@@ -38,12 +39,8 @@ func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
 	return nil
 }
 
-// TODO: Complete
-func (server *Server) NotifyOfPurchase(userEmail string, purchaseID uuid.UUID) error {
-	details := new(Contact)
-	if err := c.BodyParser(details); err != nil {
-		return fiber.ErrBadRequest
-	}
+func (server *Server) NotifyOfPurchase(purchaseID uuid.UUID) error {
+	details, err := server.Queries.GetNotifyPurchaseDetails(context.Background(), purchaseID)
 	var externalBody bytes.Buffer
 	externalBody.Write([]byte(fmt.Sprintf("Subject: Purchase Success\n%s\n\n", server.Email.Headers)))
 
@@ -51,9 +48,7 @@ func (server *Server) NotifyOfPurchase(userEmail string, purchaseID uuid.UUID) e
 	if err != nil {
 		return fiber.ErrInternalServerError
 	}
-	external.Execute(&externalBody, struct{ Name string }{Name: details.Name})
+	external.Execute(&externalBody, details)
 
-	smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
-
-	return nil
+	return smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
 }

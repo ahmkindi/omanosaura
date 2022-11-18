@@ -52,12 +52,12 @@ const MyQuill = ({
   setValue,
 }: {
   value: string
-  setValue: React.Dispatch<React.SetStateAction<string>>
+  setValue: (newValue: string) => void
 }) => (
   <ReactQuill
     theme="snow"
     value={value}
-    onChange={setValue}
+    onChange={(v) => setValue(v)}
     modules={modules}
     formats={formats}
   />
