@@ -253,13 +253,24 @@ const ProductForm = ({
             <ReactDatePicker
               onChange={(date) =>
                 date
-                  ? setValues((prev) => ({
-                      ...prev,
-                      plannedDates: prev.plannedDates.includes(date)
-                        ? prev.plannedDates.filter((d) => d === date)
-                        : [...prev.plannedDates, date],
-                    }))
-                  : null
+                  ? setValues((prev) => {
+                      const index = prev.plannedDates.findIndex(d => new Date(d).toDateString() === new Date(date).toDateString())
+                    console.log(prev.plannedDates, date, index)
+                      if (index !== -1) {
+                        return {
+                          ...prev,
+                          plannedDates: [
+                            ...prev.plannedDates.slice(0, index),
+                            ...prev.plannedDates.slice(index + 1),
+                          ],
+                        }
+                      } else
+                        return {
+                          ...prev,
+                          plannedDates: [...prev.plannedDates, new Date(date)],
+                        }
+                    })
+                  : console.log("CLICKED NOTHING")
               }
               highlightDates={values.plannedDates.map((d) => new Date(d))}
               locale={lang}

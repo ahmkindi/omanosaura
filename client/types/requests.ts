@@ -1,4 +1,4 @@
-import { getTomorrow } from '../utils/dates'
+import { getAfterTomorrow } from '../utils/dates'
 
 export interface User {
   id: string
@@ -85,7 +85,7 @@ export interface PurchaseProduct {
 export const emptyPurchaseProduct: PurchaseProduct = {
   proudctId: '',
   quantity: 1,
-  chosenDate: getTomorrow(),
+  chosenDate: getAfterTomorrow(),
   cash: false,
 }
 

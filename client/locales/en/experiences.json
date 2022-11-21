@@ -20,6 +20,8 @@
   "gallery": "Gallery",
   "successfulPurchase": "Nice! Successfully purchased the experience",
   "failedPurchase": "oh no! there was a problem purchasing the experience",
+  "failedReview": "oops! we couldn't add your review. Maybe you haven't been on this experience yet?",
+  "successfulReview": "YAY! thanks for your review, it will help fellow adventurers!",
   "purchaseTitle": "Purchasing {{ product }}",
   "numOfParticipants": "Number of Participants",
   "chosenDate": "Date of Trip",

@@ -13,7 +13,11 @@ const BlogCard = ({ blogPreface }: { blogPreface: BlogPreface }) => {
 
   return (
     <article className={`${styles.postcard} ${styles.dark} ${styles.blue}`}>
-      <Link className={styles.postcardImgLink} href={blogPreface.id} passHref>
+      <Link
+        className={styles.postcardImgLink}
+        href={`/blogs/${blogPreface.id}`}
+        passHref
+      >
         <Image
           className={styles.postcardImg}
           src={blogPreface.photo}
@@ -24,7 +28,7 @@ const BlogCard = ({ blogPreface }: { blogPreface: BlogPreface }) => {
       </Link>
       <div className={styles.postcardText}>
         <h1 className={`${styles.postcardTitle} ${styles.blue}`}>
-          <Link href={blogPreface.id}>
+          <Link href={`/blogs/${blogPreface.id}`}>
             {isAr ? blogPreface.titleAr : blogPreface.title}
           </Link>
         </h1>
@@ -39,7 +43,7 @@ const BlogCard = ({ blogPreface }: { blogPreface: BlogPreface }) => {
           {isAr ? blogPreface.descriptionAr : blogPreface.description}
         </div>
         <ul className={styles.postcardTagbox}>
-          <Link href={blogPreface.id} passHref>
+          <Link href={`/blogs/${blogPreface.id}`} passHref>
             <Button>{t('readMore')}</Button>
           </Link>
         </ul>

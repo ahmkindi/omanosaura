@@ -274,7 +274,7 @@ SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, descriptio
 (SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM reviews r WHERE r.product_id=$1) rating,
 (SELECT COALESCE(COUNT(*), 0) as rating_count FROM reviews r WHERE r.product_id=$1) rating_count,
 (SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1 AND title != '') review_count
-FROM products
+FROM products WHERE id = $1
 `
 
 type GetProductRow struct {

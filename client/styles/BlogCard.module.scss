@@ -90,22 +90,8 @@ $main-blue-rgb-015: rgba(4, 60, 108, 0.1) !default;
     margin: 20px 0 0 0;
     padding: 0;
     justify-content: center;
-
-    .tagItem {
-      display: inline-block;
-      background: var(--primary);
-      color: var(--orange);
-      border-radius: 3px;
-      padding: 2.5px 10px;
-      margin: 0 5px 5px 0;
-      cursor: default;
-      user-select: none;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background: var(--orange);
-        color: var(--primary);
-      }
+    a {
+      color: white;
     }
   }
 

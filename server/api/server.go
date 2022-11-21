@@ -70,6 +70,7 @@ func CreateServer() (*Server, error) {
 		return nil, fmt.Errorf("failed to parse thawani url: %w", err)
 	}
 
+	fmt.Println(username, password)
 	return &Server{
 		Email: Email{
 			Username: username,

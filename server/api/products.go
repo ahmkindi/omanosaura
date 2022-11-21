@@ -187,7 +187,12 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to insert purchase: %w", err)
 	}
 	if req.Cash {
-		go server.NotifyOfPurchase(purchase.ID)
+		go func(purchaseID uuid.UUID) {
+			err := server.NotifyOfPurchase(purchase.ID)
+			if err != nil {
+				fmt.Println("error notifying of purchase ", err.Error())
+			}
+		}(purchase.ID)
 		return nil
 	}
 

@@ -49,12 +49,12 @@ const Reviews = ({ product }: { product: Product }) => {
     try {
       const response = await axiosServer.post('user/products/review', values)
       if (response.status === 200) {
-        setAlert?.({ type: 'success', message: t('experiences:successfulReview')})
+        setAlert?.({ type: 'success', message: t('successfulReview')})
       } else {
-        setAlert?.({ type: 'warning', message: t('experiences:failedReview')})
+        setAlert?.({ type: 'warning', message: t('failedReview')})
       }
     } catch (error) {
-        setAlert?.({ type: 'warning', message: t('experiences:failedReview')})
+        setAlert?.({ type: 'warning', message: t('failedReview')})
     } finally {
       setOpenModal(false)
     }

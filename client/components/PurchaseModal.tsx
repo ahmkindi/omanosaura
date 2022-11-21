@@ -9,7 +9,7 @@ import {
   PurchaseProduct,
 } from '../types/requests'
 import * as Yup from 'yup'
-import { getTomorrow } from '../utils/dates'
+import { getAfterTomorrow, getTomorrow } from '../utils/dates'
 import axiosServer from '../utils/axiosServer'
 import { useGlobal } from '../context/global'
 import { useRouter } from 'next/router'
@@ -113,15 +113,15 @@ const PurchaseModal = ({
                 <ReactDatePicker
                   selected={values.chosenDate}
                   onChange={(date) =>
-                    setValues({ ...values, chosenDate: date ?? getTomorrow() })
+                    setValues({
+                      ...values,
+                      chosenDate: date ?? getAfterTomorrow(),
+                    })
                   }
-                  minDate={getTomorrow()}
+                  minDate={getAfterTomorrow()}
                   highlightDates={product.plannedDates.map((d) => new Date(d))}
                   locale={lang}
                 />
-                <Form.Text className="invalid-feedback">
-                  {getIn(errors, 'chosenDate')}
-                </Form.Text>
                 <Form.Text className="muted">{t('explainGreen')}</Form.Text>
               </Form.Group>
               <Form.Group className="mb-4">
@@ -155,12 +155,9 @@ const PurchaseModal = ({
                     touched.terms
                   }
                 />
-                {errors.terms !== undefined &&
-                  touched.terms && (
-                    <Form.Text style={{ color: 'red' }}>
-                      {errors.terms}
-                    </Form.Text>
-                  )}
+                {errors.terms !== undefined && touched.terms && (
+                  <Form.Text style={{ color: 'red' }}>{errors.terms}</Form.Text>
+                )}
               </Form.Group>
               <div className="mb-4" style={{ fontSize: '1.2rem' }}>
                 {t('totalPrice')}

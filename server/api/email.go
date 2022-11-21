@@ -23,18 +23,24 @@ func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
 
 	external, err := template.ParseFiles("templates/external-email.html")
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return fmt.Errorf("failed to parse external email template: %w", err)
 	}
 	external.Execute(&externalBody, struct{ Name string }{Name: details.Name})
 
 	internal, err := template.ParseFiles("templates/internal-email.html")
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return fmt.Errorf("failed to parse internal email template: %w", err)
 	}
 	internal.Execute(&internalBody, details)
 
-	smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{"admin@omanosaura.com"}, internalBody.Bytes())
-	smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
+	err = smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{"admin@omanosaura.com"}, internalBody.Bytes())
+	if err != nil {
+		return fmt.Errorf("failed to send internal email: %w", err)
+	}
+	err = smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
+	if err != nil {
+		return fmt.Errorf("failed to send external email: %w", err)
+	}
 
 	return nil
 }

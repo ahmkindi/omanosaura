@@ -10,5 +10,6 @@
   "arDesc": "Arabic Description",
   "submit": "Submit",
   "delete": "Delete",
-  "edit": "edit"
+  "edit": "edit",
+  "blogTitle": "{{ title }} | Omanosaura"
 }

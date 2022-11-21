@@ -39,7 +39,7 @@ const Blog = () => {
   }
 
   return (
-    <Layout title={isAr ? blog.titleAr : blog.title}>
+    <Layout title={t('blogTitle', { title: isAr ? blog.titleAr : blog.title})}>
       <Section title={isAr ? blog.titleAr : blog.title}>
 <div dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
         <div>

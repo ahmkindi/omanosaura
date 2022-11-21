@@ -10,5 +10,6 @@
   "arDesc": "شرح مبسط عربي",
   "submit": "تم",
   "delete": "امسح",
-  "edit": "عدل"
+  "edit": "عدل",
+  "blogTitle": "{{ title }} | عمانوصورا"
 }

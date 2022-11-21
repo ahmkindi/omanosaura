@@ -20,6 +20,8 @@
   "gallery": "الصور",
   "successfulPurchase": "تم شراء التجربة بنجاح!",
   "failedPurchase": "أوه لا! حدثت مشكلة في شراء الرحلة",
+  "failedReview": "أوه لا! لم نتمكن من إضافة تعليقك. ربما لم تنضم إلى هذه التجربة من قبل؟",
+  "successfulReview": "رائع! شكرًا لتعليقك ،سيساعد المغامرين الآخرين!",
   "purchaseTitle": "حجز {{ product }}",
   "numOfParticipants": "عدد المشاركين",
   "chosenDate": "تاريخ الرحلة",
