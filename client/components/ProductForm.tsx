@@ -10,6 +10,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import ar from 'date-fns/locale/ar'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import MyQuill from './MyQuill'
 
 const ProductForm = ({
   product,
@@ -39,14 +40,6 @@ const ProductForm = ({
     subtitleAr: Yup.string()
       .min(10, t('common:tooShort'))
       .max(50, t('common:tooLong'))
-      .required(),
-    description: Yup.string()
-      .min(100, t('common:tooShort'))
-      .max(1000, t('common:tooLong'))
-      .required(),
-    descriptionAr: Yup.string()
-      .min(100, t('common:tooShort'))
-      .max(1000, t('common:tooLong'))
       .required(),
     photo: Yup.string().required(),
     priceBaisa: Yup.number().integer('common:onlyInt').required(),
@@ -124,20 +117,7 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="ltr">
             <Form.Label>Description</Form.Label>
-            <Form.Control
-              name="description"
-              value={values.description}
-              as="textarea"
-              onChange={handleChange}
-              isInvalid={
-                errors.description !== undefined &&
-                errors.description.length > 0 &&
-                touched.description
-              }
-            />
-            <Form.Text className="invalid-feedback">
-              {errors.description}
-            </Form.Text>
+            <MyQuill value={values.description} setValue={(v) => setValues(prev => ({...prev, description: v}))} />
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Title Arabic</Form.Label>
@@ -173,20 +153,7 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Description Arabic</Form.Label>
-            <Form.Control
-              name="descriptionAr"
-              value={values.descriptionAr}
-              as="textarea"
-              onChange={handleChange}
-              isInvalid={
-                errors.descriptionAr !== undefined &&
-                errors.descriptionAr.length > 0 &&
-                touched.descriptionAr
-              }
-            />
-            <Form.Text className="invalid-feedback">
-              {errors.descriptionAr}
-            </Form.Text>
+            <MyQuill value={values.descriptionAr} setValue={(v) => setValues(prev => ({...prev, descriptionAr: v}))} />
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label>{t('photoUrl')}</Form.Label>
