@@ -2,6 +2,10 @@
 
 <head>
   <style>
+    html {
+      background-color: #e1eced;
+    }
+
     body {
       background-color: #e1eced;
       color: #043c6c;
@@ -21,23 +25,25 @@
 
   <h4>
     You chose to try
-    <a target="_blank" href="https://omanosaura.com/experiences/{{ .product_id }}">{{ .title }}</a>
+    <a target="_blank" href="https://omanosaura.com/experiences/{{ .ProductID }}">{{ .Title }}</a>
   </h4>
 
-  {{if .paid}}
+  {{if .Paid}}
   <p>
-    Thanks for paying the {{ .cost }} online, we will be waiting for you on
-    the {{ .chosen_date }}
+    Thanks for paying the {{ .Cost }} omr online, we will be waiting for you
+    on {{ .ChosenDate.Format "Jan 02, 2006" }}
   </p>
 
-  <p>{{ else }}</p>
+  {{ else }}
 
   <p>
-    we will be waiting for you on the {{ .chosen_date }}, don't forget that
-    you have preffered the cash option to pay {{ .cost }}
+    we will be waiting for you on {{ .ChosenDate.Format "Jan 02, 2006" }},
+    don't forget that you have preffered the cash option to pay {{ .Cost }}
+    omr
   </p>
 
-  <p>{{end}} - Omanosaura Team</p>
+  {{end}}
+  <p>- Omanosaura Team</p>
 </body>
 
 </html>

@@ -100,6 +100,6 @@ WHERE complete = true
 ORDER BY purchases.chosen_date;
 
 -- name: GetNotifyPurchaseDetails :one
-SELECT email, firstname, lastname, product_id, paid, chosen_date, title, (cost_baisa / 1000) as cost
+SELECT email, firstname, lastname, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000) as cost
 FROM purchases INNER JOIN users ON purchases.user_id = users.id INNER JOIN products ON purchases.product_id = products.id
 WHERE purchases.id = $1;
