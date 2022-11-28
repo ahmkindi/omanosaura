@@ -17,6 +17,7 @@ import applyConverters from 'axios-case-converter'
 import useSWR, { SWRConfig } from 'swr'
 import { fetcher } from '../../utils/axiosServer'
 import SearchBar from '../../components/SearchBar'
+import styles from '../../styles/Reviews.module.scss'
 
 export async function getServerSideProps() {
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
@@ -92,7 +93,6 @@ const Experiences = () => {
           zoom={0.4}
           maxZoom={20}
           minZoom={0.3}
-          onClick={() => setOpenProduct(undefined)}
         >
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
@@ -104,6 +104,7 @@ const Experiences = () => {
                   stroke="#e1eced"
                   strokeWidth={0.05}
                   onTouchEndCapture={(e) => {e.preventDefault(); setOpenProduct(undefined)}}
+                  onMouseDownCapture={e => {e.preventDefault(); setOpenProduct(undefined)}}
                 />
               ))
             }

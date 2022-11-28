@@ -10,6 +10,9 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import ar from 'date-fns/locale/ar'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import 'react-quill/dist/quill.snow.css'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 import MyQuill from './MyQuill'
 
 const ProductForm = ({
@@ -117,7 +120,12 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="ltr">
             <Form.Label>Description</Form.Label>
-            <MyQuill value={values.description} setValue={(v) => setValues(prev => ({...prev, description: v}))} />
+            <MyQuill
+              value={values.description}
+              setValue={(v) =>
+                setValues((prev) => ({ ...prev, description: v }))
+              }
+            />
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Title Arabic</Form.Label>
@@ -153,7 +161,12 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Description Arabic</Form.Label>
-            <MyQuill value={values.descriptionAr} setValue={(v) => setValues(prev => ({...prev, descriptionAr: v}))} />
+            <MyQuill
+              value={values.descriptionAr}
+              setValue={(v) =>
+                setValues((prev) => ({ ...prev, descriptionAr: v }))
+              }
+            />
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label>{t('photoUrl')}</Form.Label>
@@ -221,8 +234,12 @@ const ProductForm = ({
               onChange={(date) =>
                 date
                   ? setValues((prev) => {
-                      const index = prev.plannedDates.findIndex(d => new Date(d).toDateString() === new Date(date).toDateString())
-                    console.log(prev.plannedDates, date, index)
+                      const index = prev.plannedDates.findIndex(
+                        (d) =>
+                          new Date(d).toDateString() ===
+                          new Date(date).toDateString()
+                      )
+                      console.log(prev.plannedDates, date, index)
                       if (index !== -1) {
                         return {
                           ...prev,
@@ -237,7 +254,7 @@ const ProductForm = ({
                           plannedDates: [...prev.plannedDates, new Date(date)],
                         }
                     })
-                  : console.log("CLICKED NOTHING")
+                  : console.log('CLICKED NOTHING')
               }
               highlightDates={values.plannedDates.map((d) => new Date(d))}
               locale={lang}
@@ -250,6 +267,7 @@ const ProductForm = ({
                 name="longitude"
                 type="number"
                 step={0.00001}
+                value={values.longitude}
                 onChange={handleChange}
                 isInvalid={
                   errors.longitude !== undefined &&
@@ -265,6 +283,7 @@ const ProductForm = ({
               <Form.Control
                 name="latitude"
                 onChange={handleChange}
+                value={values.latitude}
                 step={0.00001}
                 type="number"
                 placeholder={t('latitude')}
@@ -287,6 +306,7 @@ const ProductForm = ({
                 type="number"
                 onChange={handleChange}
                 step={1}
+                value={values.priceBaisa}
                 isInvalid={
                   errors.priceBaisa !== undefined &&
                   errors.priceBaisa.length > 0 &&
