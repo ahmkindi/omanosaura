@@ -6,5 +6,11 @@
   "purchaseMade": "تاريخ الشراء",
   "tripDate": "تاريخ الرحلة",
   "numOfParticipants": "عدد المشاركين",
-  "totalPrice": "السعر الإجمالي"
+  "totalPrice": "السعر الإجمالي",
+  "productId": "التجربة",
+  "userEmail": "بريد المشتري",
+  "userPhone": "رقم المشتري",
+  "paid?": "دفع؟",
+  "chosenDate": "تاريخ الرحلة",
+  "export": "صدِر كملف"
 }

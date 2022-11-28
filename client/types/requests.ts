@@ -1,4 +1,4 @@
-import { getTomorrow } from '../utils/dates'
+import { getAfterTomorrow } from '../utils/dates'
 
 export interface User {
   id: string
@@ -85,7 +85,7 @@ export interface PurchaseProduct {
 export const emptyPurchaseProduct: PurchaseProduct = {
   proudctId: '',
   quantity: 1,
-  chosenDate: getTomorrow(),
+  chosenDate: getAfterTomorrow(),
   cash: false,
 }
 
@@ -116,4 +116,37 @@ export const emptyProduct: ProductDetails = {
   lastUpdated: new Date(),
   longitude: 0,
   latitude: 0,
+}
+
+export interface BlogPreface {
+  id: string
+  userId: string
+  firstname: string
+  lastname: string
+  title: string
+  titleAr: string
+  description: string
+  descriptionAr: string
+  photo: string
+  createdAt: Date
+}
+
+export interface Blog extends BlogPreface {
+  page: string
+  pageAr: string
+}
+
+export const EmptyBlog: Blog = {
+  id: '',
+  userId: '00000000-0000-0000-0000-000000000000',
+  firstname: '',
+  lastname: '',
+  title: '',
+  titleAr: '',
+  description: '',
+  descriptionAr: '',
+  photo: '',
+  createdAt: new Date(),
+  page: '',
+  pageAr: '',
 }

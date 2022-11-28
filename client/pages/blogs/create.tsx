@@ -1,15 +1,15 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import { emptyProduct } from '../../types/requests'
 import 'react-datepicker/dist/react-datepicker.css'
-import ProductForm from '../../components/ProductForm'
+import BlogForm from '../../components/BlogForm'
+import { EmptyBlog } from '../../types/requests'
 import useUser from '../../hooks/useUser'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 
 const Page = () => {
-  const { t } = useTranslation('experience')
+  const { t } = useTranslation('blog')
   const { user, isLoading } = useUser()
   const router = useRouter()
 
@@ -24,7 +24,7 @@ const Page = () => {
       {isLoading || !user ? (
         <Spinner animation="border" />
       ) : (
-        <ProductForm product={emptyProduct} />
+        <BlogForm blog={EmptyBlog} />
       )}
     </Layout>
   )

@@ -57,14 +57,7 @@ const SingleExperience = () => {
 
   return <Layout title={t('title')}>
     <Box>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'start',
-        gap: '1rem'
-      }}>
       <Image src={product.photo} width={450} height={450} alt={product.title} />
-      </div>
       <div className={styles.details}>
         <h3>{
 isAr ? product?.titleAr : product?.title
@@ -72,9 +65,7 @@ isAr ? product?.titleAr : product?.title
         <h4>{
 isAr ? product?.subtitleAr : product?.subtitle
         }</h4>
-        <p>{
-isAr ? product?.descriptionAr : product?.description
-        }</p>
+     <div dangerouslySetInnerHTML={{ __html: isAr ? product?.descriptionAr : product?.description }} />
         <div  style={{ display: 'flex', justifyContent: 'end', alignItems: 'end', alignSelf: 'end',  gap: '1rem'}}>
       {user?.roles.includes('admin') && 
       <Link href={`/experiences/${id}/edit`} passHref>

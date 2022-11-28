@@ -12,6 +12,7 @@ import { format } from 'date-fns'
 import { Button } from 'react-bootstrap'
 import { useMemo } from 'react'
 import { downloadCSV } from '../../utils/exportCSV'
+import Link from 'next/link'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -34,11 +35,12 @@ const Purchases = () => {
   const { t, lang } = useTranslation('purchases')
   const { user } = useUser()
   const { data: purchases } = useSWR(user ? 'user/admin/products/purchases' : null, fetcher<UserPurchase[]>)
+
 const columns = [
   {
     name: t('productId'),
     selector: (row: UserPurchase) => row.productId,
-    sortable: true,
+    cell: (row: UserPurchase) => <Link href={`/experiences/${row.productId}`}>{row.productId}</Link>,
   },
   {
     name: t('userEmail'),
@@ -56,7 +58,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: t('price'),
+    name: t('totalPrice'),
     selector: (row: UserPurchase) => 
        new Intl.NumberFormat(lang, {
                 style: 'currency',
@@ -75,7 +77,7 @@ const columns = [
     sortable: true,
   },
 ]
-	const actionsMemo = useMemo(() => <Export onExport={() => downloadCSV(purchases)} />, [purchases]);
+	const actionsMemo = useMemo(() => purchases ? <Export onExport={() => downloadCSV(purchases)} /> : null, [purchases]);
 
   return (
     <Layout title={t('title')}>

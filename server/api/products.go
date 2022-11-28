@@ -177,7 +177,7 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		ProductID:         product.ID,
 		UserID:            user.ID,
 		NumOfParticipants: int32(req.Quantity),
-		Paid:              false,
+		Paid:              !req.Cash,
 		ChosenDate:        req.ChosenDate,
 		CostBaisa:         int64(req.Quantity) * product.PriceBaisa,
 		Complete:          req.Cash,
@@ -187,6 +187,12 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to insert purchase: %w", err)
 	}
 	if req.Cash {
+		go func(purchaseID uuid.UUID) {
+			err := server.NotifyOfPurchase(purchase.ID)
+			if err != nil {
+				fmt.Println("error notifying of purchase ", err.Error())
+			}
+		}(purchase.ID)
 		return nil
 	}
 
@@ -223,7 +229,6 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to create thawani session: %w", err)
 	}
 
-	// return c.Redirect(fmt.Sprintf("%s/pay/%s?key=%s", server.Config.BaseUrl, s.Data.SessionId, server.Config.ThawaniPublishableKey))
 	return c.JSON(redirectURI)
 }
 
@@ -244,6 +249,8 @@ func (server *Server) HandlerPurchaseSuccess(c *fiber.Ctx) error {
 			return fmt.Errorf("Failed to update purchase to complete: %w", err)
 		}
 	}
+
+	go server.NotifyOfPurchase(purchaseID)
 
 	// TODO: Maybe if cancelled or unpaid go to a different page
 	return c.Redirect(fmt.Sprintf("%s/purchases", server.Config.BaseUrl))

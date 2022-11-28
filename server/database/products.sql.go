@@ -235,13 +235,46 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 	return i, err
 }
 
+const getNotifyPurchaseDetails = `-- name: GetNotifyPurchaseDetails :one
+SELECT email, firstname, lastname, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000) as cost
+FROM purchases INNER JOIN users ON purchases.user_id = users.id INNER JOIN products ON purchases.product_id = products.id
+WHERE purchases.id = $1
+`
+
+type GetNotifyPurchaseDetailsRow struct {
+	Email      string    `json:"email"`
+	Firstname  string    `json:"firstname"`
+	Lastname   string    `json:"lastname"`
+	ProductID  string    `json:"product_id"`
+	Paid       bool      `json:"paid"`
+	ChosenDate time.Time `json:"chosen_date"`
+	Title      string    `json:"title"`
+	Cost       int32     `json:"cost"`
+}
+
+func (q *Queries) GetNotifyPurchaseDetails(ctx context.Context, id uuid.UUID) (GetNotifyPurchaseDetailsRow, error) {
+	row := q.db.QueryRow(ctx, getNotifyPurchaseDetails, id)
+	var i GetNotifyPurchaseDetailsRow
+	err := row.Scan(
+		&i.Email,
+		&i.Firstname,
+		&i.Lastname,
+		&i.ProductID,
+		&i.Paid,
+		&i.ChosenDate,
+		&i.Title,
+		&i.Cost,
+	)
+	return i, err
+}
+
 const getProduct = `-- name: GetProduct :one
 SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted,
 (SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
 (SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM reviews r WHERE r.product_id=$1) rating,
 (SELECT COALESCE(COUNT(*), 0) as rating_count FROM reviews r WHERE r.product_id=$1) rating_count,
 (SELECT COALESCE(COUNT(*), 0) as review_count FROM reviews r WHERE r.product_id = $1 AND title != '') review_count
-FROM products
+FROM products WHERE id = $1
 `
 
 type GetProductRow struct {

@@ -6,5 +6,12 @@
   "purchaseMade": "Purchase Date",
   "tripDate": "Trip Date",
   "numOfParticipants": "Number of Participants",
-  "totalPrice": "Total Price"
+  "totalPrice": "Total Price",
+  "productId": "Experience",
+  "userEmail": "User Email",
+  "userPhone": "User Phone",
+  "price": "Price",
+  "paid?": "Paid?",
+  "chosenDate": "Trip Date",
+  "export": "Export"
 }

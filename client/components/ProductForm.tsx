@@ -10,6 +10,10 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import ar from 'date-fns/locale/ar'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import 'react-quill/dist/quill.snow.css'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import MyQuill from './MyQuill'
 
 const ProductForm = ({
   product,
@@ -39,14 +43,6 @@ const ProductForm = ({
     subtitleAr: Yup.string()
       .min(10, t('common:tooShort'))
       .max(50, t('common:tooLong'))
-      .required(),
-    description: Yup.string()
-      .min(100, t('common:tooShort'))
-      .max(1000, t('common:tooLong'))
-      .required(),
-    descriptionAr: Yup.string()
-      .min(100, t('common:tooShort'))
-      .max(1000, t('common:tooLong'))
       .required(),
     photo: Yup.string().required(),
     priceBaisa: Yup.number().integer('common:onlyInt').required(),
@@ -124,20 +120,12 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="ltr">
             <Form.Label>Description</Form.Label>
-            <Form.Control
-              name="description"
+            <MyQuill
               value={values.description}
-              as="textarea"
-              onChange={handleChange}
-              isInvalid={
-                errors.description !== undefined &&
-                errors.description.length > 0 &&
-                touched.description
+              setValue={(v) =>
+                setValues((prev) => ({ ...prev, description: v }))
               }
             />
-            <Form.Text className="invalid-feedback">
-              {errors.description}
-            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Title Arabic</Form.Label>
@@ -173,20 +161,12 @@ const ProductForm = ({
           </Form.Group>
           <Form.Group className="mb-4 mt-4" dir="rtl">
             <Form.Label>Description Arabic</Form.Label>
-            <Form.Control
-              name="descriptionAr"
+            <MyQuill
               value={values.descriptionAr}
-              as="textarea"
-              onChange={handleChange}
-              isInvalid={
-                errors.descriptionAr !== undefined &&
-                errors.descriptionAr.length > 0 &&
-                touched.descriptionAr
+              setValue={(v) =>
+                setValues((prev) => ({ ...prev, descriptionAr: v }))
               }
             />
-            <Form.Text className="invalid-feedback">
-              {errors.descriptionAr}
-            </Form.Text>
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label>{t('photoUrl')}</Form.Label>
@@ -253,13 +233,28 @@ const ProductForm = ({
             <ReactDatePicker
               onChange={(date) =>
                 date
-                  ? setValues((prev) => ({
-                      ...prev,
-                      plannedDates: prev.plannedDates.includes(date)
-                        ? prev.plannedDates.filter((d) => d === date)
-                        : [...prev.plannedDates, date],
-                    }))
-                  : null
+                  ? setValues((prev) => {
+                      const index = prev.plannedDates.findIndex(
+                        (d) =>
+                          new Date(d).toDateString() ===
+                          new Date(date).toDateString()
+                      )
+                      console.log(prev.plannedDates, date, index)
+                      if (index !== -1) {
+                        return {
+                          ...prev,
+                          plannedDates: [
+                            ...prev.plannedDates.slice(0, index),
+                            ...prev.plannedDates.slice(index + 1),
+                          ],
+                        }
+                      } else
+                        return {
+                          ...prev,
+                          plannedDates: [...prev.plannedDates, new Date(date)],
+                        }
+                    })
+                  : console.log('CLICKED NOTHING')
               }
               highlightDates={values.plannedDates.map((d) => new Date(d))}
               locale={lang}
@@ -272,6 +267,7 @@ const ProductForm = ({
                 name="longitude"
                 type="number"
                 step={0.00001}
+                value={values.longitude}
                 onChange={handleChange}
                 isInvalid={
                   errors.longitude !== undefined &&
@@ -287,6 +283,7 @@ const ProductForm = ({
               <Form.Control
                 name="latitude"
                 onChange={handleChange}
+                value={values.latitude}
                 step={0.00001}
                 type="number"
                 placeholder={t('latitude')}
@@ -309,6 +306,7 @@ const ProductForm = ({
                 type="number"
                 onChange={handleChange}
                 step={1}
+                value={values.priceBaisa}
                 isInvalid={
                   errors.priceBaisa !== undefined &&
                   errors.priceBaisa.length > 0 &&

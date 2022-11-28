@@ -1,12 +1,15 @@
 import React from 'react'
-import { Purchase } from '../types/requests'
+import { Product, Purchase } from '../types/requests'
 import styles from '../styles/PurchaseCard.module.scss'
 import useTranslation from 'next-translate/useTranslation'
 import FlipCard from './FlipCard'
 import ProductCard from './ProductCard'
+import useSWR from 'swr'
+import { fetcher } from '../utils/axiosServer'
 
 const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
   const { t, lang } = useTranslation('purchases')
+  const { data: product } = useSWR(`products/${purchase.productId}`, fetcher<Product>)
 
   return (
     <FlipCard
@@ -37,7 +40,13 @@ const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
       }
       back={
         <ProductCard
-          product={{ ...purchase, rating: 0, reviewCount: 0, ratingCount: 0 }}
+          product={{
+            ...purchase,
+            rating: product?.rating ?? 0,
+            reviewCount: product?.reviewCount ?? 0,
+            ratingCount: product?.ratingCount ?? 0,
+            id: purchase.productId,
+          }}
         />
       }
     />
