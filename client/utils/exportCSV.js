@@ -1,5 +1,6 @@
 // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
 export function downloadCSV(array) {
+  console.log(array)
   const link = document.createElement('a')
   let csv = convertArrayOfObjectsToCSV(array)
   if (csv == null) return

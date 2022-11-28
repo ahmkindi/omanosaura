@@ -177,7 +177,7 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		ProductID:         product.ID,
 		UserID:            user.ID,
 		NumOfParticipants: int32(req.Quantity),
-		Paid:              false,
+		Paid:              !req.Cash,
 		ChosenDate:        req.ChosenDate,
 		CostBaisa:         int64(req.Quantity) * product.PriceBaisa,
 		Complete:          req.Cash,
@@ -229,7 +229,6 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to create thawani session: %w", err)
 	}
 
-	// return c.Redirect(fmt.Sprintf("%s/pay/%s?key=%s", server.Config.BaseUrl, s.Data.SessionId, server.Config.ThawaniPublishableKey))
 	return c.JSON(redirectURI)
 }
 
