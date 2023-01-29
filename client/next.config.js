@@ -12,10 +12,6 @@ const nextConfig = {
         source: '/server/:path*',
         destination: 'http://server:8081/:path*',
       },
-      {
-        source: '/fa/:path*',
-        destination: 'http://fusionauth:9011/:path*',
-      },
     ]
   },
   images: {

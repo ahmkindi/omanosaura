@@ -15,6 +15,7 @@
     "axios-case-converter": "^0.9.0",
     "bootstrap": "^5.2.2",
     "date-fns": "^2.29.3",
+    "firebase": "^9.16.0",
     "formik": "^2.2.9",
     "next": "12.3.1",
     "next-translate": "^1.6.0",
