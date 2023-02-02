@@ -1,4 +1,6 @@
-import React, { PropsWithChildren, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
+import auth from '../config/firebase'
+import { User } from 'firebase/auth'
 
 export interface Alert {
   type: 'light' | 'warning' | 'success'
@@ -10,6 +12,7 @@ interface GlobalContextValue {
   setMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>
   alert?: Alert
   setAlert?: React.Dispatch<React.SetStateAction<Alert | undefined>>
+  user: User | null
 }
 
 const GlobalContext = React.createContext<GlobalContextValue>({
@@ -17,6 +20,7 @@ const GlobalContext = React.createContext<GlobalContextValue>({
   setMenuOpen: undefined,
   alert: undefined,
   setAlert: undefined,
+  user: null,
 })
 
 export const GlobalProvider = ({
@@ -24,6 +28,14 @@ export const GlobalProvider = ({
 }: PropsWithChildren): JSX.Element => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [alert, setAlert] = useState<Alert>()
+
+  const [user, setUser] = React.useState<User | null>(null)
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(setUser)
+    return unsubscribe
+  }, [])
+
   return (
     <GlobalContext.Provider
       value={{
@@ -31,6 +43,7 @@ export const GlobalProvider = ({
         setMenuOpen,
         alert,
         setAlert,
+        user,
       }}
     >
       {children}

@@ -7,6 +7,8 @@ import useTranslation from 'next-translate/useTranslation'
 import { useGlobal } from '../context/global'
 import { Toast } from 'react-bootstrap'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import LoginModal from './LoginModal'
 
 type LayoutProps = {
   title?: string
@@ -17,6 +19,8 @@ type LayoutProps = {
 export const Layout = (props: LayoutProps): JSX.Element => {
   const { t, lang } = useTranslation()
   const { alert, setAlert } = useGlobal()
+  const router = useRouter()
+  const { modal } = router.query
 
   return (
     <div className={styles.layout} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
@@ -52,6 +56,7 @@ export const Layout = (props: LayoutProps): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      {modal === 'login' && <LoginModal />}
       <div className={styles.nonFooter}>
         <NavBar />
         <main className={styles.children}>{props.children}</main>
