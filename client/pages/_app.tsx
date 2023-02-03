@@ -1,3 +1,4 @@
+import '../styles/tailwind.css'
 import '../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import { GlobalProvider } from '../context/global'

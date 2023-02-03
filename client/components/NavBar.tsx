@@ -12,7 +12,7 @@ import { FiLogIn } from 'react-icons/fi'
 import Avatar from './Avatar'
 
 const NavBar = () => {
-  const { user, isLoading, login } = useUser()
+  const { user, isLoading } = useUser()
   const { menuOpen, setMenuOpen } = useGlobal()
   const { lang, t } = useTranslation('common')
   const router = useRouter()
@@ -61,7 +61,10 @@ const NavBar = () => {
                 margin: isAr ? '0px 0px 0px 8px' : '0px 8px 0px 0px',
               }}
               className={styles.langButton}
-              onClick={() => login()}
+              onClick={() => {
+                router.query.modal = 'login'
+                router.push(router)
+              }}
             >
               <FiLogIn color="var(--primary)" style={{ margin: '4px' }} />
               {t('login')}
