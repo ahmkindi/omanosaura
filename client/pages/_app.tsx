@@ -7,7 +7,7 @@ import NextNProgress from 'nextjs-progressbar'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <GlobalProvider>
-      <NextNProgress color={'var(--primary)'} />
+      <NextNProgress color={'var(--primary)'} showOnShallow={false} />
       <Component {...pageProps} />
     </GlobalProvider>
   )
