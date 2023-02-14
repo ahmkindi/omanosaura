@@ -3,7 +3,7 @@ import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../../components/Layout'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
-import { Product } from '../../../types/requests'
+import { Product, UserRole } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import "yet-another-react-lightbox/styles.css";
 import { useRouter } from 'next/router'
@@ -18,8 +18,8 @@ import Box from '../../../components/Box'
 import Reviews from '../../../components/Reviews'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import PurchaseModal from '../../../components/PurchaseModal'
-import useUser from '../../../hooks/useUser'
 import Link from 'next/link'
+import { useGlobal } from '../../../context/global'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -51,7 +51,7 @@ const SingleExperience = () => {
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>) 
   const [openModal, setOpenModal] = useState(ModalTypes.none)
   const isAr = lang === 'ar'
-  const { user } = useUser()
+  const { user, role } = useGlobal()
 
   if (!product) return null
 
@@ -67,7 +67,7 @@ isAr ? product?.subtitleAr : product?.subtitle
         }</h4>
      <div dangerouslySetInnerHTML={{ __html: isAr ? product?.descriptionAr : product?.description }} />
         <div  style={{ display: 'flex', justifyContent: 'end', alignItems: 'end', alignSelf: 'end',  gap: '1rem'}}>
-      {user?.roles.includes('admin') && 
+      {role === UserRole.admin && 
       <Link href={`/experiences/${id}/edit`} passHref>
       <Button variant="primary">
           {t('edit')}

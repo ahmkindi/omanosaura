@@ -1,14 +1,13 @@
+import { signOut, User } from 'firebase/auth'
 import useTranslation from 'next-translate/useTranslation'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { BsFillPencilFill } from 'react-icons/bs'
-import useUser from '../hooks/useUser'
+import auth from '../config/firebase'
 import styles from '../styles/Avatar.module.scss'
-import { User } from '../types/requests'
 
 const Avatar = ({ user }: { user: User }) => {
-  const { logout } = useUser()
   const { t, lang } = useTranslation('common')
   const [profileOpen, setProfileOpen] = useState(false)
 
@@ -18,8 +17,8 @@ const Avatar = ({ user }: { user: User }) => {
       onClick={() => setProfileOpen((prev) => !prev)}
     >
       <p className={styles.inner}>
-        {user.firstname[0]?.toUpperCase()}
-        {user.lastname[0]?.toUpperCase()}
+        {user.displayName?.split(' ')?.[0]?.[0]?.toUpperCase()}
+        {user.displayName?.split(' ')?.[1]?.[0]?.toUpperCase()}
       </p>
       {profileOpen && (
         <div
@@ -28,9 +27,9 @@ const Avatar = ({ user }: { user: User }) => {
           }`}
         >
           <div className={styles.profile}>
-            <h5>{`${user.firstname} ${user.lastname}`}</h5>
+            <h5>{user.displayName}</h5>
             <div>{user.email}</div>
-            <div>{user.phone}</div>
+            <div>{user.phoneNumber}</div>
             <Link passHref href="/profile">
               <Button variant="outline-secondary">
                 <BsFillPencilFill />
@@ -41,7 +40,7 @@ const Avatar = ({ user }: { user: User }) => {
             <Link passHref href="/purchases">
               <div>{t('purchases')}</div>
             </Link>
-            <div onClick={() => logout()}>{t('logout')}</div>
+            <div onClick={() => signOut(auth)}>{t('logout')}</div>
           </div>
         </div>
       )}

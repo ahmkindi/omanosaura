@@ -1,14 +1,14 @@
 import useTranslation from 'next-translate/useTranslation'
 import useSWR, { SWRConfig } from 'swr'
 import Layout from '../../components/Layout'
-import { BlogPreface } from '../../types/requests'
+import { BlogPreface, UserRole } from '../../types/requests'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
 import { fetcher } from '../../utils/axiosServer'
 import Section from '../../components/Section'
 import BlogCard from '../../components/BlogCard'
 import Link from 'next/link'
-import useUser from '../../hooks/useUser'
+import { useGlobal } from '../../context/global'
 
 export async function getServerSideProps() {
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
@@ -27,13 +27,13 @@ export async function getServerSideProps() {
 const Blog = () => {
   const { t } = useTranslation('blog')
   const { data: blogs } = useSWR('blogs', fetcher<BlogPreface[]>)
-  const { user } = useUser()
+  const { role } = useGlobal()
 
   return <Layout title={t('title')}>
     <Section title={t('sharing')}>
       {blogs?.map(b => <BlogCard key={b.id} blogPreface={b}/>)}
     </Section>
-      {user?.roles.includes('admin') && <Link href='/blogs/create'>{t('newBlog')}</Link>}
+      {role === UserRole.admin && <Link href='/blogs/create'>{t('newBlog')}</Link>}
   </Layout>
 }
 

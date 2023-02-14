@@ -4,13 +4,13 @@ import BlogForm from '../../../components/BlogForm'
 import applyConverters from 'axios-case-converter'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import { GetServerSideProps } from 'next'
-import { Blog } from '../../../types/requests'
+import { Blog, UserRole } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '../../../utils/axiosServer'
-import useUser from '../../../hooks/useUser'
 import { useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
+import { useGlobal } from '../../../context/global'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -32,15 +32,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Blog = () => {
   const { t } = useTranslation('blog')
   const router = useRouter()
-  const { user, isLoading } = useUser()
+  const { role, isLoading } = useGlobal()
   const { id } = router.query
   const { data: blog } = useSWR(`blogs/${id}`, fetcher<Blog>) 
 
   useEffect(() => {
-    if (!isLoading && !user?.roles.includes('admin')) {
+    if (!isLoading && role !== UserRole.admin) {
       router.push('/blogs')
     }
-  }, [user, isLoading, router])
+  }, [role, isLoading, router])
 
   if (!blog) {
     return null
@@ -48,7 +48,7 @@ const Blog = () => {
 
   return (
     <Layout title={t('title')}>
-     {isLoading || !user ? <Spinner animation="border" /> : <BlogForm blog={blog} id={blog.id} />} 
+     {isLoading || !role ? <Spinner animation="border" /> : <BlogForm blog={blog} id={blog.id} />} 
     </Layout>
   )
 }

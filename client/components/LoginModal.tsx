@@ -1,15 +1,22 @@
+import {
+  GoogleAuthProvider,
+  sendSignInLinkToEmail,
+  signInWithPopup,
+} from 'firebase/auth'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useRef } from 'react'
+import auth from '../config/firebase'
 
 const LoginModal = () => {
   const router = useRouter()
+  const email = useRef(null)
 
   const closeModal = () => {
     delete router.query.modal
     router.push(router)
   }
 
-  console.log('showing modal')
+  const provider = new GoogleAuthProvider()
 
   return (
     <div
@@ -41,7 +48,7 @@ const LoginModal = () => {
           </button>
           <div className="px-6 py-6 lg:px-8">
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-              Sign in/Register to Omanosaura
+              Login to your account
             </h3>
             <form className="space-y-6" action="#">
               <div>
@@ -57,22 +64,54 @@ const LoginModal = () => {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="name@outlook.com"
+                  ref={email}
                   required
                 />
                 <button
-                  type="submit"
                   className="w-full text-white bg-blue-700 mt-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={() => {
+                    console.log('email value', email?.current?.value)
+                    sendSignInLinkToEmail(auth, email?.current?.value, {
+                      url: 'https://omanosaura.com',
+                      handleCodeInApp: true,
+                    }).catch((error) => {
+                      console.log(error)
+                    })
+                  }}
                 >
-                  Login to your account
+                  Continue With Email
                 </button>
               </div>
               <div>Or Sign in with</div>
               <button
                 type="button"
-                className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm pl-4 pr-1 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2"
+                className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2"
+                onClick={() =>
+                  signInWithPopup(auth, provider)
+                    .then((result) => {
+                      // This gives you a Google Access Token. You can use it to access the Google API.
+                      const credential =
+                        GoogleAuthProvider.credentialFromResult(result)
+                      const token = credential?.accessToken
+                      // The signed-in user info.
+                      const user = result.user
+                      console.log(credential, token, user)
+                    })
+                    .catch((error) => {
+                      // Handle Errors here.
+                      const errorCode = error.code
+                      const errorMessage = error.message
+                      // The email of the user's account used.
+                      const email = error.customData.email
+                      // The AuthCredential type that was used.
+                      const credential =
+                        GoogleAuthProvider.credentialFromError(error)
+                      console.log(errorCode, errorMessage, email, credential)
+                    })
+                }
               >
                 <svg
-                  className="w-4 h-4 mr-2 -ml-1"
+                  className="w-5 h-5"
                   aria-hidden="true"
                   focusable="false"
                   data-prefix="fab"
@@ -89,10 +128,10 @@ const LoginModal = () => {
               </button>
               <button
                 type="button"
-                className="text-white bg-[#050708] hover:bg-[#050708]/90 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm pl-4 pr-1 py-2 text-center inline-flex items-center dark:focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 mr-2 mb-2"
+                className="text-white bg-[#050708] hover:bg-[#050708]/90 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 mr-2 mb-2"
               >
                 <svg
-                  className="w-5 h-5 mr-2 -ml-1"
+                  className="w-5 h-5"
                   aria-hidden="true"
                   focusable="false"
                   data-prefix="fab"
@@ -109,10 +148,10 @@ const LoginModal = () => {
               </button>
               <button
                 type="button"
-                className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2"
+                className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2"
               >
                 <svg
-                  className="w-4 h-4 mr-2 -ml-1"
+                  className="w-5 h-5"
                   aria-hidden="true"
                   focusable="false"
                   data-prefix="fab"

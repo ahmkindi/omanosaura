@@ -1,12 +1,12 @@
+import { User } from 'firebase/auth'
 import { getAfterTomorrow } from '../utils/dates'
 
-export interface User {
-  id: string
-  email: string
-  firstname: string
-  lastname: string
-  phone: string
-  roles: string[]
+export enum UserRole {
+  admin = 'admin',
+}
+
+export interface Role {
+  role: UserRole
 }
 
 export interface EmailForm {

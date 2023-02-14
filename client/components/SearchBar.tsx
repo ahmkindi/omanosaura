@@ -12,14 +12,15 @@ import {
 import { FiList, FiMap } from 'react-icons/fi'
 import { FaQuestion } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-import useUser from '../hooks/useUser'
 import Link from 'next/link'
 import { MdAddCircleOutline } from 'react-icons/md'
+import { useGlobal } from '../context/global'
+import { UserRole } from '../types/requests'
 
 const popoverStyle = { display: 'flex', gap: '1rem', marginBottom: '0.5rem' }
 
-const SearchBar = () => {
-  const { user } = useUser()
+const SearchBar = (): JSX.Element => {
+  const { role } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const router = useRouter()
   const { search, view } = router.query
@@ -57,7 +58,7 @@ const SearchBar = () => {
           {t('listView')} <FiList />
         </Button>
       )}
-      {user?.roles.includes('admin') && (
+      {role === UserRole.admin && (
         <Link href="/experiences/create" passHref>
           <Button variant="outline-secondary">
             <MdAddCircleOutline />

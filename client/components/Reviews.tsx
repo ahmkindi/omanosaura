@@ -10,7 +10,6 @@ import {
 } from "../types/requests";
 import axiosServer, { fetcher } from "../utils/axiosServer";
 import styles from "../styles/Reviews.module.scss";
-import useUser from "../hooks/useUser";
 import useSWR from "swr";
 import useTranslation from "next-translate/useTranslation";
 import { Formik, Form as FormikForm } from "formik";
@@ -36,7 +35,7 @@ const Reviews = ({ product }: { product: Product }) => {
   });
 
   const [openModal, setOpenModal] = useState(false);
-  const { user } = useUser();
+  const { user } = useGlobal();
   const { data: userReview } = useSWR(
     user ? `user/products/${product.id}/review` : null,
     fetcher<UserReview>
