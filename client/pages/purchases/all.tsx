@@ -16,6 +16,7 @@ import { useGlobal } from '../../context/global'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  console.log(context)
   const { session_id } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: purchases }: AxiosResponse<Purchase[]> = await axios.get(

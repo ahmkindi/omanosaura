@@ -12,8 +12,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/FusionAuth/go-client/pkg/fusionauth"
-	"github.com/gofiber/fiber/v2/middleware/session"
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -22,8 +22,7 @@ type Server struct {
 	Config        Config
 	Queries       *database.Queries
 	DB            *pgxpool.Pool
-	FusionClient  *fusionauth.FusionAuthClient
-	Store         *session.Store
+	AuthClient    *auth.Client
 	ThawaniClient *thawani.ThawaniClient
 }
 
@@ -50,19 +49,20 @@ func CreateServer() (*Server, error) {
 	password := os.Getenv("EMAIL_PASSWORD")
 
 	config := Config{
-		FusionClientID:        os.Getenv("FUSION_CLIENT_ID"),
-		FusionClientSecret:    os.Getenv("FUSION_CLIENT_SECRET"),
-		FusionApplicationID:   os.Getenv("FUSION_APPLICATION_ID"),
-		FusionAPIKey:          os.Getenv("FUSION_API_KEY"),
 		ThawaniAPIKey:         os.Getenv("THAWANI_API_KEY"),
 		ThawaniBaseUrl:        os.Getenv("THAWANI_BASE_URL"),
 		ThawaniPublishableKey: os.Getenv("THAWANI_PUBLISHABLE_KEY"),
 		BaseUrl:               os.Getenv("BASE_URL"),
 	}
 
-	fusionauthHost, err := url.Parse("http://fusionauth:9011")
+	firebaseApp, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse fusion auth url: %w", err)
+		return nil, fmt.Errorf("failed to create new firebase app: %w", err)
+	}
+
+	authClient, err := firebaseApp.Auth(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("failed to create new auth client: %w", err)
 	}
 
 	thawaniHost, err := url.Parse(config.ThawaniBaseUrl)
@@ -81,9 +81,8 @@ func CreateServer() (*Server, error) {
 		},
 		Queries:       database.New(db),
 		DB:            db,
-		FusionClient:  fusionauth.NewClient(&http.Client{Timeout: time.Second * 10}, fusionauthHost, config.FusionAPIKey),
+		AuthClient:    authClient,
 		ThawaniClient: thawani.NewClient(&http.Client{Timeout: time.Second * 20}, thawaniHost, config.ThawaniAPIKey, config.ThawaniPublishableKey),
 		Config:        config,
-		Store:         session.New(),
 	}, nil
 }

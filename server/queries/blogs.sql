@@ -12,7 +12,7 @@ DO UPDATE SET
   created_at = excluded.created_at;
 
 -- name: GetBlogs :many
-SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, blogs.photo, blogs.user_id, users.firstname, users.lastname
+SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, blogs.photo, blogs.user_id, users.name
 FROM blogs INNER JOIN users ON users.id = blogs.user_id
 ORDER BY created_at;
 

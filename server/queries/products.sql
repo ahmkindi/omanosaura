@@ -9,7 +9,8 @@ INSERT INTO products(
   description,
   description_ar,
   photo,
-  price_baisa,
+  base_price_baisa,
+  extra_price_baisa,
   planned_dates,
   photos,
   longitude,
@@ -17,7 +18,7 @@ INSERT INTO products(
   last_updated,
   is_deleted
 )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_DATE, false)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_DATE, false)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -26,7 +27,8 @@ ON CONFLICT (id) DO UPDATE SET
   description = excluded.description,
   description_ar = excluded.description_ar,
   photo = excluded.photo,
-  price_baisa = excluded.price_baisa,
+  base_price_baisa = excluded.base_price_baisa,
+  extra_price_baisa = excluded.extra_price_baisa,
   planned_dates = excluded.planned_dates,
   photos = excluded.photos,
   longitude = excluded.longitude,
@@ -73,7 +75,7 @@ SELECT *,
 FROM products WHERE id = $1;
 
 -- name: GetProductReviews :many
-SELECT reviews.*, users.firstname, users.lastname FROM reviews
+SELECT reviews.*, users.name FROM reviews
 INNER JOIN users ON reviews.user_id = users.id
 WHERE reviews.product_id = $1
 ORDER BY last_updated
@@ -100,6 +102,6 @@ WHERE complete = true
 ORDER BY purchases.chosen_date;
 
 -- name: GetNotifyPurchaseDetails :one
-SELECT email, firstname, lastname, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000) as cost
+SELECT email, name, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000) as cost
 FROM purchases INNER JOIN users ON purchases.user_id = users.id INNER JOIN products ON purchases.product_id = products.id
 WHERE purchases.id = $1;

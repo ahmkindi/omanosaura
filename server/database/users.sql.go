@@ -12,7 +12,7 @@ import (
 )
 
 const getUser = `-- name: GetUser :one
-SELECT id, email, firstname, lastname, phone, roles FROM users WHERE id = $1
+SELECT id, email, phone, role, name FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
@@ -21,10 +21,9 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
-		&i.Firstname,
-		&i.Lastname,
 		&i.Phone,
-		&i.Roles,
+		&i.Role,
+		&i.Name,
 	)
 	return i, err
 }
@@ -40,34 +39,50 @@ func (q *Queries) GetUserCustomerId(ctx context.Context, userID uuid.UUID) (stri
 	return customer_id, err
 }
 
-const upsertUser = `-- name: UpsertUser :exec
-INSERT INTO users(id, email, firstname, lastname, phone, roles)
-VALUES ($1, $2, $3, $4, $5, $6)
-ON CONFLICT (id) DO UPDATE SET
-	email = excluded.email,
-	firstname = excluded.firstname,
-  lastname = excluded.lastname,
-  phone = excluded.phone,
-  roles = excluded.roles
+const insertUser = `-- name: InsertUser :exec
+INSERT INTO users(id, email, name, phone, role)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (id) DO NOTHING
 `
 
-type UpsertUserParams struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	Firstname string    `json:"firstname"`
-	Lastname  string    `json:"lastname"`
-	Phone     string    `json:"phone"`
-	Roles     []string  `json:"roles"`
+type InsertUserParams struct {
+	ID    uuid.UUID `json:"id"`
+	Email string    `json:"email"`
+	Name  string    `json:"name"`
+	Phone string    `json:"phone"`
+	Role  UserRole  `json:"role"`
 }
 
-func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
-	_, err := q.db.Exec(ctx, upsertUser,
+func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
+	_, err := q.db.Exec(ctx, insertUser,
 		arg.ID,
 		arg.Email,
-		arg.Firstname,
-		arg.Lastname,
+		arg.Name,
 		arg.Phone,
-		arg.Roles,
+		arg.Role,
 	)
+	return err
+}
+
+const updateUser = `-- name: UpdateUser :exec
+UPDATE users SET name = $1, phone = $2
+`
+
+type UpdateUserParams struct {
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.Exec(ctx, updateUser, arg.Name, arg.Phone)
+	return err
+}
+
+const updateUserRole = `-- name: UpdateUserRole :exec
+UPDATE users SET role = $1
+`
+
+func (q *Queries) UpdateUserRole(ctx context.Context, role UserRole) error {
+	_, err := q.db.Exec(ctx, updateUserRole, role)
 	return err
 }

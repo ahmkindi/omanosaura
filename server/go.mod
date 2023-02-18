@@ -3,6 +3,7 @@ module omanosaura
 go 1.16
 
 require (
+	firebase.google.com/go/v4 v4.10.0 // indirect
 	github.com/FusionAuth/go-client v0.0.0-20220928202602-4f85e4f2101f
 	github.com/gofiber/fiber/v2 v2.38.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
