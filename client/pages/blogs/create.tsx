@@ -10,14 +10,14 @@ import { useGlobal } from '../../context/global'
 
 const Page = () => {
   const { t } = useTranslation('blog')
-  const { role, isLoading } = useGlobal()
+  const { user, isLoading } = useGlobal()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && role !== UserRole.admin) {
+    if (!isLoading && user?.role !== UserRole.admin) {
       router.push('/blogs')
     }
-  }, [role, isLoading, router])
+  }, [user, isLoading, router])
 
   return (
     <Layout title={t('title')}>

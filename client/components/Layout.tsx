@@ -22,8 +22,6 @@ export const Layout = (props: LayoutProps): JSX.Element => {
   const router = useRouter()
   const { modal } = router.query
 
-  console.log(modal)
-
   return (
     <div className={styles.layout} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       {alert && (

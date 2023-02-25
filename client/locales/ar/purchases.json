@@ -12,5 +12,10 @@
   "userPhone": "رقم المشتري",
   "paid?": "دفع؟",
   "chosenDate": "تاريخ الرحلة",
-  "export": "صدِر كملف"
+  "export": "صدِر كملف",
+  "userName": "الاسم",
+  "lastTrip": "تاريخ اخر رحلة",
+  "numOfPurchases": "عدد المبيعات",
+  "avgRating": "التقييم المتوسط",
+  "allUsers": "كل المستخدمين"
 }

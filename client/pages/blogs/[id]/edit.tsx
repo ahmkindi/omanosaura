@@ -14,11 +14,11 @@ import { useGlobal } from '../../../context/global'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
-  const { session_id } = context.req.cookies
+  const { token } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: blog }: AxiosResponse<Blog> = await axios.get(
     `${process.env.SERVER_URL}blogs/${id}`,
-    { headers: { Cookie: `session_id=${session_id}` } }
+    { headers: { Cookie: `token=${token}` } }
   )
   return {
     props: {
@@ -32,15 +32,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Blog = () => {
   const { t } = useTranslation('blog')
   const router = useRouter()
-  const { role, isLoading } = useGlobal()
+  const { user, isLoading } = useGlobal()
   const { id } = router.query
-  const { data: blog } = useSWR(`blogs/${id}`, fetcher<Blog>) 
+  const { data: blog } = useSWR(`blogs/${id}`, fetcher<Blog>)
 
   useEffect(() => {
-    if (!isLoading && role !== UserRole.admin) {
+    if (!isLoading && user?.role !== UserRole.admin) {
       router.push('/blogs')
     }
-  }, [role, isLoading, router])
+  }, [user, isLoading, router])
 
   if (!blog) {
     return null
@@ -48,7 +48,7 @@ const Blog = () => {
 
   return (
     <Layout title={t('title')}>
-     {isLoading || !role ? <Spinner animation="border" /> : <BlogForm blog={blog} id={blog.id} />} 
+      {isLoading ? <Spinner animation="border" /> : <BlogForm blog={blog} id={blog.id} />}
     </Layout>
   )
 }

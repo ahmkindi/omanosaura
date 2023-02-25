@@ -55,7 +55,7 @@ func CreateServer() (*Server, error) {
 		BaseUrl:               os.Getenv("BASE_URL"),
 	}
 
-	firebaseApp, err := firebase.NewApp(context.Background(), nil, opt)
+	firebaseApp, err := firebase.NewApp(context.Background(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create new firebase app: %w", err)
 	}
@@ -70,7 +70,6 @@ func CreateServer() (*Server, error) {
 		return nil, fmt.Errorf("failed to parse thawani url: %w", err)
 	}
 
-	fmt.Println(username, password)
 	return &Server{
 		Email: Email{
 			Username: username,

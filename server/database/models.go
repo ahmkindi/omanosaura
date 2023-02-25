@@ -59,7 +59,7 @@ type Blog struct {
 	Photo         string    `json:"photo"`
 	Page          string    `json:"page"`
 	PageAr        string    `json:"page_ar"`
-	UserID        uuid.UUID `json:"user_id"`
+	UserID        string    `json:"user_id"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
@@ -86,7 +86,7 @@ type Product struct {
 type Purchase struct {
 	ID                uuid.UUID `json:"id"`
 	ProductID         string    `json:"product_id"`
-	UserID            uuid.UUID `json:"user_id"`
+	UserID            string    `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
 	CostBaisa         int64     `json:"cost_baisa"`
@@ -98,7 +98,7 @@ type Purchase struct {
 
 type Review struct {
 	ProductID   string    `json:"product_id"`
-	UserID      uuid.UUID `json:"user_id"`
+	UserID      string    `json:"user_id"`
 	Rating      float64   `json:"rating"`
 	Title       string    `json:"title"`
 	Review      string    `json:"review"`
@@ -106,14 +106,14 @@ type Review struct {
 }
 
 type User struct {
-	ID    uuid.UUID `json:"id"`
-	Email string    `json:"email"`
-	Phone string    `json:"phone"`
-	Role  UserRole  `json:"role"`
-	Name  string    `json:"name"`
+	ID    string   `json:"id"`
+	Email string   `json:"email"`
+	Name  string   `json:"name"`
+	Phone string   `json:"phone"`
+	Role  UserRole `json:"role"`
 }
 
 type UserCustomerID struct {
-	UserID     uuid.UUID `json:"user_id"`
-	CustomerID string    `json:"customer_id"`
+	UserID     string `json:"user_id"`
+	CustomerID string `json:"customer_id"`
 }

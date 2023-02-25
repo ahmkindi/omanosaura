@@ -14,11 +14,11 @@ import { useGlobal } from '../../../context/global'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
-  const { session_id } = context.req.cookies
+  const { token } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: product }: AxiosResponse<Product> = await axios.get(
     `${process.env.SERVER_URL}products/${id}`,
-    { headers: { Cookie: `session_id=${session_id}` } }
+    { headers: { Cookie: `token=${token}` } }
   )
   return {
     props: {
@@ -34,19 +34,19 @@ const Experience = () => {
   const router = useRouter()
   const { id } = router.query
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>)
-  const { role, isLoading } = useGlobal()
+  const { user, isLoading } = useGlobal()
 
   useEffect(() => {
-    if (!isLoading && role !== UserRole.admin) {
+    if (!isLoading && user?.role !== UserRole.admin) {
       router.push('/blogs')
     }
-  }, [role, isLoading, router])
+  }, [user, isLoading, router])
 
   if (!product) return null
 
   return (
     <Layout title={t('title')}>
-      {isLoading || !role ? <Spinner animation="border" /> : <ProductForm product={product} id={product.id} />}
+      {isLoading ? <Spinner animation="border" /> : <ProductForm product={product} id={product.id} />}
     </Layout>
   )
 }

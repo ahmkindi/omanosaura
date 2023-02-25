@@ -16,17 +16,16 @@ import { useGlobal } from '../../context/global'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context)
-  const { session_id } = context.req.cookies
+  const { token } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: purchases }: AxiosResponse<Purchase[]> = await axios.get(
     `${process.env.SERVER_URL}user/admin/products/purchases`,
-    { headers: { Cookie: `session_id=${session_id}` } }
+    { headers: { Cookie: `token=${token}` } }
   )
   return {
     props: {
       fallback: {
-        'purchases': purchases,
+        'user/admin/products/purchases': purchases,
       },
     },
   }
@@ -50,7 +49,7 @@ const Purchases = () => {
     },
     {
       name: t('userPhone'),
-      selector: (row: UserPurchase) => row.phoneNumber,
+      selector: (row: UserPurchase) => row.phone,
       sortable: true,
     },
     {
@@ -64,7 +63,7 @@ const Purchases = () => {
         new Intl.NumberFormat(lang, {
           style: 'currency',
           currency: 'OMR',
-        }).format(row.priceBaisa / 1000),
+        }).format(row.costBaisa / 1000),
       sortable: true,
     },
     {

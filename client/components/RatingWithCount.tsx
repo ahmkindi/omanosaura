@@ -1,6 +1,7 @@
 import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
 import { Rating } from 'react-simple-star-rating'
+import styles from '../styles/rating.module.scss'
 
 export const RatingWithCount = ({
   rating,
@@ -22,10 +23,10 @@ export const RatingWithCount = ({
       }}
     >
       <Rating
+        className={styles.rating}
         initialValue={rating}
         allowFraction
         size={23}
-        fillColor="var(--orange)"
         readonly
       />
       <div>{t('ratings', { ratingCount: ratingCount ?? 0 })}</div>

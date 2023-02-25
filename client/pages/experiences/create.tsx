@@ -9,19 +9,19 @@ import { Spinner } from 'react-bootstrap'
 import { useGlobal } from '../../context/global'
 
 const Page = () => {
-  const { t } = useTranslation('experience')
-  const { role, isLoading } = useGlobal()
+  const { t } = useTranslation('experiences')
+  const { user, isLoading } = useGlobal()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && role !== UserRole.admin) {
-      router.push('/blogs')
+    if (!isLoading && user?.role !== UserRole.admin) {
+      router.push('/experiences')
     }
-  }, [role, isLoading, router])
+  }, [user, isLoading, router])
 
   return (
     <Layout title={t('title')}>
-      {isLoading || !role ? (
+      {isLoading ? (
         <Spinner animation="border" />
       ) : (
         <ProductForm product={emptyProduct} />

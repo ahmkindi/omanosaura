@@ -24,7 +24,8 @@ type Config struct {
 
 type PurchaseProductReq struct {
 	ProductID  string    `json:"product_id"`
-	Quantity   int       `json:"quantity"`
+	Quantity   int64     `json:"quantity"`
 	ChosenDate time.Time `json:"chosen_date"`
 	Cash       bool      `json:"cash"`
+	PayExtra   bool      `json:"pay_extra"`
 }

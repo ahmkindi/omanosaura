@@ -20,7 +20,7 @@ import { UserRole } from '../types/requests'
 const popoverStyle = { display: 'flex', gap: '1rem', marginBottom: '0.5rem' }
 
 const SearchBar = (): JSX.Element => {
-  const { role } = useGlobal()
+  const { user } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const router = useRouter()
   const { search, view } = router.query
@@ -58,7 +58,7 @@ const SearchBar = (): JSX.Element => {
           {t('listView')} <FiList />
         </Button>
       )}
-      {role === UserRole.admin && (
+      {user?.role === UserRole.admin && (
         <Link href="/experiences/create" passHref>
           <Button variant="outline-secondary">
             <MdAddCircleOutline />

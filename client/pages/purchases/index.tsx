@@ -13,11 +13,11 @@ import { useGlobal } from '../../context/global'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { session_id } = context.req.cookies
+  const { token } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: purchases }: AxiosResponse<Purchase[]> = await axios.get(
     `${process.env.SERVER_URL}user/products/purchase`,
-    { headers: { Cookie: `session_id=${session_id}` } }
+    { headers: { Cookie: `token=${token}` } }
   )
   return {
     props: {
@@ -30,14 +30,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Purchases = () => {
   const { t } = useTranslation('purchases')
-  const { user, role } = useGlobal()
+  const { user } = useGlobal()
   const { data: purchases } = useSWR(user ? 'user/products/purchase' : null, fetcher<Purchase[]>)
 
   return (
     <Layout title={t('title')}>
-      {role === UserRole.admin && <Link href="/purchases/all" passHref>
+      {user?.role === UserRole.admin && 
+      <div>
+      <Link href="/purchases/all" passHref>
         <Button variant="outline-secondary" className="mx-4">{t('allPurchases')}</Button>
       </Link>
+      <Link href="/users" passHref>
+        <Button variant="outline-secondary" className="mx-4">{t('allUsers')}</Button>
+      </Link>
+      </div>
       }
       {user && purchases ? (
         purchases.length > 0 ?

@@ -1,9 +1,10 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import auth from '../config/firebase'
-import { isSignInWithEmailLink, User, signInWithEmailLink } from 'firebase/auth'
+import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import axiosServer from '../utils/axiosServer'
 import { AxiosResponse } from 'axios'
-import { Role, UserRole } from '../types/requests'
+import { User } from '../types/requests'
+import Cookies from 'js-cookie'
 
 export interface Alert {
   type: 'light' | 'warning' | 'success'
@@ -16,7 +17,6 @@ interface GlobalContextValue {
   alert?: Alert
   setAlert?: React.Dispatch<React.SetStateAction<Alert | undefined>>
   user: User | null
-  role: UserRole | null
   isLoading: boolean
 }
 
@@ -26,7 +26,6 @@ const GlobalContext = React.createContext<GlobalContextValue>({
   alert: undefined,
   setAlert: undefined,
   user: null,
-  role: null,
   isLoading: false,
 })
 
@@ -37,8 +36,7 @@ export const GlobalProvider = ({
   const [alert, setAlert] = useState<Alert>()
 
   const [user, setUser] = useState<User | null>(null)
-  const [role, setRole] = useState<UserRole | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
@@ -57,14 +55,20 @@ export const GlobalProvider = ({
         })
     }
 
-    auth.onAuthStateChanged(async (newUser) => {
+    auth.onIdTokenChanged(async (newUser) => {
       setIsLoading(true)
-      setUser(newUser)
       try {
-        const resp: AxiosResponse<Role> = await axiosServer.get('user/role')
-        setRole(resp.data.role)
+        if (!newUser) {
+          setUser(null)
+          Cookies.remove('token')
+        } else {
+          const token = await newUser.getIdToken()
+          Cookies.set('token', token)
+          const resp: AxiosResponse<User> = await axiosServer.get('user')
+          setUser(resp.data)
+        }
       } catch (error) {
-        console.log('failed to get user role', error)
+        console.log('failed to get user', error)
       } finally {
         setIsLoading(false)
       }
@@ -79,7 +83,6 @@ export const GlobalProvider = ({
         alert,
         setAlert,
         user,
-        role,
         isLoading,
       }}
     >

@@ -1,4 +1,4 @@
-import { signOut, User } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import useTranslation from 'next-translate/useTranslation'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap'
 import { BsFillPencilFill } from 'react-icons/bs'
 import auth from '../config/firebase'
 import styles from '../styles/Avatar.module.scss'
+import { User } from '../types/requests'
 
 const Avatar = ({ user }: { user: User }) => {
   const { t, lang } = useTranslation('common')
@@ -17,8 +18,8 @@ const Avatar = ({ user }: { user: User }) => {
       onClick={() => setProfileOpen((prev) => !prev)}
     >
       <p className={styles.inner}>
-        {user.displayName?.split(' ')?.[0]?.[0]?.toUpperCase()}
-        {user.displayName?.split(' ')?.[1]?.[0]?.toUpperCase()}
+        {user.name?.split(' ')?.[0]?.[0]?.toUpperCase()}
+        {user.name?.split(' ')?.[1]?.[0]?.toUpperCase()}
       </p>
       {profileOpen && (
         <div
@@ -27,9 +28,9 @@ const Avatar = ({ user }: { user: User }) => {
           }`}
         >
           <div className={styles.profile}>
-            <h5>{user.displayName}</h5>
+            <h5>{user.name}</h5>
             <div>{user.email}</div>
-            <div>{user.phoneNumber}</div>
+            <div>{user.phone}</div>
             <Link passHref href="/profile">
               <Button variant="outline-secondary">
                 <BsFillPencilFill />

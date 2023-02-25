@@ -10,5 +10,6 @@ module.exports = {
     'rgx:/blog+': ['blog'],
     'rgx:/purchases+': ['purchases'],
     'rgx:/profile+': ['profile'],
+    'rgx:/users+': ['purchases'],
   },
 }

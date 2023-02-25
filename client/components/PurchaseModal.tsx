@@ -1,4 +1,4 @@
-import { Formik, Form as FormikForm, getIn } from 'formik'
+import { Formik, Form as FormikForm } from 'formik'
 import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
@@ -26,9 +26,11 @@ const PurchaseModal = ({
   product: Product
   setOpenModal: React.Dispatch<React.SetStateAction<ModalTypes>>
 }) => {
+  const { user } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const { setAlert } = useGlobal()
   const isAr = lang === 'ar'
+  const router = useRouter()
   registerLocale('ar', ar)
 
   const PurchaseSchema = Yup.object().shape({
@@ -38,17 +40,19 @@ const PurchaseModal = ({
       .max(500, t('common:tooMany'))
       .required(),
     chosenDate: Yup.date().min(getTomorrow(), t('common:tooEarly')).required(),
-    terms: Yup.boolean().isTrue(t('common:acceptTerms')),
   })
-  const router = useRouter()
 
   const handleSubmit = async (values: PurchaseProduct) => {
     try {
+      if (!user) {
+        router.query.modal = "login"
+        router.push(router)
+        return
+      }
       const response = await axiosServer.post('user/products/purchase', {
         ...values,
         productId: product.id,
       })
-      console.log('response', response, response.request.responseURL)
       if (response.status === 200 && values.cash) {
         setAlert?.({
           type: 'success',
@@ -84,7 +88,7 @@ const PurchaseModal = ({
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ ...emptyPurchaseProduct, terms: false }}
+          initialValues={{ ...emptyPurchaseProduct }}
           onSubmit={handleSubmit}
           validationSchema={PurchaseSchema}
         >
@@ -124,40 +128,43 @@ const PurchaseModal = ({
                 />
                 <Form.Text className="muted">{t('explainGreen')}</Form.Text>
               </Form.Group>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4 flex gap-3 items-center">
                 <Form.Label>{t('payCash')}</Form.Label>
-                <Form.Check
-                  type="switch"
-                  label={values.cash ? t('cash') : t('card')}
-                  name="cash"
-                  onChange={(e) =>
-                    setValues((prev) => ({ ...prev, cash: !prev.cash }))
-                  }
-                  checked={values.cash}
-                />
+                <div>
+                  <Form.Check
+                    type="radio"
+                    label={t('cash')}
+                    name="cash"
+                    onChange={(e) =>
+                      setValues((prev) => ({ ...prev, cash: true }))
+                    }
+                    checked={values.cash}
+                  />
+                  <Form.Check
+                    type="radio"
+                    label={t('card')}
+                    name="cash"
+                    onChange={(e) =>
+                      setValues((prev) => ({ ...prev, cash: false }))
+                    }
+                    checked={!values.cash}
+                  />
+                </div>
               </Form.Group>
               <Form.Group className="mb-4">
-                <Form.Label>
-                  <Link href="/terms.pdf">
-                    <a target="_blank">{t('readTerms')}</a>
-                  </Link>
-                </Form.Label>
                 <Form.Check
-                  label={t('terms')}
-                  name="terms"
+                  label={t('payExtra', {
+                    price:
+                      new Intl.NumberFormat(lang, {
+                        style: 'currency',
+                        currency: 'OMR',
+                      }).format(product.extraPriceBaisa / 100)
+                  })}
                   onChange={(e) =>
-                    setValues((prev) => ({ ...prev, terms: !prev.terms }))
+                    setValues((prev) => ({ ...prev, payExtra: !prev.payExtra }))
                   }
-                  checked={values.terms}
-                  isInvalid={
-                    errors.terms !== undefined &&
-                    errors.terms.length > 0 &&
-                    touched.terms
-                  }
+                  checked={values.payExtra}
                 />
-                {errors.terms !== undefined && touched.terms && (
-                  <Form.Text style={{ color: 'red' }}>{errors.terms}</Form.Text>
-                )}
               </Form.Group>
               <div className="mb-4" style={{ fontSize: '1.2rem' }}>
                 {t('totalPrice')}
@@ -166,20 +173,29 @@ const PurchaseModal = ({
                     lang,
                     product,
                     values.quantity,
+                    values.payExtra,
                     values.chosenDate
                   )}
                 </span>
               </div>
-              <Modal.Footer>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => setOpenModal(ModalTypes.none)}
-                >
-                  {t('close')}
-                </Button>
-                <Button variant="outline-primary" type="submit">
-                  {t('submit')}
-                </Button>
+              <Modal.Footer className="flex flex-col items-end gap-2">
+                <div className='flex gap-3'>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setOpenModal(ModalTypes.none)}
+                  >
+                    {t('close')}
+                  </Button>
+                  <Button variant="outline-primary" type="submit">
+                    {t('submit')}
+                  </Button>
+                </div>
+                <div className='flex text-xs text-blue-600/50 gap-1'>
+                  <p className='font-thin'>{t('byPurchasing')}</p>
+                  <Link href="/terms.pdf" passHref>
+                    <a target="_blank" className='text-blue-600/50 text-xs'>{t('readTerms')}</a>
+                  </Link>
+                </div>
               </Modal.Footer>
             </FormikForm>
           )}

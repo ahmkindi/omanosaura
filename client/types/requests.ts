@@ -1,5 +1,5 @@
-import { User } from 'firebase/auth'
 import { getAfterTomorrow } from '../utils/dates'
+import { User as FirebaseUser } from 'firebase/auth'
 
 export enum UserRole {
   admin = 'admin',
@@ -7,6 +7,13 @@ export enum UserRole {
 
 export interface Role {
   role: UserRole
+}
+
+export interface User {
+  email: string
+  name: string
+  role: UserRole
+  phone: string
 }
 
 export interface EmailForm {
@@ -37,7 +44,8 @@ export interface ProductDetails {
   description: string
   descriptionAr: string
   photo: string
-  priceBaisa: number
+  basePriceBaisa: number
+  extraPriceBaisa: number
   plannedDates: Date[]
   photos: string[]
   lastUpdated: Date
@@ -80,6 +88,7 @@ export interface PurchaseProduct {
   quantity: number
   chosenDate: Date
   cash: boolean
+  payExtra: boolean
 }
 
 export const emptyPurchaseProduct: PurchaseProduct = {
@@ -87,6 +96,7 @@ export const emptyPurchaseProduct: PurchaseProduct = {
   quantity: 1,
   chosenDate: getAfterTomorrow(),
   cash: false,
+  payExtra: false,
 }
 
 export interface Purchase extends ProductDetails {
@@ -100,6 +110,24 @@ export interface Purchase extends ProductDetails {
 }
 
 export interface UserPurchase extends Purchase, User {}
+
+export interface PurchaseHistory {
+  productId: string
+  purchaseDate: string
+  rating: NullableFloat
+  review: string
+}
+
+export interface UserDetails extends User {
+  avgRating: number
+  lastTrip: Date
+  purchaseCount: number
+}
+
+export interface NullableFloat {
+  float: number
+  valid: boolean
+}
 
 export const emptyProduct: ProductDetails = {
   kind: ProductKind.adventure,

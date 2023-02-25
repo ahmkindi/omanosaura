@@ -1,4 +1,5 @@
 import {
+  FacebookAuthProvider,
   GoogleAuthProvider,
   sendSignInLinkToEmail,
   signInWithPopup,
@@ -50,7 +51,7 @@ const LoginModal = () => {
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
               Login to your account
             </h3>
-            <form className="space-y-6" action="#">
+            <div className="space-y-6">
               <div>
                 <label
                   htmlFor="email"
@@ -72,10 +73,10 @@ const LoginModal = () => {
                   onClick={() => {
                     console.log('email value', email?.current?.value)
                     sendSignInLinkToEmail(auth, email?.current?.value, {
-                      url: 'https://omanosaura.com',
+                      url: window.location.origin,
                       handleCodeInApp: true,
                     }).catch((error) => {
-                      console.log(error)
+                      console.log("failed to send sing in link: ", error)
                     })
                   }}
                 >
@@ -149,6 +150,29 @@ const LoginModal = () => {
               <button
                 type="button"
                 className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2"
+                onClick={() =>
+                  signInWithPopup(auth, provider)
+                    .then((result) => {
+                      // This gives you a facebook Access Token. You can use it to access the facebook API.
+                      const credential =
+                        FacebookAuthProvider.credentialFromResult(result)
+                      const token = credential?.accessToken
+                      // The signed-in user info.
+                      const user = result.user
+                      console.log(credential, token, user)
+                    })
+                    .catch((error) => {
+                      // Handle Errors here.
+                      const errorCode = error.code
+                      const errorMessage = error.message
+                      // The email of the user's account used.
+                      const email = error.customData.email
+                      // The AuthCredential type that was used.
+                      const credential =
+                        FacebookAuthProvider.credentialFromError(error)
+                      console.log(errorCode, errorMessage, email, credential)
+                    })
+                }
               >
                 <svg
                   className="w-5 h-5"
@@ -166,10 +190,7 @@ const LoginModal = () => {
                   ></path>
                 </svg>
               </button>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                Not registered?{' '}
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
