@@ -58,7 +58,6 @@ func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
 	}
 
 	params := (&auth.UserToUpdate{}).
-		PhoneNumber(updatedUser.Phone).
 		DisplayName(updatedUser.Phone)
 
 	_, err := server.AuthClient.UpdateUser(c.Context(), userId, params)

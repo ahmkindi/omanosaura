@@ -9,7 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 import { useRouter } from 'next/router'
 import { fetcher } from '../../../utils/axiosServer'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useCallback } from 'react'
 import Lightbox, { SlideImage } from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -39,9 +39,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 export enum ModalTypes {
-  none,
-  gallery,
-  purchase
+  gallery = "gallery",
+  purchase = "purchase"
 }
 
 const SingleExperience = () => {
@@ -49,9 +48,17 @@ const SingleExperience = () => {
   const router = useRouter()
   const { id } = router.query
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>)
-  const [openModal, setOpenModal] = useState(ModalTypes.none)
   const isAr = lang === 'ar'
   const { user } = useGlobal()
+  const modal = router.query.experienceModal
+
+  const closeModal = useCallback(
+    () => {
+      delete router.query.experienceModal
+      router.push(router)
+    },
+    [router],
+  )
 
   if (!product) return null
 
@@ -74,10 +81,16 @@ const SingleExperience = () => {
               </Button>
             </Link>
           }
-          <Button variant="outline-secondary" onClick={() => setOpenModal(ModalTypes.gallery)}>
+          <Button variant="outline-secondary" onClick={() => {
+            router.query.experienceModal = ModalTypes.gallery
+            router.push(router)
+          }}>
             {t('gallery')}
           </Button>
-          <Button variant="outline-primary" onClick={() => setOpenModal(ModalTypes.purchase)}>
+          <Button variant="outline-primary" onClick={() => {
+            router.query.experienceModal = ModalTypes.purchase
+            router.push(router)
+          }}>
             {t('purchase')}
           </Button>
         </div>
@@ -85,12 +98,12 @@ const SingleExperience = () => {
     </Box>
     <Reviews product={product} />
     <Lightbox
-      open={openModal === ModalTypes.gallery}
-      close={() => setOpenModal(ModalTypes.none)}
+      open={modal === ModalTypes.gallery}
+      close={() => closeModal()}
       slides={[getSlide(product?.photo), ...product?.photos.map(p => getSlide(p))]}
       plugins={[Fullscreen, Zoom]}
     />
-    {openModal === ModalTypes.purchase && <PurchaseModal product={product} setOpenModal={setOpenModal} />}
+    {modal === ModalTypes.purchase && <PurchaseModal product={product} closeModal={closeModal} />}
   </Layout>
 }
 

@@ -3,8 +3,9 @@ import auth from '../config/firebase'
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import axiosServer from '../utils/axiosServer'
 import { AxiosResponse } from 'axios'
-import { User } from '../types/requests'
+import { Purchase, PurchaseProduct, User } from '../types/requests'
 import Cookies from 'js-cookie'
+import useTranslation from 'next-translate/useTranslation'
 
 export interface Alert {
   type: 'light' | 'warning' | 'success'
@@ -18,6 +19,10 @@ interface GlobalContextValue {
   setAlert?: React.Dispatch<React.SetStateAction<Alert | undefined>>
   user: User | null
   isLoading: boolean
+  purchase?: PurchaseProduct
+  setPurchase?: React.Dispatch<
+    React.SetStateAction<PurchaseProduct | undefined>
+  >
 }
 
 const GlobalContext = React.createContext<GlobalContextValue>({
@@ -27,31 +32,41 @@ const GlobalContext = React.createContext<GlobalContextValue>({
   setAlert: undefined,
   user: null,
   isLoading: false,
+  purchase: undefined,
+  setPurchase: undefined,
 })
 
 export const GlobalProvider = ({
   children,
 }: PropsWithChildren): JSX.Element => {
+  const { t } = useTranslation('common')
   const [menuOpen, setMenuOpen] = useState(false)
   const [alert, setAlert] = useState<Alert>()
 
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [purchase, setPurchase] = useState<PurchaseProduct>()
 
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
       let email = window.localStorage.getItem('emailForSignIn')
       if (!email) {
-        email = window.prompt('Please provide your email for confirmation')
+        email = window.prompt(t('confirmEmail'))
       }
 
       signInWithEmailLink(auth, email ?? '', window.location.href)
         .then((result) => {
           window.localStorage.removeItem('emailForSignIn')
-          console.log(result)
+          setAlert?.({
+            type: 'success',
+            message: t('successLogin', { name: result.user.displayName }),
+          })
         })
         .catch((error) => {
-          console.log(error)
+          setAlert?.({
+            type: 'success',
+            message: t('failedToSocialLogin', { msg: error.message }),
+          })
         })
     }
 
@@ -73,7 +88,7 @@ export const GlobalProvider = ({
         setIsLoading(false)
       }
     })
-  }, [])
+  }, [t])
 
   return (
     <GlobalContext.Provider
@@ -84,6 +99,8 @@ export const GlobalProvider = ({
         setAlert,
         user,
         isLoading,
+        purchase,
+        setPurchase,
       }}
     >
       {children}

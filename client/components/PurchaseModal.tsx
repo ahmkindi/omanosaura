@@ -2,7 +2,6 @@ import { Formik, Form as FormikForm } from 'formik'
 import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
-import { ModalTypes } from '../pages/experiences/[id]'
 import {
   emptyPurchaseProduct,
   Product,
@@ -21,12 +20,12 @@ import Link from 'next/link'
 
 const PurchaseModal = ({
   product,
-  setOpenModal,
+  closeModal,
 }: {
   product: Product
-  setOpenModal: React.Dispatch<React.SetStateAction<ModalTypes>>
+  closeModal: () => void
 }) => {
-  const { user } = useGlobal()
+  const { user, setPurchase, purchase } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const { setAlert } = useGlobal()
   const isAr = lang === 'ar'
@@ -45,7 +44,9 @@ const PurchaseModal = ({
   const handleSubmit = async (values: PurchaseProduct) => {
     try {
       if (!user) {
-        router.query.modal = "login"
+        setPurchase?.(values)
+        delete router.query.experienceModal
+        router.query.modal = 'login'
         router.push(router)
         return
       }
@@ -69,16 +70,12 @@ const PurchaseModal = ({
     } catch (error) {
       setAlert?.({ type: 'warning', message: t('failedPurchase') })
     } finally {
-      setOpenModal(ModalTypes.none)
+      closeModal()
     }
   }
 
   return (
-    <Modal
-      show
-      onHide={() => setOpenModal(ModalTypes.none)}
-      dir={isAr ? 'rtl' : 'ltr'}
-    >
+    <Modal show onHide={() => closeModal()} dir={isAr ? 'rtl' : 'ltr'}>
       <Modal.Header>
         <Modal.Title>
           {t('purchaseTitle', {
@@ -88,7 +85,7 @@ const PurchaseModal = ({
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ ...emptyPurchaseProduct }}
+          initialValues={purchase ? purchase : { ...emptyPurchaseProduct }}
           onSubmit={handleSubmit}
           validationSchema={PurchaseSchema}
         >
@@ -154,11 +151,10 @@ const PurchaseModal = ({
               <Form.Group className="mb-4">
                 <Form.Check
                   label={t('payExtra', {
-                    price:
-                      new Intl.NumberFormat(lang, {
-                        style: 'currency',
-                        currency: 'OMR',
-                      }).format(product.extraPriceBaisa / 100)
+                    price: new Intl.NumberFormat(lang, {
+                      style: 'currency',
+                      currency: 'OMR',
+                    }).format(product.extraPriceBaisa / 100),
                   })}
                   onChange={(e) =>
                     setValues((prev) => ({ ...prev, payExtra: !prev.payExtra }))
@@ -179,10 +175,10 @@ const PurchaseModal = ({
                 </span>
               </div>
               <Modal.Footer className="flex flex-col items-end gap-2">
-                <div className='flex gap-3'>
+                <div className="flex gap-3">
                   <Button
                     variant="outline-secondary"
-                    onClick={() => setOpenModal(ModalTypes.none)}
+                    onClick={() => closeModal()}
                   >
                     {t('close')}
                   </Button>
@@ -190,10 +186,12 @@ const PurchaseModal = ({
                     {t('submit')}
                   </Button>
                 </div>
-                <div className='flex text-xs text-blue-600/50 gap-1'>
-                  <p className='font-thin'>{t('byPurchasing')}</p>
+                <div className="flex text-xs text-blue-600/50 gap-1">
+                  <p className="font-thin">{t('byPurchasing')}</p>
                   <Link href="/terms.pdf" passHref>
-                    <a target="_blank" className='text-blue-600/50 text-xs'>{t('readTerms')}</a>
+                    <a target="_blank" className="text-blue-600/50 text-xs">
+                      {t('readTerms')}
+                    </a>
                   </Link>
                 </div>
               </Modal.Footer>

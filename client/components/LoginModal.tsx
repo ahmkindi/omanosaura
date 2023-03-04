@@ -4,20 +4,33 @@ import {
   sendSignInLinkToEmail,
   signInWithPopup,
 } from 'firebase/auth'
+import useTranslation from 'next-translate/useTranslation'
 import { useRouter } from 'next/router'
-import React, { useRef } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import auth from '../config/firebase'
+import { useGlobal } from '../context/global'
 
 const LoginModal = () => {
+  const { t } = useTranslation('common')
   const router = useRouter()
-  const email = useRef(null)
+  const { setAlert, user } = useGlobal()
+  const [email, setEmail] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
 
-  const closeModal = () => {
-    delete router.query.modal
-    router.push(router)
-  }
+  const closeModal = useCallback(
+    () => {
+      delete router.query.modal
+      router.push(router)
+    },
+    [router],
+  )
 
-  const provider = new GoogleAuthProvider()
+  useEffect(() => { emailSent && localStorage.setItem("emailForSignIn", email) }, [email, emailSent])
+
+  useEffect(() => { user && closeModal() }, [user, closeModal])
+
+  const googleProvider = new GoogleAuthProvider()
+  const facebookProvider = new FacebookAuthProvider()
 
   return (
     <div
@@ -49,7 +62,7 @@ const LoginModal = () => {
           </button>
           <div className="px-6 py-6 lg:px-8">
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-              Login to your account
+              {t('login')}
             </h3>
             <div className="space-y-6">
               <div>
@@ -57,7 +70,7 @@ const LoginModal = () => {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  {t('email')}
                 </label>
                 <input
                   type="email"
@@ -65,50 +78,38 @@ const LoginModal = () => {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="name@outlook.com"
-                  ref={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
                 <button
                   className="w-full text-white bg-blue-700 mt-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={() => {
-                    console.log('email value', email?.current?.value)
-                    sendSignInLinkToEmail(auth, email?.current?.value, {
+                  onClick={() =>
+                    sendSignInLinkToEmail(auth, email, {
                       url: window.location.origin,
                       handleCodeInApp: true,
-                    }).catch((error) => {
-                      console.log("failed to send sing in link: ", error)
+                    }).catch((error) =>
+                      setAlert?.({ type: 'warning', message: t('failedToSendEmail', { msg: error.message }) })
+                    ).then(() => {
+                      setEmailSent(true)
+                      setAlert?.({ type: 'light', message: t('checkEmail') })
                     })
-                  }}
+                  }
                 >
-                  Continue With Email
+                  {emailSent ? t('resendEmail') : t('emailLogin')}
                 </button>
               </div>
-              <div>Or Sign in with</div>
+              <div>{t('orSocialLogin')}</div>
               <button
                 type="button"
                 className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2"
                 onClick={() =>
-                  signInWithPopup(auth, provider)
+                  signInWithPopup(auth, googleProvider)
                     .then((result) => {
-                      // This gives you a Google Access Token. You can use it to access the Google API.
-                      const credential =
-                        GoogleAuthProvider.credentialFromResult(result)
-                      const token = credential?.accessToken
-                      // The signed-in user info.
-                      const user = result.user
-                      console.log(credential, token, user)
+                      setAlert?.({ type: 'success', message: t('successLogin', { name: result.user.displayName }) })
                     })
-                    .catch((error) => {
-                      // Handle Errors here.
-                      const errorCode = error.code
-                      const errorMessage = error.message
-                      // The email of the user's account used.
-                      const email = error.customData.email
-                      // The AuthCredential type that was used.
-                      const credential =
-                        GoogleAuthProvider.credentialFromError(error)
-                      console.log(errorCode, errorMessage, email, credential)
-                    })
+                    .catch((error) =>
+                      setAlert?.({ type: 'warning', message: t('failedToSocialLogin', { msg: error.message }) })
+                    )
                 }
               >
                 <svg
@@ -127,7 +128,7 @@ const LoginModal = () => {
                   ></path>
                 </svg>
               </button>
-              <button
+              {/* <button
                 type="button"
                 className="text-white bg-[#050708] hover:bg-[#050708]/90 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 mr-2 mb-2"
               >
@@ -146,32 +147,18 @@ const LoginModal = () => {
                     d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"
                   ></path>
                 </svg>
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2"
                 onClick={() =>
-                  signInWithPopup(auth, provider)
+                  signInWithPopup(auth, facebookProvider)
                     .then((result) => {
-                      // This gives you a facebook Access Token. You can use it to access the facebook API.
-                      const credential =
-                        FacebookAuthProvider.credentialFromResult(result)
-                      const token = credential?.accessToken
-                      // The signed-in user info.
-                      const user = result.user
-                      console.log(credential, token, user)
+                      setAlert?.({ type: 'success', message: t('successLogin', { name: result.user.displayName }) })
                     })
-                    .catch((error) => {
-                      // Handle Errors here.
-                      const errorCode = error.code
-                      const errorMessage = error.message
-                      // The email of the user's account used.
-                      const email = error.customData.email
-                      // The AuthCredential type that was used.
-                      const credential =
-                        FacebookAuthProvider.credentialFromError(error)
-                      console.log(errorCode, errorMessage, email, credential)
-                    })
+                    .catch((error) =>
+                      setAlert?.({ type: 'warning', message: t('failedToSocialLogin', { msg: error.message }) })
+                    )
                 }
               >
                 <svg
