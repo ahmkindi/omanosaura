@@ -1,23 +1,25 @@
-import { Product, ProductKind } from '../types/requests'
+import { Product } from '../types/requests'
 
 export const getTotalPrice = (
   lang: string,
   product: Product,
   quantity: number,
+  payExtra: boolean,
   chosenDate: Date
 ) => {
-  var total = (product.priceBaisa * quantity) / 1000
+  var total = Math.ceil(quantity / 4) * product.basePriceBaisa
   if (
-    product.plannedDates
-      .map((d) => new Date(d))
-      .includes(new Date(chosenDate)) ||
-    (quantity > 4 && product.kind === ProductKind.trip)
+    product.plannedDates.map((d) => new Date(d)).includes(new Date(chosenDate))
   ) {
     total *= 0.8
+  }
+  if (payExtra) {
+    console.log('total is', total)
+    total += product.extraPriceBaisa * quantity
   }
 
   return new Intl.NumberFormat(lang, {
     style: 'currency',
     currency: 'OMR',
-  }).format(total)
+  }).format(total / 100)
 }

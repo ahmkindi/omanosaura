@@ -8,8 +8,6 @@ package database
 import (
 	"context"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const deleteBlog = `-- name: DeleteBlog :exec
@@ -22,7 +20,7 @@ func (q *Queries) DeleteBlog(ctx context.Context, id string) error {
 }
 
 const getBlog = `-- name: GetBlog :one
-SELECT blogs.id, title, description, title_ar, description_ar, photo, page, page_ar, user_id, created_at, users.id, email, firstname, lastname, phone, roles
+SELECT blogs.id, title, description, title_ar, description_ar, photo, page, page_ar, user_id, created_at, users.id, email, name, phone, role
 FROM blogs INNER JOIN users ON users.id = blogs.user_id
 WHERE blogs.id = $1
 `
@@ -36,14 +34,13 @@ type GetBlogRow struct {
 	Photo         string    `json:"photo"`
 	Page          string    `json:"page"`
 	PageAr        string    `json:"page_ar"`
-	UserID        uuid.UUID `json:"user_id"`
+	UserID        string    `json:"user_id"`
 	CreatedAt     time.Time `json:"created_at"`
-	ID_2          uuid.UUID `json:"id_2"`
+	ID_2          string    `json:"id_2"`
 	Email         string    `json:"email"`
-	Firstname     string    `json:"firstname"`
-	Lastname      string    `json:"lastname"`
+	Name          string    `json:"name"`
 	Phone         string    `json:"phone"`
-	Roles         []string  `json:"roles"`
+	Role          UserRole  `json:"role"`
 }
 
 func (q *Queries) GetBlog(ctx context.Context, id string) (GetBlogRow, error) {
@@ -62,16 +59,15 @@ func (q *Queries) GetBlog(ctx context.Context, id string) (GetBlogRow, error) {
 		&i.CreatedAt,
 		&i.ID_2,
 		&i.Email,
-		&i.Firstname,
-		&i.Lastname,
+		&i.Name,
 		&i.Phone,
-		&i.Roles,
+		&i.Role,
 	)
 	return i, err
 }
 
 const getBlogs = `-- name: GetBlogs :many
-SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, blogs.photo, blogs.user_id, users.firstname, users.lastname
+SELECT blogs.id, blogs.title, blogs.description, blogs.title_ar, blogs.description_ar, blogs.created_at, blogs.photo, blogs.user_id, users.name
 FROM blogs INNER JOIN users ON users.id = blogs.user_id
 ORDER BY created_at
 `
@@ -84,9 +80,8 @@ type GetBlogsRow struct {
 	DescriptionAr string    `json:"description_ar"`
 	CreatedAt     time.Time `json:"created_at"`
 	Photo         string    `json:"photo"`
-	UserID        uuid.UUID `json:"user_id"`
-	Firstname     string    `json:"firstname"`
-	Lastname      string    `json:"lastname"`
+	UserID        string    `json:"user_id"`
+	Name          string    `json:"name"`
 }
 
 func (q *Queries) GetBlogs(ctx context.Context) ([]GetBlogsRow, error) {
@@ -107,8 +102,7 @@ func (q *Queries) GetBlogs(ctx context.Context) ([]GetBlogsRow, error) {
 			&i.CreatedAt,
 			&i.Photo,
 			&i.UserID,
-			&i.Firstname,
-			&i.Lastname,
+			&i.Name,
 		); err != nil {
 			return nil, err
 		}
@@ -135,15 +129,15 @@ DO UPDATE SET
 `
 
 type UpsertBlogParams struct {
-	ID            string    `json:"id"`
-	Title         string    `json:"title"`
-	Description   string    `json:"description"`
-	TitleAr       string    `json:"title_ar"`
-	DescriptionAr string    `json:"description_ar"`
-	Photo         string    `json:"photo"`
-	Page          string    `json:"page"`
-	PageAr        string    `json:"page_ar"`
-	UserID        uuid.UUID `json:"user_id"`
+	ID            string `json:"id"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
+	TitleAr       string `json:"title_ar"`
+	DescriptionAr string `json:"description_ar"`
+	Photo         string `json:"photo"`
+	Page          string `json:"page"`
+	PageAr        string `json:"page_ar"`
+	UserID        string `json:"user_id"`
 }
 
 func (q *Queries) UpsertBlog(ctx context.Context, arg UpsertBlogParams) error {

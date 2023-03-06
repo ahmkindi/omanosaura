@@ -14,13 +14,13 @@ func (server *Server) HandlerUpsertBlog(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to parse blog params into struct: %w", err)
 	}
 
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fmt.Errorf("failed to parse user from context")
 	}
 
 	blog.ID = strings.ReplaceAll(strings.ToLower(blog.Title), " ", "-")
-	blog.UserID = user.ID
+	blog.UserID = userID
 
 	return server.Queries.UpsertBlog(c.Context(), *blog)
 }

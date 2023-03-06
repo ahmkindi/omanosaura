@@ -17,11 +17,11 @@ const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
         <div className={styles.front}>
           <div>
             <p>{t('purchaseMade')}</p>
-            <h4>{new Date(purchase.createdAt).toDateString()}</h4>
+            <h4>{new Date(purchase.createdAt).toLocaleDateString()}</h4>
           </div>
           <div>
             <p>{t('tripDate')}</p>
-            <h4>{new Date(purchase.chosenDate).toDateString()}</h4>
+            <h4>{new Date(purchase.chosenDate).toLocaleDateString()}</h4>
           </div>
           <div>
             <p>{t('numOfParticipants')}</p>
@@ -33,7 +33,7 @@ const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
               {new Intl.NumberFormat(lang, {
                 style: 'currency',
                 currency: 'OMR',
-              }).format(purchase.priceBaisa / 1000)}
+              }).format(purchase.costBaisa / 1000)}
             </h4>
           </div>
         </div>

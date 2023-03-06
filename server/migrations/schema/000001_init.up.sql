@@ -19,19 +19,20 @@ CREATE TABLE IF NOT EXISTS products (
   is_deleted BOOLEAN NOT NULL
 );
 
+CREATE TYPE user_role AS ENUM ('none', 'admin', 'writer');
+
 CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY,
+  id TEXT PRIMARY KEY,
 	email TEXT UNIQUE NOT NULL,
-  firstname TEXT NOT NULL,
-  lastname TEXT NOT NULL,
+  name TEXT NOT NULL,
 	phone TEXT NOT NULL,
-  roles TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[]
+  role user_role NOT NULL DEFAULT 'none'
 );
 
 CREATE TABLE IF NOT EXISTS purchases (
   id UUID PRIMARY KEY,
   product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES users(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
   num_of_participants INTEGER NOT NULL,
   paid BOOLEAN NOT NULL,
   cost_baisa BIGINT NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS purchases (
 
 CREATE TABLE IF NOT EXISTS reviews (
   product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES users(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
   rating FLOAT NOT NULL CHECK (rating > 0 AND rating <= 5),
   title TEXT NOT NULL,
   review TEXT NOT NULL,
@@ -51,7 +52,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 CREATE TABLE IF NOT EXISTS user_customer_id (
-  user_id UUID NOT NULL PRIMARY KEY REFERENCES users(id),
+  user_id TEXT NOT NULL PRIMARY KEY REFERENCES users(id),
   customer_id TEXT NOT NULL
 );
 
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS blogs (
   photo TEXT NOT NULL,
   page TEXT NOT NULL,
   page_ar TEXT NOT NULL,
-  user_id UUID NOT NULL REFERENCES users(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
   created_at DATE NOT NULL DEFAULT CURRENT_DATE
 );
 

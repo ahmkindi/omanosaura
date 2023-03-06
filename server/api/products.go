@@ -26,14 +26,14 @@ func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fiber.ErrNotFound
 	}
 
 	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
 		ProductID: review.ProductID,
-		UserID:    user.ID,
+		UserID:    userID,
 	})
 	if err != nil {
 		return err
@@ -46,14 +46,14 @@ func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 }
 
 func (server *Server) HandlerDeleteReviewProduct(c *fiber.Ctx) error {
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fiber.ErrNotFound
 	}
 
 	return server.Queries.DeleteProductReview(c.Context(), database.DeleteProductReviewParams{
 		ProductID: c.Params("id"),
-		UserID:    user.ID,
+		UserID:    userID,
 	})
 }
 
@@ -108,14 +108,14 @@ func (server *Server) HandlerGetProductReviews(c *fiber.Ctx) error {
 }
 
 func (server *Server) HandlerGetUserProductReview(c *fiber.Ctx) error {
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fiber.ErrForbidden
 	}
 
 	productReview, err := server.Queries.GetUserProductReview(c.Context(), database.GetUserProductReviewParams{
 		ProductID: c.Params("id"),
-		UserID:    user.ID,
+		UserID:    userID,
 	})
 	if err != nil {
 		return err
@@ -125,12 +125,12 @@ func (server *Server) HandlerGetUserProductReview(c *fiber.Ctx) error {
 }
 
 func (server *Server) HandlerGetUserPurchases(c *fiber.Ctx) error {
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fiber.ErrForbidden
 	}
 
-	purchases, err := server.Queries.GetUserPurchases(c.Context(), user.ID)
+	purchases, err := server.Queries.GetUserPurchases(c.Context(), userID)
 	if err != nil {
 		return fmt.Errorf("failed to get user purchases: %w", err)
 	}
@@ -162,24 +162,25 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return err
 	}
 
-	user, ok := c.Locals("user").(database.User)
+	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
 		return fiber.ErrUnauthorized
 	}
 
-	// 20% off for trips if more than 4 are attending
-	if product.Kind == "trip" && req.Quantity > 4 {
-		product.PriceBaisa = product.PriceBaisa * 80 / 100
+	// every 4 people will we add the base price
+	cost := ((req.Quantity % 4) + 1) * product.BasePriceBaisa
+	if req.PayExtra {
+		cost += (req.Quantity * product.ExtraPriceBaisa)
 	}
 
 	purchase := database.InsertPurchaseParams{
 		ID:                uuid.New(),
 		ProductID:         product.ID,
-		UserID:            user.ID,
+		UserID:            userID,
 		NumOfParticipants: int32(req.Quantity),
 		Paid:              !req.Cash,
 		ChosenDate:        req.ChosenDate,
-		CostBaisa:         int64(req.Quantity) * product.PriceBaisa,
+		CostBaisa:         cost,
 		Complete:          req.Cash,
 	}
 	err = server.Queries.InsertPurchase(c.Context(), purchase)
@@ -196,13 +197,13 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return nil
 	}
 
-	customerId, err := server.Queries.GetUserCustomerId(c.Context(), user.ID)
+	customerId, err := server.Queries.GetUserCustomerId(c.Context(), userID)
 	if err != nil && err != pgx.ErrNoRows {
 		return fmt.Errorf("failed to get customer id: %w", err)
 	}
 	if err != sql.ErrNoRows {
 		customer, err := server.ThawaniClient.CreateCustomer(thawani.CreateCustomerReq{
-			ClientCustomerId: user.ID.String(),
+			ClientCustomerId: userID,
 		})
 		if err != nil {
 			return fmt.Errorf("failed to create customer: %w", err)
@@ -216,8 +217,8 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		Mode:              mode.Payment,
 		Products: []thawani.Product{{
 			Name:       product.Title,
-			Quantity:   req.Quantity,
-			UnitAmount: int(product.PriceBaisa),
+			Quantity:   int(req.Quantity),
+			UnitAmount: int(cost) / int(req.Quantity),
 		}},
 		SuccessUrl: fmt.Sprintf("%s/server/user/purchase/success/%s", server.Config.BaseUrl, purchase.ID),
 		CancelUrl:  fmt.Sprintf("%s/experiences/%s", server.Config.BaseUrl, product.ID),

@@ -22,7 +22,7 @@ function convertArrayOfObjectsToCSV(array) {
 
   const columnDelimiter = ','
   const lineDelimiter = '\n'
-  const keys = Object.keys(data[0])
+  const keys = Object.keys(array[0])
 
   result = ''
   result += keys.join(columnDelimiter)

@@ -31,17 +31,17 @@ const ProductCard = ({ product }: { product: Product }) => {
           {isAr ? product.subtitleAr : product.subtitle}
         </p>
         <div className={styles.info}>
-          <div>
+          <div className="flex items-center">
             <FaComment
               style={isAr ? { marginLeft: '10px' } : { marginRight: '10px' }}
             />
             {product.ratingCount}
           </div>
-          <div style={{ fontSize: '1.2rem' }}>
+          <div>
             {new Intl.NumberFormat(lang, {
               style: 'currency',
               currency: 'OMR',
-            }).format(product.priceBaisa / 1000)}
+            }).format(product.basePriceBaisa / 1000)}
           </div>
           {product.kind === ProductKind.trip ? (
             <BiTrip size={70} />

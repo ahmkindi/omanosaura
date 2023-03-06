@@ -11,5 +11,9 @@
   "submit": "Submit",
   "delete": "Delete",
   "edit": "edit",
-  "blogTitle": "{{ title }} | Omanosaura"
+  "blogTitle": "{{ title }} | Omanosaura",
+  "successAdd": "Successfully added a new blog!",
+  "failedAdd": "Failed to add a new blog...",
+  "successDelete": "Successfully deleted blog",
+  "failedDelete": "Failed to delete blog"
 }

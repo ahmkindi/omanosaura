@@ -9,12 +9,14 @@
 
 .langButton {
   padding: 0px;
-  width: 36px;
+  width: 37px;
   background-color: transparent;
   color: var(--primary);
   font-weight: bold;
   border-color: var(--primary);
   outline: none;
+  display: flex;
+  justify-content: center;
 }
 
 .langButtonActive {

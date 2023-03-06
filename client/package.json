@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@types/bootstrap": "^5.2.5",
+    "@types/js-cookie": "^3.0.3",
     "@types/react-responsive-masonry": "^2.1.0",
     "axios": "^1.0.0",
     "axios-case-converter": "^0.9.0",
     "bootstrap": "^5.2.2",
     "date-fns": "^2.29.3",
+    "firebase": "^9.16.0",
     "formik": "^2.2.9",
+    "js-cookie": "^3.0.1",
     "next": "12.3.1",
     "next-translate": "^1.6.0",
     "next-videos": "^1.5.0",
@@ -45,9 +48,12 @@
     "@types/react-dom": "18.0.6",
     "@types/react-icons": "^3.0.0",
     "@types/react-simple-maps": "^1.0.8",
+    "autoprefixer": "^10.4.13",
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
+    "postcss": "^8.4.21",
     "sass": "^1.55.0",
+    "tailwindcss": "^3.2.4",
     "typescript": "4.8.4"
   }
 }

@@ -13,5 +13,12 @@
   "price": "Price",
   "paid?": "Paid?",
   "chosenDate": "Trip Date",
-  "export": "Export"
+  "export": "Export",
+  "userEmail": "Email",
+  "userName": "Name",
+  "userPhone": "Phone Number",
+  "lastTrip": "Last Trip",
+  "numOfPurchases": "Purchases Made",
+  "avgRating": "Average Rating",
+  "allUsers": "All Users"
 }

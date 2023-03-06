@@ -2,33 +2,24 @@ import useTranslation from 'next-translate/useTranslation'
 import { Button, Form } from 'react-bootstrap'
 import PhoneInputWithCountrySelect from 'react-phone-number-input'
 import Layout from '../components/Layout'
-import useUser from '../hooks/useUser'
 import ar from 'react-phone-number-input/locale/ar.json'
 import en from 'react-phone-number-input/locale/en.json'
 import 'react-phone-number-input/style.css'
 import { Formik, Form as FormikForm } from 'formik'
 import * as Yup from 'yup'
-import { User } from '../types/requests'
 import axiosServer from '../utils/axiosServer'
 import { useGlobal } from '../context/global'
+import { User } from '../types/requests'
 
 const Profile = () => {
   const { t, lang } = useTranslation('profile')
-  const { user } = useUser()
+  const { user } = useGlobal()
   const { setAlert } = useGlobal()
   const isAr = lang === 'ar'
 
   const SignupSchema = Yup.object().shape({
-    firstname: Yup.string()
-      .min(2, t('tooShort'))
-      .max(30, t('tooLong'))
-      .required(),
-    lastname: Yup.string()
-      .min(2, t('tooShort'))
-      .max(30, t('tooShort'))
-      .required(),
+    name: Yup.string().min(2, t('tooShort')).max(35, t('tooLong')).required(),
     phone: Yup.string().min(5, t('tooShort')).max(17, t('tooLong')).required(),
-    email: Yup.string().email(t('invalidEmail')).required(),
   })
 
   const handleSubmit = async (values: User) => {
@@ -57,62 +48,27 @@ const Profile = () => {
         >
           {({ errors, handleChange, values, touched, setValues }) => (
             <FormikForm style={{ maxWidth: '400px', margin: 'auto' }}>
-              <Form.Group className="mb-4" controlId="formBasicEmail">
-                <Form.Label>{t('emailAdr')}</Form.Label>
-                <Form.Control
-                  name="email"
-                  value={values.email}
-                  type="email"
-                  onChange={handleChange}
-                  isInvalid={
-                    errors.email !== undefined &&
-                    errors.email.length > 0 &&
-                    touched.email
-                  }
-                />
-                <Form.Text className="invalid-feedback">
-                  {errors.email}
-                </Form.Text>
-              </Form.Group>
-
               <Form.Group className="mb-4" controlId="formBasicName">
-                <Form.Label>{t('firstname')}</Form.Label>
+                <Form.Label>{t('name')}</Form.Label>
                 <Form.Control
-                  name="firstname"
-                  value={values.firstname}
-                  onChange={handleChange}
-                  type="text"
-                  isInvalid={
-                    errors.firstname !== undefined &&
-                    errors.firstname.length > 0 &&
-                    touched.firstname
-                  }
-                />
-                <Form.Text className="invalid-feedback">
-                  {errors.firstname}
-                </Form.Text>
-              </Form.Group>
-              <Form.Group className="mb-4" controlId="formBasicName">
-                <Form.Label>{t('lastname')}</Form.Label>
-                <Form.Control
-                  name="lastname"
-                  value={values.lastname}
+                  name="name"
+                  value={values.name ?? ''}
                   type="text"
                   onChange={handleChange}
                   isInvalid={
-                    errors.lastname !== undefined &&
-                    errors.lastname.length > 0 &&
-                    touched.lastname
+                    errors.name !== undefined &&
+                    errors.name.length > 0 &&
+                    touched.name
                   }
                 />
                 <Form.Text className="invalid-feedback">
-                  {errors.lastname}
+                  {errors.name}
                 </Form.Text>
               </Form.Group>
               <Form.Group className="mb-4" controlId="formBasicPassword">
                 <Form.Label>{t('phone')}</Form.Label>
                 <PhoneInputWithCountrySelect
-                  value={values.phone}
+                  value={values.phone ?? ''}
                   onChange={(num) =>
                     setValues({ ...values, phone: num?.toString() ?? '' })
                   }

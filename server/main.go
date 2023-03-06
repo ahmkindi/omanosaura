@@ -20,18 +20,15 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 	app.Post("/send", server.HandlerSendEmail)
-	app.Get("/login", server.HandlerUserLogin)
-	app.Get("/oauth-callback", server.HandlerOauthCallback)
 	app.Get("/products", server.HandlerGetAllProducts)
 	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
 	app.Get("/products/:id", server.HandlerGetProduct)
 	app.Get("/blogs", server.HandlerGetAllBlogs)
 	app.Get("/blogs/:id", server.HandlerGetBlog)
 
-	users := app.Group("/user", server.UserMiddleware)
+	users := app.Group("/user", server.JWTMiddlware)
 	users.Get("/", server.HandlerGetUser)
 	users.Put("/", server.HandlerUpdateUser)
-	users.Get("/logout", server.HandlerLogout)
 
 	users.Post("/products/review", server.HandlerReviewProduct)
 	users.Get("/products/:id/review", server.HandlerGetUserProductReview)
@@ -42,6 +39,7 @@ func main() {
 
 	admin := users.Group("/admin", server.AdminMiddleware)
 	admin.Delete("/products/:id", server.HandlerDeleteProduct)
+	admin.Get("/users", server.HandlerGetAllUsers)
 	admin.Post("/products", server.HandlerUpsertProduct)
 	admin.Post("/blogs", server.HandlerUpsertBlog)
 	admin.Delete("/blogs/:id", server.HandlerDeleteBlog)

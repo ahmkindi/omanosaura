@@ -2,7 +2,6 @@ import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import useUser from '../hooks/useUser'
 import styles from '../styles/Navbar.module.scss'
 import { ButtonGroup, Button } from 'react-bootstrap'
 import { navoptions } from '../types/navoptions'
@@ -12,7 +11,7 @@ import { FiLogIn } from 'react-icons/fi'
 import Avatar from './Avatar'
 
 const NavBar = () => {
-  const { user, isLoading, login } = useUser()
+  const { user } = useGlobal()
   const { menuOpen, setMenuOpen } = useGlobal()
   const { lang, t } = useTranslation('common')
   const router = useRouter()
@@ -50,7 +49,7 @@ const NavBar = () => {
         }}
       >
         <div className={styles.topLevelOptions}>
-          {isLoading ? null : user ? (
+          {user ? (
             <Avatar user={user} />
           ) : (
             <Button
@@ -61,7 +60,10 @@ const NavBar = () => {
                 margin: isAr ? '0px 0px 0px 8px' : '0px 8px 0px 0px',
               }}
               className={styles.langButton}
-              onClick={() => login()}
+              onClick={() => {
+                router.query.modal = 'login'
+                router.push(router)
+              }}
             >
               <FiLogIn color="var(--primary)" style={{ margin: '4px' }} />
               {t('login')}

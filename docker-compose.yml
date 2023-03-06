@@ -9,7 +9,6 @@ services:
     depends_on:
       - client
       - server
-      - fusionauth
 
   client:
     build:
@@ -33,7 +32,6 @@ services:
       - 8081:8081
     depends_on:
       - db
-      - fusionauth
 
   db:
     image: postgres:13.2-alpine
@@ -41,41 +39,3 @@ services:
       - 5432:5432
     env_file:
       - dev.env
-
-  fusiondb:
-    image: postgres:13.2-alpine
-    env_file:
-      - dev.env
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    volumes:
-      - auth_db_data:/var/lib/postgresql/data
-
-  fusionauth:
-    image: fusionauth/fusionauth-app:1.40.2
-    depends_on:
-      fusiondb:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: jdbc:postgresql://fusiondb:5432/fusionauth
-      DATABASE_ROOT_USERNAME: postgres
-      DATABASE_ROOT_PASSWORD: 123456
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: 123456
-      # FUSIONAUTH_APP_RUNTIME_MODE: development
-      FUSIONAUTH_APP_RUNTIME_MODE: development
-      FUSIONAUTH_APP_URL: http://localhost/fa
-      SEARCH_TYPE: database
-    restart: unless-stopped
-    ports:
-      - 9011:9011
-    volumes:
-      - fusionauth_config:/usr/local/fusionauth/config
-
-volumes:
-  auth_db_data:
-  fusionauth_config:

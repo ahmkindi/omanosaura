@@ -11,5 +11,9 @@
   "submit": "تم",
   "delete": "امسح",
   "edit": "عدل",
-  "blogTitle": "{{ title }} | عمانوصورا"
+  "blogTitle": "{{ title }} | عمانوصورا",
+  "successAdd": "تمت إضافة مقال جديدة بنجاح!",
+  "failedAdd": "فشل إضافة مقال جديدة ...",
+  "successDelete": "تم حذف المقال بنجاح",
+  "failedDelete": "فشل حذف المقال"
 }

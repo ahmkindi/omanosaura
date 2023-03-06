@@ -2,26 +2,26 @@ import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
 import 'react-datepicker/dist/react-datepicker.css'
 import BlogForm from '../../components/BlogForm'
-import { EmptyBlog } from '../../types/requests'
-import useUser from '../../hooks/useUser'
+import { EmptyBlog, UserRole } from '../../types/requests'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
+import { useGlobal } from '../../context/global'
 
 const Page = () => {
   const { t } = useTranslation('blog')
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useGlobal()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && !user?.roles.includes('admin')) {
+    if (!isLoading && user?.role !== UserRole.admin) {
       router.push('/blogs')
     }
   }, [user, isLoading, router])
 
   return (
     <Layout title={t('title')}>
-      {isLoading || !user ? (
+      {isLoading ? (
         <Spinner animation="border" />
       ) : (
         <BlogForm blog={EmptyBlog} />

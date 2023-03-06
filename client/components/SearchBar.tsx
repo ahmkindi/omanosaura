@@ -12,14 +12,15 @@ import {
 import { FiList, FiMap } from 'react-icons/fi'
 import { FaQuestion } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-import useUser from '../hooks/useUser'
 import Link from 'next/link'
 import { MdAddCircleOutline } from 'react-icons/md'
+import { useGlobal } from '../context/global'
+import { UserRole } from '../types/requests'
 
 const popoverStyle = { display: 'flex', gap: '1rem', marginBottom: '0.5rem' }
 
-const SearchBar = () => {
-  const { user } = useUser()
+const SearchBar = (): JSX.Element => {
+  const { user } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const router = useRouter()
   const { search, view } = router.query
@@ -37,27 +38,27 @@ const SearchBar = () => {
         value={search}
       />
       {view === 'list' ? (
-        <Button
-          variant="secondary"
+        <button
+          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
           onClick={() => {
             router.query.view = 'map'
             router.push(router)
           }}
         >
-          {t('mapView')} <FiMap />
-        </Button>
+          <div className="px-2">{t('mapView')}</div> <FiMap />
+        </button>
       ) : (
-        <Button
-          variant="secondary"
+        <button
+          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
           onClick={() => {
             router.query.view = 'list'
             router.push(router)
           }}
         >
-          {t('listView')} <FiList />
-        </Button>
+          <div className="px-2">{t('listView')}</div> <FiList />
+        </button>
       )}
-      {user?.roles.includes('admin') && (
+      {user?.role === UserRole.admin && (
         <Link href="/experiences/create" passHref>
           <Button variant="outline-secondary">
             <MdAddCircleOutline />

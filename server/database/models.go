@@ -5,10 +5,31 @@
 package database
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type UserRole string
+
+const (
+	UserRoleNone   UserRole = "none"
+	UserRoleAdmin  UserRole = "admin"
+	UserRoleWriter UserRole = "writer"
+)
+
+func (e *UserRole) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = UserRole(s)
+	case string:
+		*e = UserRole(s)
+	default:
+		return fmt.Errorf("unsupported scan type for UserRole: %T", src)
+	}
+	return nil
+}
 
 type AvailableProduct struct {
 	ID            string      `json:"id"`
@@ -38,44 +59,46 @@ type Blog struct {
 	Photo         string    `json:"photo"`
 	Page          string    `json:"page"`
 	PageAr        string    `json:"page_ar"`
-	UserID        uuid.UUID `json:"user_id"`
+	UserID        string    `json:"user_id"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
 type Product struct {
-	ID            string      `json:"id"`
-	Kind          string      `json:"kind"`
-	Title         string      `json:"title"`
-	TitleAr       string      `json:"title_ar"`
-	Subtitle      string      `json:"subtitle"`
-	SubtitleAr    string      `json:"subtitle_ar"`
-	Description   string      `json:"description"`
-	DescriptionAr string      `json:"description_ar"`
-	Photo         string      `json:"photo"`
-	PriceBaisa    int64       `json:"price_baisa"`
-	PlannedDates  []time.Time `json:"planned_dates"`
-	Photos        []string    `json:"photos"`
-	Longitude     float64     `json:"longitude"`
-	Latitude      float64     `json:"latitude"`
-	LastUpdated   time.Time   `json:"last_updated"`
-	IsDeleted     bool        `json:"is_deleted"`
+	ID              string      `json:"id"`
+	Kind            string      `json:"kind"`
+	Title           string      `json:"title"`
+	TitleAr         string      `json:"title_ar"`
+	Subtitle        string      `json:"subtitle"`
+	SubtitleAr      string      `json:"subtitle_ar"`
+	Description     string      `json:"description"`
+	DescriptionAr   string      `json:"description_ar"`
+	Photo           string      `json:"photo"`
+	BasePriceBaisa  int64       `json:"base_price_baisa"`
+	PlannedDates    []time.Time `json:"planned_dates"`
+	Photos          []string    `json:"photos"`
+	Longitude       float64     `json:"longitude"`
+	Latitude        float64     `json:"latitude"`
+	LastUpdated     time.Time   `json:"last_updated"`
+	IsDeleted       bool        `json:"is_deleted"`
+	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
 }
 
 type Purchase struct {
 	ID                uuid.UUID `json:"id"`
 	ProductID         string    `json:"product_id"`
-	UserID            uuid.UUID `json:"user_id"`
+	UserID            string    `json:"user_id"`
 	NumOfParticipants int32     `json:"num_of_participants"`
 	Paid              bool      `json:"paid"`
 	CostBaisa         int64     `json:"cost_baisa"`
 	ChosenDate        time.Time `json:"chosen_date"`
 	Complete          bool      `json:"complete"`
 	CreatedAt         time.Time `json:"created_at"`
+	ExtraPriceChosen  bool      `json:"extra_price_chosen"`
 }
 
 type Review struct {
 	ProductID   string    `json:"product_id"`
-	UserID      uuid.UUID `json:"user_id"`
+	UserID      string    `json:"user_id"`
 	Rating      float64   `json:"rating"`
 	Title       string    `json:"title"`
 	Review      string    `json:"review"`
@@ -83,15 +106,14 @@ type Review struct {
 }
 
 type User struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	Firstname string    `json:"firstname"`
-	Lastname  string    `json:"lastname"`
-	Phone     string    `json:"phone"`
-	Roles     []string  `json:"roles"`
+	ID    string   `json:"id"`
+	Email string   `json:"email"`
+	Name  string   `json:"name"`
+	Phone string   `json:"phone"`
+	Role  UserRole `json:"role"`
 }
 
 type UserCustomerID struct {
-	UserID     uuid.UUID `json:"user_id"`
-	CustomerID string    `json:"customer_id"`
+	UserID     string `json:"user_id"`
+	CustomerID string `json:"customer_id"`
 }

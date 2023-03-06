@@ -37,7 +37,6 @@ const BlogForm = ({ blog, id }: { blog: Blog; id?: string }) => {
 
   const handleSubmit = async (values: Blog) => {
     try {
-      console.log(values.photo)
       const response = await axiosServer.post('user/admin/blogs', values)
       if (response.status === 200) {
         setAlert?.({ type: 'success', message: t('successAdd') })

@@ -1,27 +1,27 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import { emptyProduct } from '../../types/requests'
+import { emptyProduct, UserRole } from '../../types/requests'
 import 'react-datepicker/dist/react-datepicker.css'
 import ProductForm from '../../components/ProductForm'
-import useUser from '../../hooks/useUser'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
+import { useGlobal } from '../../context/global'
 
 const Page = () => {
-  const { t } = useTranslation('experience')
-  const { user, isLoading } = useUser()
+  const { t } = useTranslation('experiences')
+  const { user, isLoading } = useGlobal()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && !user?.roles.includes('admin')) {
-      router.push('/blogs')
+    if (!isLoading && user?.role !== UserRole.admin) {
+      router.push('/experiences')
     }
   }, [user, isLoading, router])
 
   return (
     <Layout title={t('title')}>
-      {isLoading || !user ? (
+      {isLoading ? (
         <Spinner animation="border" />
       ) : (
         <ProductForm product={emptyProduct} />
