@@ -36,6 +36,7 @@ FROM alpine:3.14 as production
 RUN apk add --no-cache ca-certificates
 # Copy built binary from builder
 COPY --from=builder app .
+COPY firebase-key.json .
 # Expose port
 EXPOSE 8081
 # Exec built binary

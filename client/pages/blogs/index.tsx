@@ -27,13 +27,13 @@ export async function getServerSideProps() {
 const Blog = () => {
   const { t } = useTranslation('blog')
   const { data: blogs } = useSWR('blogs', fetcher<BlogPreface[]>)
-  const { role } = useGlobal()
+  const { user } = useGlobal()
 
   return <Layout title={t('title')}>
     <Section title={t('sharing')}>
-      {blogs?.map(b => <BlogCard key={b.id} blogPreface={b}/>)}
+      {blogs?.map(b => <BlogCard key={b.id} blogPreface={b} />)}
     </Section>
-      {role === UserRole.admin && <Link href='/blogs/create'>{t('newBlog')}</Link>}
+    {user?.role === UserRole.admin && <Link href='/blogs/create'>{t('newBlog')}</Link>}
   </Layout>
 }
 

@@ -10,6 +10,7 @@ export interface Role {
 }
 
 export interface User {
+  id: string
   email: string
   name: string
   role: UserRole
@@ -138,7 +139,8 @@ export const emptyProduct: ProductDetails = {
   description: '',
   descriptionAr: '',
   photo: '',
-  priceBaisa: 1000,
+  basePriceBaisa: 1000,
+  extraPriceBaisa: 1000,
   plannedDates: [],
   photos: [],
   lastUpdated: new Date(),
