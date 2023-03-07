@@ -95,6 +95,7 @@ func (s *Server) HandlerGetUser(c *fiber.Ctx) error {
 		if err != nil {
 			return fmt.Errorf("failed to insert user: %w", err)
 		}
+		go s.SendWelcomeEmail(user)
 	}
 
 	return c.JSON(user)

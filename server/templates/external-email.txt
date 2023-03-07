@@ -1,0 +1,10 @@
+Hey {{ .Name }}
+
+We received your following message:
+
+Subject: {{ .Subject }}
+
+Message: {{ .Message }}
+
+we will get back to you soon!
+Omanosaura Team

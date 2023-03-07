@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"net/smtp"
+	"omanosaura/database"
 	"text/template"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,34 +13,60 @@ import (
 )
 
 func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
+	e := email.NewEmail()
+
 	details := new(Contact)
 	if err := c.BodyParser(details); err != nil {
 		return fiber.ErrBadRequest
 	}
-	var externalBody bytes.Buffer
-	externalBody.Write([]byte(fmt.Sprintf("Subject: Hey Explorer\n%s\n\n", server.Email.Headers)))
-	var internalBody bytes.Buffer
-	internalBody.Write([]byte(fmt.Sprintf("Subject: %s\n%s\n\n", details.Subject, server.Email.Headers)))
 
-	external, err := template.ParseFiles("templates/external-email.html")
+	var htmlBody bytes.Buffer
+	html, err := template.ParseFiles("templates/external-email.html")
 	if err != nil {
 		return fmt.Errorf("failed to parse external email template: %w", err)
 	}
-	external.Execute(&externalBody, struct{ Name string }{Name: details.Name})
+	html.Execute(&htmlBody, details)
 
-	internal, err := template.ParseFiles("templates/internal-email.html")
+	var txtBody bytes.Buffer
+	txt, err := template.ParseFiles("templates/external-email.txt")
+	if err != nil {
+		return fmt.Errorf("failed to parse external email template: %w", err)
+	}
+	txt.Execute(&txtBody, details)
+
+	e.From = "Omanosaura No-Reply <no-reply@omanosaura.com>"
+	e.To = []string{details.Email}
+	e.Subject = "Hey Explorer"
+	e.Text = txtBody.Bytes()
+	e.HTML = htmlBody.Bytes()
+
+	err = e.Send(server.Email.SmtpURL, server.Email.Auth)
+	if err != nil {
+		fmt.Errorf("failed to send external email: %w", err)
+	}
+
+	var inthtmlBody bytes.Buffer
+	inthtml, err := template.ParseFiles("templates/internal-email.html")
 	if err != nil {
 		return fmt.Errorf("failed to parse internal email template: %w", err)
 	}
-	internal.Execute(&internalBody, details)
+	inthtml.Execute(&inthtmlBody, details)
 
-	err = smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{"admin@omanosaura.com"}, internalBody.Bytes())
+	var inttxtBody bytes.Buffer
+	inttxt, err := template.ParseFiles("templates/internal-email.txt")
 	if err != nil {
-		return fmt.Errorf("failed to send internal email: %w", err)
+		return fmt.Errorf("failed to parse external email template: %w", err)
 	}
-	err = smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
+	inttxt.Execute(&inttxtBody, details)
+
+	e.To = []string{"admin@omanosaura.com"}
+	e.Subject = "New Message: " + details.Subject
+	e.Text = inttxtBody.Bytes()
+	e.HTML = inthtmlBody.Bytes()
+
+	err = e.Send(server.Email.SmtpURL, server.Email.Auth)
 	if err != nil {
-		return fmt.Errorf("failed to send external email: %w", err)
+		fmt.Errorf("failed to send internal email: %w", err)
 	}
 
 	return nil
@@ -50,6 +76,9 @@ func (server *Server) NotifyOfPurchase(purchaseID uuid.UUID) error {
 	e := email.NewEmail()
 
 	details, err := server.Queries.GetNotifyPurchaseDetails(context.Background(), purchaseID)
+	if err != nil {
+		return fmt.Errorf("failed to get details to notify: %w", err)
+	}
 	var htmlBody bytes.Buffer
 	var textBody bytes.Buffer
 
@@ -68,6 +97,33 @@ func (server *Server) NotifyOfPurchase(purchaseID uuid.UUID) error {
 	e.From = "Omanosaura No-Reply <no-reply@omanosaura.com>"
 	e.To = []string{details.Email}
 	e.Subject = "Purchase Success " + purchaseID.String()
+	e.Text = textBody.Bytes()
+	e.HTML = htmlBody.Bytes()
+
+	return e.Send(server.Email.SmtpURL, server.Email.Auth)
+}
+
+func (server *Server) SendWelcomeEmail(user database.User) error {
+	e := email.NewEmail()
+
+	var htmlBody bytes.Buffer
+	var textBody bytes.Buffer
+
+	html, err := template.ParseFiles("templates/welcome.html")
+	if err != nil {
+		return fmt.Errorf("failed to parse html welcome email: %w", err)
+	}
+	html.Execute(&htmlBody, user)
+
+	text, err := template.ParseFiles("templates/welcome.txt")
+	if err != nil {
+		return fmt.Errorf("failed to parse txt welcome email: %w", err)
+	}
+	text.Execute(&textBody, user)
+
+	e.From = "Omanosaura No-Reply <no-reply@omanosaura.com>"
+	e.To = []string{user.Email}
+	e.Subject = "Welcome To Omanosaura"
 	e.Text = textBody.Bytes()
 	e.HTML = htmlBody.Bytes()
 

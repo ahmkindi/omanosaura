@@ -1,0 +1,10 @@
+We got a new message!
+
+Name:
+{{ .Name }}
+
+Email:
+{{ .Email }}
+
+Message:
+{{ .Message }}

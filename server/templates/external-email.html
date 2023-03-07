@@ -10,8 +10,12 @@
     </style>
   </head>
   <body>
-    <div>we got your message <span>{{.Name}}</span></div>
+    <h2>Hey {{ .Name }}</h2>
+    <div>we received your message:</div>
     <br />
+    <div><span>Subject: </span><p>{{ .Subject }}</p></div>
+    <div><span>Message: </span><p>{{ .Message }}</p></div>
+    <><>
     <div>we will get back to you soon!</div>
     <h3>Omanosaura Team</h3>
   </body>
