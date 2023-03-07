@@ -11,7 +11,12 @@
   width: 350px;
   height: 500px;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.315);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.315);
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 40px rgba(0, 0, 100, 0.6);
+    transition: all 0.25s;
+  }
   .profile {
     background-color: var(--tertiary);
     padding: 8px;
@@ -26,9 +31,6 @@
         color: var(--primary);
         font-size: 1.3rem;
         cursor: pointer;
-      }
-      h2:hover {
-        text-decoration: underline;
       }
     }
     p {

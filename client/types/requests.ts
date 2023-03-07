@@ -68,8 +68,7 @@ export interface Review {
   title: string
   review: string
   lastUpdated: Date
-  firstname: string
-  lastname: string
+  name: string
 }
 
 export interface UserReview {

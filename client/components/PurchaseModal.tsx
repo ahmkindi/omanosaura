@@ -148,19 +148,23 @@ const PurchaseModal = ({
                   />
                 </div>
               </Form.Group>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4 flex gap-2"
+                onClick={() =>
+                  setValues((prev) => ({ ...prev, payExtra: !prev.payExtra }))
+                }
+              >
                 <Form.Check
-                  label={t('payExtra', {
+                  checked={values.payExtra}
+                  style={{ direction: 'rtl' }}
+                />
+                <Form.Label>
+                  {t('payExtra', {
                     price: new Intl.NumberFormat(lang, {
                       style: 'currency',
                       currency: 'OMR',
-                    }).format(product.extraPriceBaisa / 100),
+                    }).format(product.extraPriceBaisa / 1000),
                   })}
-                  onChange={(e) =>
-                    setValues((prev) => ({ ...prev, payExtra: !prev.payExtra }))
-                  }
-                  checked={values.payExtra}
-                />
+                </Form.Label>
               </Form.Group>
               <div className="mb-4" style={{ fontSize: '1.2rem' }}>
                 {t('totalPrice')}

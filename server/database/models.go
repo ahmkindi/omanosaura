@@ -32,22 +32,23 @@ func (e *UserRole) Scan(src interface{}) error {
 }
 
 type AvailableProduct struct {
-	ID            string      `json:"id"`
-	Kind          string      `json:"kind"`
-	Title         string      `json:"title"`
-	TitleAr       string      `json:"title_ar"`
-	Subtitle      string      `json:"subtitle"`
-	SubtitleAr    string      `json:"subtitle_ar"`
-	Description   string      `json:"description"`
-	DescriptionAr string      `json:"description_ar"`
-	Photo         string      `json:"photo"`
-	PriceBaisa    int64       `json:"price_baisa"`
-	PlannedDates  []time.Time `json:"planned_dates"`
-	Photos        []string    `json:"photos"`
-	Longitude     float64     `json:"longitude"`
-	Latitude      float64     `json:"latitude"`
-	LastUpdated   time.Time   `json:"last_updated"`
-	IsDeleted     bool        `json:"is_deleted"`
+	ID              string      `json:"id"`
+	Kind            string      `json:"kind"`
+	Title           string      `json:"title"`
+	TitleAr         string      `json:"title_ar"`
+	Subtitle        string      `json:"subtitle"`
+	SubtitleAr      string      `json:"subtitle_ar"`
+	Description     string      `json:"description"`
+	DescriptionAr   string      `json:"description_ar"`
+	Photo           string      `json:"photo"`
+	BasePriceBaisa  int64       `json:"base_price_baisa"`
+	PlannedDates    []time.Time `json:"planned_dates"`
+	Photos          []string    `json:"photos"`
+	Longitude       float64     `json:"longitude"`
+	Latitude        float64     `json:"latitude"`
+	LastUpdated     time.Time   `json:"last_updated"`
+	IsDeleted       bool        `json:"is_deleted"`
+	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
 }
 
 type Blog struct {

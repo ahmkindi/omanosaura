@@ -13,44 +13,44 @@ const ProductCard = ({ product }: { product: Product }) => {
   const isAr = lang === 'ar'
 
   return (
-    <div
-      className={styles.container}
-      style={{ background: `url(${product.photo})` }}
-    >
-      <div className={styles.profile}>
-        <div className={styles.header}>
-          <Link passHref href={`/experiences/${product.id}`}>
+    <Link passHref href={`/experiences/${product.id}`}>
+      <div
+        className={styles.container}
+        style={{ background: `url(${product.photo})` }}
+      >
+        <div className={styles.profile}>
+          <div className={styles.header}>
             <h2>{isAr ? product.titleAr : product.title}</h2>
-          </Link>
-          <RatingWithCount
-            rating={product.rating}
-            ratingCount={product.ratingCount}
-          />
-        </div>
-        <p className={isAr ? styles.ar : undefined}>
-          {isAr ? product.subtitleAr : product.subtitle}
-        </p>
-        <div className={styles.info}>
-          <div className="flex items-center">
-            <FaComment
-              style={isAr ? { marginLeft: '10px' } : { marginRight: '10px' }}
+            <RatingWithCount
+              rating={product.rating}
+              ratingCount={product.ratingCount}
             />
-            {product.ratingCount}
           </div>
-          <div>
-            {new Intl.NumberFormat(lang, {
-              style: 'currency',
-              currency: 'OMR',
-            }).format(product.basePriceBaisa / 1000)}
+          <p className={isAr ? styles.ar : undefined}>
+            {isAr ? product.subtitleAr : product.subtitle}
+          </p>
+          <div className={styles.info}>
+            <div className="flex items-center">
+              <FaComment
+                style={isAr ? { marginLeft: '10px' } : { marginRight: '10px' }}
+              />
+              {product.ratingCount}
+            </div>
+            <div>
+              {new Intl.NumberFormat(lang, {
+                style: 'currency',
+                currency: 'OMR',
+              }).format(product.basePriceBaisa / 1000 ?? 0)}
+            </div>
+            {product.kind === ProductKind.trip ? (
+              <BiTrip size={65} />
+            ) : (
+              <GiMountainClimbing size={65} />
+            )}
           </div>
-          {product.kind === ProductKind.trip ? (
-            <BiTrip size={70} />
-          ) : (
-            <GiMountainClimbing size={70} />
-          )}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

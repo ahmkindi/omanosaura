@@ -38,25 +38,27 @@ const SearchBar = (): JSX.Element => {
         value={search}
       />
       {view === 'list' ? (
-        <button
-          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
+        <Button
+          variant="secondary"
+          style={{ display: 'flex', alignItems: 'center' }}
           onClick={() => {
             router.query.view = 'map'
             router.push(router)
           }}
         >
           <div className="px-2">{t('mapView')}</div> <FiMap />
-        </button>
+        </Button>
       ) : (
-        <button
-          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
+        <Button
+          variant="secondary"
+          style={{ display: 'flex', alignItems: 'center' }}
           onClick={() => {
             router.query.view = 'list'
             router.push(router)
           }}
         >
           <div className="px-2">{t('listView')}</div> <FiList />
-        </button>
+        </Button>
       )}
       {user?.role === UserRole.admin && (
         <Link href="/experiences/create" passHref>

@@ -1,5 +1,6 @@
 .rating {
-  & > span {
+  span {
     display: flex;
+    flex-direction: row;
   }
 }

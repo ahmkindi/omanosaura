@@ -14,12 +14,11 @@ export const getTotalPrice = (
     total *= 0.8
   }
   if (payExtra) {
-    console.log('total is', total)
     total += product.extraPriceBaisa * quantity
   }
 
   return new Intl.NumberFormat(lang, {
     style: 'currency',
     currency: 'OMR',
-  }).format(total / 100)
+  }).format(total / 1000)
 }
