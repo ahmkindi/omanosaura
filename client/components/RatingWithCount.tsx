@@ -11,7 +11,7 @@ export const RatingWithCount = ({
   const { t } = useTranslation('common')
 
   return (
-    <div className="flex items-center justify-center align-center">
+    <div className="flex items-center justify-end align-center w-32">
       <svg
         aria-hidden="true"
         className="w-5 h-5 text-yellow-400 mr-0"

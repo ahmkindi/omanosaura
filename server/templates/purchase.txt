@@ -1,0 +1,14 @@
+Thanks For Joining Our Experience,
+
+You chose to try {{ .Title }},
+you can check it out here: https://omanosaura.com/experiences/{{ .ProductID }} 
+
+{{if .Paid}}
+    Thanks for paying the {{ .Cost }} omr online, we will be waiting for the
+    {{ .NumOfParticipants }} explorer/s on {{ .ChosenDate.Format "Jan 02, 2006" }}
+{{ else }}
+    we will be waiting for the {{ .NumOfParticipants }} explorer/s on {{ .ChosenDate.Format "Jan 02, 2006" }},
+    don't forget that you have preffered the cash option to pay {{ .Cost }} omr
+{{end}}
+
+- Omanosaura Team

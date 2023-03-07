@@ -241,19 +241,20 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 }
 
 const getNotifyPurchaseDetails = `-- name: GetNotifyPurchaseDetails :one
-SELECT email, name, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000) as cost
+SELECT email, name, product_id, paid, chosen_date, title, (cost_baisa::FLOAT / 1000)::FLOAT as cost, num_of_participants
 FROM purchases INNER JOIN users ON purchases.user_id = users.id INNER JOIN products ON purchases.product_id = products.id
 WHERE purchases.id = $1
 `
 
 type GetNotifyPurchaseDetailsRow struct {
-	Email      string    `json:"email"`
-	Name       string    `json:"name"`
-	ProductID  string    `json:"product_id"`
-	Paid       bool      `json:"paid"`
-	ChosenDate time.Time `json:"chosen_date"`
-	Title      string    `json:"title"`
-	Cost       int32     `json:"cost"`
+	Email             string    `json:"email"`
+	Name              string    `json:"name"`
+	ProductID         string    `json:"product_id"`
+	Paid              bool      `json:"paid"`
+	ChosenDate        time.Time `json:"chosen_date"`
+	Title             string    `json:"title"`
+	Cost              float64   `json:"cost"`
+	NumOfParticipants int32     `json:"num_of_participants"`
 }
 
 func (q *Queries) GetNotifyPurchaseDetails(ctx context.Context, id uuid.UUID) (GetNotifyPurchaseDetailsRow, error) {
@@ -267,6 +268,7 @@ func (q *Queries) GetNotifyPurchaseDetails(ctx context.Context, id uuid.UUID) (G
 		&i.ChosenDate,
 		&i.Title,
 		&i.Cost,
+		&i.NumOfParticipants,
 	)
 	return i, err
 }

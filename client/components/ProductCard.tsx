@@ -21,10 +21,12 @@ const ProductCard = ({ product }: { product: Product }) => {
         <div className={styles.profile}>
           <div className={styles.header}>
             <h2>{isAr ? product.titleAr : product.title}</h2>
-            <RatingWithCount
-              rating={product.rating}
-              ratingCount={product.ratingCount}
-            />
+            <div className='items-start'>
+              <RatingWithCount
+                rating={product.rating}
+                ratingCount={product.ratingCount}
+              />
+            </div>
           </div>
           <p className={isAr ? styles.ar : undefined}>
             {isAr ? product.subtitleAr : product.subtitle}

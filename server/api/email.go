@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/jordan-wright/email"
 )
 
 func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
@@ -46,15 +47,29 @@ func (server *Server) HandlerSendEmail(c *fiber.Ctx) error {
 }
 
 func (server *Server) NotifyOfPurchase(purchaseID uuid.UUID) error {
+	e := email.NewEmail()
+
 	details, err := server.Queries.GetNotifyPurchaseDetails(context.Background(), purchaseID)
-	var externalBody bytes.Buffer
-	externalBody.Write([]byte(fmt.Sprintf("Subject: Purchase Success\n%s\n\n", server.Email.Headers)))
+	var htmlBody bytes.Buffer
+	var textBody bytes.Buffer
 
-	external, err := template.ParseFiles("templates/purchase.html")
+	html, err := template.ParseFiles("templates/purchase.html")
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return fmt.Errorf("failed to send email: %w", err)
 	}
-	external.Execute(&externalBody, details)
+	html.Execute(&htmlBody, details)
 
-	return smtp.SendMail(server.Email.SmtpURL, server.Email.Auth, server.Email.Username, []string{details.Email}, externalBody.Bytes())
+	text, err := template.ParseFiles("templates/purchase.txt")
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+	text.Execute(&textBody, details)
+
+	e.From = "Omanosaura No-Reply <no-reply@omanosaura.com>"
+	e.To = []string{details.Email}
+	e.Subject = "Purchase Success " + purchaseID.String()
+	e.Text = textBody.Bytes()
+	e.HTML = htmlBody.Bytes()
+
+	return e.Send(server.Email.SmtpURL, server.Email.Auth)
 }
