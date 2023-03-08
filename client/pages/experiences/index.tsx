@@ -64,7 +64,7 @@ const Experiences = () => {
     <>
       <Layout title={t('title')}>
         <SearchBar />
-        {view === "list" ? <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+        {view === "list" ? <div className='flex gap-8 flex-wrap justify-center'>
           {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
         </div> :
           <ComposableMap
