@@ -4,7 +4,7 @@ VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (id) DO NOTHING;
 
 -- name: UpdateUser :exec
-UPDATE users SET name = $1, phone = $2;
+UPDATE users SET name = $1, phone = $2 where id = $3;
 
 -- name: UpdateUserRole :exec
 UPDATE users SET role = $1 WHERE id = $2;

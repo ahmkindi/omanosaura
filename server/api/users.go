@@ -64,6 +64,7 @@ func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
 	}
+	updatedUser.ID = userId
 
 	return server.Queries.UpdateUser(c.Context(), *updatedUser)
 }

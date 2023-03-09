@@ -111,16 +111,17 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
 }
 
 const updateUser = `-- name: UpdateUser :exec
-UPDATE users SET name = $1, phone = $2
+UPDATE users SET name = $1, phone = $2 where id = $3
 `
 
 type UpdateUserParams struct {
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
+	ID    string `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.Exec(ctx, updateUser, arg.Name, arg.Phone)
+	_, err := q.db.Exec(ctx, updateUser, arg.Name, arg.Phone, arg.ID)
 	return err
 }
 
