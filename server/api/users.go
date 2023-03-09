@@ -109,3 +109,15 @@ func (s *Server) HandlerGetAllUsers(c *fiber.Ctx) error {
 
 	return c.JSON(users)
 }
+
+func (s *Server) HandlerUpdateUserRole(c *fiber.Ctx) error {
+	role := c.Query("role", "none")
+	userID := c.Params("id")
+
+	err := s.Queries.UpdateUserRole(c.Context(), database.UpdateUserRoleParams{ID: userID, Role: database.UserRole(role)})
+	if err != nil {
+		return fmt.Errorf("failed to get all update user role: %w", err)
+	}
+
+	return nil
+}

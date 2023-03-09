@@ -148,15 +148,13 @@ const PurchaseModal = ({
                   />
                 </div>
               </Form.Group>
-              <Form.Group className="mb-4 flex gap-2"
+              <Form.Group
+                className="mb-4 flex gap-2"
                 onClick={() =>
                   setValues((prev) => ({ ...prev, payExtra: !prev.payExtra }))
                 }
               >
-                <Form.Check
-                  checked={values.payExtra}
-                  style={{ direction: 'rtl' }}
-                />
+                <Form.Check checked={values.payExtra} />
                 <Form.Label>
                   {t('payExtra', {
                     price: new Intl.NumberFormat(lang, {
