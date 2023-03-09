@@ -1,22 +1,19 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  ZoomableGroup,
-} from 'react-simple-maps'
-import useWindowDimensions from '../../hooks/useWindowDimentions'
 import { Product } from '../../types/requests'
 import { useMemo, useState } from 'react'
 import ProductCard from '../../components/ProductCard'
+import styles from '../../styles/experiences.module.scss'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import { useRouter } from 'next/router'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
 import useSWR, { SWRConfig } from 'swr'
 import { fetcher } from '../../utils/axiosServer'
 import SearchBar from '../../components/SearchBar'
+import { FullscreenControl, GeolocateControl, Marker, Popup } from 'react-map-gl'
+import Pin from '../../components/Pin'
+import Map from 'react-map-gl'
 import Head from 'next/head'
 
 export async function getServerSideProps() {
@@ -33,12 +30,9 @@ export async function getServerSideProps() {
   }
 }
 
-const geoUrl =
-  'https://res.cloudinary.com/dl093kbg1/raw/upload/v1665340389/omn_admbnd_1_ly0tcy.json'
-
 const Experiences = () => {
   const { t } = useTranslation('experiences')
-  const { width, height } = useWindowDimensions()
+  // const { width, height } = useWindowDimensions()
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
   const { search, view } = router.query
@@ -60,6 +54,31 @@ const Experiences = () => {
     [search, products]
   )
 
+  const pins = useMemo(
+    () =>
+      filteredProducts?.map((product) => (
+        <Marker
+          key={`marker-${product.id}`}
+          longitude={product.longitude}
+          latitude={product.latitude}
+          onClick={e => {
+            e.originalEvent.stopPropagation();
+            setOpenProduct(product);
+          }}
+        >
+          <Pin />
+          <Head>
+            <link
+              rel="preload"
+              href={product.photo}
+              as="image"
+            />
+          </Head>
+        </Marker>
+      )),
+    [filteredProducts]
+  )
+
   return (
     <>
       <Layout title={t('title')}>
@@ -67,85 +86,34 @@ const Experiences = () => {
         {view === "list" ? <div className='flex gap-8 flex-wrap justify-center'>
           {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
         </div> :
-          <ComposableMap
-            projectionConfig={{
-              scale: 9000,
-              rotate: [-15, 5, -15],
-            }}
-            height={
-              height && width
-                ? width < 900
-                  ? 500
-                  : Math.max(height - 330, 500)
-                : undefined
-            }
-            width={width ? Math.min(width, 900) : undefined}
-            style={{
-              margin: '4px',
-              marginBottom: '3rem',
-              background: '#e1eced',
-              boxShadow:
-                'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-              cursor: 'grab',
-            }}
-          >
-            <ZoomableGroup
-              center={[(width && width > 900) ? 56 : 59, 21.6]}
-              zoom={0.4}
-              maxZoom={20}
-              minZoom={0.3}
+          <div className={styles.sketchy}>
+            <Map
+              mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_TOKEN}
+              initialViewState={{
+                longitude: 57,
+                latitude: 21,
+                zoom: 3.5,
+              }}
+              style={{ width: '100%', height: '40rem' }}
+              mapStyle="mapbox://styles/ahmkindi/clf16vx34001c01q6cf6he5s0"
+              attributionControl={false}
             >
-              <Geographies geography={geoUrl}>
-                {({ geographies }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill="#043c6c"
-                      stroke="#e1eced"
-                      strokeWidth={0.05}
-                      onTouchEndCapture={(e) => { e.preventDefault(); setOpenProduct(undefined) }}
-                      onMouseDownCapture={e => { e.preventDefault(); setOpenProduct(undefined) }}
-                    />
-                  ))
-                }
-              </Geographies>
-              {filteredProducts?.map((p) => (
-                <Marker
-                  key={p.id}
-                  coordinates={[p.longitude, p.latitude]}
-                  onClick={(e: React.MouseEvent<SVGPathElement>) => {
-                    e.stopPropagation()
-                    setOpenProduct(p)
-                  }}
-                  viewBox="0 0 50 50"
-                  cursor={'pointer'}
+              <GeolocateControl />
+              <FullscreenControl />
+              {pins}
+              {openProduct && (
+                <Popup
+                  className={styles.popup}
+                  maxWidth='340px'
+                  longitude={Number(openProduct.longitude)}
+                  latitude={Number(openProduct.latitude)}
+                  onClose={() => setOpenProduct(undefined)}
                 >
-                  <g
-                    fill="none"
-                    stroke="var(--orange)"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    transform="translate(-12, -24)"
-                  >
-                    <circle cx="12" cy="10" r="3" fill="var(--orange)" />
-                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
-                  </g>
-                  <foreignObject width={350} height={500} y={5} x={-175} style={openProduct?.id !== p.id ? { display: 'none' } : undefined}>
-                    <ProductCard product={p} />
-                  </foreignObject>
-                  <Head>
-                    <link
-                      rel="preload"
-                      href={p.photo}
-                      as="image"
-                    />
-                  </Head>
-                </Marker>
-              ))}
-            </ZoomableGroup>
-          </ComposableMap>
+                  <ProductCard product={openProduct} />
+                </Popup>
+              )}
+            </Map>
+          </div>
         }
       </Layout>
     </>
