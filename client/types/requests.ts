@@ -1,8 +1,8 @@
 import { getAfterTomorrow } from '../utils/dates'
-import { User as FirebaseUser } from 'firebase/auth'
 
 export enum UserRole {
   admin = 'admin',
+  none = 'none',
 }
 
 export interface Role {
@@ -68,8 +68,7 @@ export interface Review {
   title: string
   review: string
   lastUpdated: Date
-  firstname: string
-  lastname: string
+  name: string
 }
 
 export interface UserReview {

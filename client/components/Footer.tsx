@@ -10,8 +10,8 @@ import Image from 'next/image'
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <Image src="/colored_small.png" alt="Logo" width={55} height={55} />
       <div className={styles.socials} style={{ gap: '1rem' }}>
+        <Image src="/colored_small.png" alt="Logo" width={45} height={45} />
         <a
           href="https://www.instagram.com/omanosaura/"
           target="_blank"

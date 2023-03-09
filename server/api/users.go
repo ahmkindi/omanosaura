@@ -64,6 +64,7 @@ func (server *Server) HandlerUpdateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
 	}
+	updatedUser.ID = userId
 
 	return server.Queries.UpdateUser(c.Context(), *updatedUser)
 }
@@ -95,6 +96,7 @@ func (s *Server) HandlerGetUser(c *fiber.Ctx) error {
 		if err != nil {
 			return fmt.Errorf("failed to insert user: %w", err)
 		}
+		go s.SendWelcomeEmail(user)
 	}
 
 	return c.JSON(user)
@@ -107,4 +109,16 @@ func (s *Server) HandlerGetAllUsers(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(users)
+}
+
+func (s *Server) HandlerUpdateUserRole(c *fiber.Ctx) error {
+	role := c.Query("role", "none")
+	userID := c.Params("id")
+
+	err := s.Queries.UpdateUserRole(c.Context(), database.UpdateUserRoleParams{ID: userID, Role: database.UserRole(role)})
+	if err != nil {
+		return fmt.Errorf("failed to get all update user role: %w", err)
+	}
+
+	return nil
 }

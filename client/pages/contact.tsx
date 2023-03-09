@@ -48,7 +48,7 @@ const Contact = () => {
   return (
     <Layout title={t('title')}>
       <Section title={t('pageTitle')}>
-        <article style={{ maxWidth: '50%', margin: 'auto' }}>
+        <article className="w-11/12 md:w-1/2 m-auto">
           <p>{t('desc')}</p>
           <div className={styles.socials}>
             <a

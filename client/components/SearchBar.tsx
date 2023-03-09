@@ -1,7 +1,6 @@
 import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
-import { BiTrip } from 'react-icons/bi'
-import { GiMountainClimbing } from 'react-icons/gi'
+import { TbLetterA, TbLetterT } from 'react-icons/tb'
 import {
   InputGroup,
   Form,
@@ -16,8 +15,6 @@ import Link from 'next/link'
 import { MdAddCircleOutline } from 'react-icons/md'
 import { useGlobal } from '../context/global'
 import { UserRole } from '../types/requests'
-
-const popoverStyle = { display: 'flex', gap: '1rem', marginBottom: '0.5rem' }
 
 const SearchBar = (): JSX.Element => {
   const { user } = useGlobal()
@@ -38,25 +35,27 @@ const SearchBar = (): JSX.Element => {
         value={search}
       />
       {view === 'list' ? (
-        <button
-          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
+        <Button
+          variant="secondary"
+          style={{ display: 'flex', alignItems: 'center' }}
           onClick={() => {
             router.query.view = 'map'
             router.push(router)
           }}
         >
           <div className="px-2">{t('mapView')}</div> <FiMap />
-        </button>
+        </Button>
       ) : (
-        <button
-          className="bg-secondary hover:border-2 hover:border-primary box-border py-2 px-4 rounded inline-flex items-center"
+        <Button
+          variant="secondary"
+          style={{ display: 'flex', alignItems: 'center' }}
           onClick={() => {
             router.query.view = 'list'
             router.push(router)
           }}
         >
           <div className="px-2">{t('listView')}</div> <FiList />
-        </button>
+        </Button>
       )}
       {user?.role === UserRole.admin && (
         <Link href="/experiences/create" passHref>
@@ -71,16 +70,22 @@ const SearchBar = (): JSX.Element => {
         overlay={
           <Popover dir={isAr ? 'rtl' : 'ltr'}>
             <Popover.Header as="h3">{t('twoProducts')}</Popover.Header>
-            <Popover.Body>
-              <div style={popoverStyle}>
-                <BiTrip size={50} />
-                <p>
+            <Popover.Body className="flex flex-col w-full">
+              <div className="flex gap-2">
+                <TbLetterT
+                  className="border-2 border-primary mb-0 box-border w-1/6"
+                  size={40}
+                />
+                <p className="grow-0 w-5/6">
                   <strong>{t('trip')}</strong>: {t('tripExplanation')}
                 </p>
               </div>
-              <div style={popoverStyle}>
-                <GiMountainClimbing size={50} />
-                <p>
+              <div className="flex gap-2">
+                <TbLetterA
+                  className="border-2 border-primary mb-0 box-border w-1/6"
+                  size={40}
+                />
+                <p className="grow-0 w-5/6">
                   <strong>{t('adventure')}</strong>: {t('adventureExplanation')}
                 </p>
               </div>

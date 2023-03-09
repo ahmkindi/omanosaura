@@ -4,14 +4,15 @@ import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
 import applyConverters from 'axios-case-converter'
 import { GetServerSideProps } from 'next'
 import useSWR, { SWRConfig } from 'swr'
-import { fetcher } from '../utils/axiosServer'
+import axiosServer, { fetcher } from '../utils/axiosServer'
 import DataTable from 'react-data-table-component'
 import { format } from 'date-fns'
-import { Button } from 'react-bootstrap'
-import { useMemo } from 'react'
+import { Button, Spinner } from 'react-bootstrap'
+import { useMemo, useState } from 'react'
 import { downloadCSV } from '../utils/exportCSV'
 import { useGlobal } from '../context/global'
-import { UserDetails } from '../types/requests'
+import { UserDetails, UserRole } from '../types/requests'
+import { Form } from 'react-bootstrap'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -32,8 +33,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Purchases = () => {
   const { t } = useTranslation('purchases')
-  const { user } = useGlobal()
-  const { data: users } = useSWR(user ? 'user/admin/users' : null, fetcher<UserDetails[]>)
+  const { user, setAlert } = useGlobal()
+  const { data: users, mutate } = useSWR(user ? 'user/admin/users' : null, fetcher<UserDetails[]>)
+  const [loading, setLoading] = useState<string>()
+
+  const changeRole = async (userId: string, oldRole: UserRole) => {
+    setLoading(userId)
+    let newRole = UserRole.none
+    if (newRole === oldRole) {
+      newRole = UserRole.admin
+    }
+    try {
+      const response = await axiosServer.post(`user/admin/users/${userId}/role?role=${newRole}`)
+      if (response.status === 200) {
+        setAlert?.({ type: 'success', message: t('successRole') })
+      } else {
+        setAlert?.({ type: 'warning', message: t('successRole') })
+      }
+    } catch (error) {
+      setAlert?.({ type: 'warning', message: t('failedRole') })
+    } finally {
+      await mutate()
+      setLoading(undefined)
+    }
+  }
 
   const columns = [
     {
@@ -50,6 +73,12 @@ const Purchases = () => {
       name: t('userName'),
       selector: (row: UserDetails) => row.name,
       sortable: true,
+    },
+    {
+      name: t('isAdmin'),
+      selector: (row: UserDetails) => row.role,
+      sortable: true,
+      cell: (row: UserDetails) => loading === row.id ? <Spinner animation="border" variant="light" /> : < Form.Check checked={row.role === UserRole.admin} onClick={() => changeRole(row.id, row.role)} />,
     },
     {
       name: t('lastTrip'),

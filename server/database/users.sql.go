@@ -14,6 +14,7 @@ const getAllUsers = `-- name: GetAllUsers :many
 select users.id, users.email, users.name, users.phone, users.role, COALESCE(avg_rating, -1) as avg_rating, COALESCE(last_trip, '01/01/0001') as last_trip, COALESCE(purchase_count, 0) as purchase_count
 from users left join (select user_id, AVG(rating)::float as avg_rating from reviews group by user_id) r on users.id = r.user_id
 left join (select user_id, MAX(chosen_date)::date as last_trip, COUNT(id) as purchase_count from purchases where complete = true group by user_id) p on users.id = p.user_id
+order by id
 `
 
 type GetAllUsersRow struct {
@@ -110,24 +111,30 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
 }
 
 const updateUser = `-- name: UpdateUser :exec
-UPDATE users SET name = $1, phone = $2
+UPDATE users SET name = $1, phone = $2 where id = $3
 `
 
 type UpdateUserParams struct {
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
+	ID    string `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.Exec(ctx, updateUser, arg.Name, arg.Phone)
+	_, err := q.db.Exec(ctx, updateUser, arg.Name, arg.Phone, arg.ID)
 	return err
 }
 
 const updateUserRole = `-- name: UpdateUserRole :exec
-UPDATE users SET role = $1
+UPDATE users SET role = $1 WHERE id = $2
 `
 
-func (q *Queries) UpdateUserRole(ctx context.Context, role UserRole) error {
-	_, err := q.db.Exec(ctx, updateUserRole, role)
+type UpdateUserRoleParams struct {
+	Role UserRole `json:"role"`
+	ID   string   `json:"id"`
+}
+
+func (q *Queries) UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) error {
+	_, err := q.db.Exec(ctx, updateUserRole, arg.Role, arg.ID)
 	return err
 }

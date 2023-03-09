@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"math"
 	"omanosaura/database"
 	"omanosaura/thawani"
 	"omanosaura/thawani/types/mode"
@@ -168,7 +169,7 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 	}
 
 	// every 4 people will we add the base price
-	cost := ((req.Quantity % 4) + 1) * product.BasePriceBaisa
+	cost := int64(math.Ceil(float64(req.Quantity)/4.0)) * product.BasePriceBaisa
 	if req.PayExtra {
 		cost += (req.Quantity * product.ExtraPriceBaisa)
 	}
@@ -187,14 +188,16 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("failed to insert purchase: %w", err)
 	}
+
 	if req.Cash {
 		go func(purchaseID uuid.UUID) {
-			err := server.NotifyOfPurchase(purchase.ID)
+			err := server.NotifyOfPurchase(purchaseID)
 			if err != nil {
-				fmt.Println("error notifying of purchase ", err.Error())
+				fmt.Println(err)
+			} else {
+				fmt.Println("successfully sent email for purchase id: ", purchaseID)
 			}
 		}(purchase.ID)
-		return nil
 	}
 
 	customerId, err := server.Queries.GetUserCustomerId(c.Context(), userID)
@@ -211,7 +214,6 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		customerId = customer.Data.Id
 	}
 
-	fmt.Printf("purchase created is: %+v", purchase)
 	newSessionReq := thawani.CreateSessionReq{
 		ClientReferenceId: purchase.ID.String(),
 		Mode:              mode.Payment,
@@ -251,8 +253,14 @@ func (server *Server) HandlerPurchaseSuccess(c *fiber.Ctx) error {
 		}
 	}
 
-	go server.NotifyOfPurchase(purchaseID)
+	go func(purchaseID uuid.UUID) {
+		err := server.NotifyOfPurchase(purchaseID)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("successfully sent email for purchase id: ", purchaseID)
+		}
+	}(purchaseID)
 
-	// TODO: Maybe if cancelled or unpaid go to a different page
 	return c.Redirect(fmt.Sprintf("%s/purchases", server.Config.BaseUrl))
 }

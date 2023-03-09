@@ -40,6 +40,7 @@ func main() {
 	admin := users.Group("/admin", server.AdminMiddleware)
 	admin.Delete("/products/:id", server.HandlerDeleteProduct)
 	admin.Get("/users", server.HandlerGetAllUsers)
+	admin.Post("/users/:id/role", server.HandlerUpdateUserRole)
 	admin.Post("/products", server.HandlerUpsertProduct)
 	admin.Post("/blogs", server.HandlerUpsertBlog)
 	admin.Delete("/blogs/:id", server.HandlerDeleteBlog)

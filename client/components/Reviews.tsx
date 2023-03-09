@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import ReactStars from "react-rating-stars-component";
 import { Button, Modal, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Rating } from "react-simple-star-rating";
 import useSWRInfinite from "swr/infinite";
 import {
   emptyUserReview,
@@ -26,8 +26,8 @@ const Reviews = ({ product }: { product: Product }) => {
     if (previousPageData && !previousPageData.length) {
       return null
     }
-    return `products/${product.id}/reviews?page=${pageIndex + 1}`;
-  };
+    return `products/${product.id}/reviews?page=${pageIndex + 1}`
+  }
 
   const ReviewSchema = Yup.object().shape({
     title: Yup.string().min(1, t('common:tooShort')).max(30, t('common:tooLong')).optional(),
@@ -105,16 +105,20 @@ const Reviews = ({ product }: { product: Product }) => {
             >
               {({ errors, handleChange, values, setValues, touched }) => (
                 <FormikForm>
-                  <Rating
-                    initialValue={values.rating}
-                    allowFraction
-                    size={23}
-                    fillColor="var(--orange)"
-                    showTooltip
-                    rtl={isAr}
-                    onClick={(r) => setValues((prev) => ({ ...prev, rating: r }))}
-                    tooltipStyle={{ backgroundColor: 'white', color: 'var(--primary)', padding: '0px' }}
-                  />
+                  <div className="flex gap-1 items-center justify-center">
+                    <ReactStars
+                      count={5}
+                      size={23}
+                      isHalf={true}
+                      emptyIcon={<i className="far fa-star"></i>}
+                      halfIcon={<i className="fa fa-star-half-alt"></i>}
+                      fullIcon={<i className="fa fa-star"></i>}
+                      activeColor="var(--orange)"
+                      onChange={(e: number) => setValues(prev => ({ ...prev, rating: e }))}
+                      value={values.rating}
+                    />
+                    <p className="m-0 p-0">{`${values.rating}/5`}</p>
+                  </div>
                   <Form.Group className="mb-4 mt-4">
                     <Form.Label>{t('experiences:reviewTitle')}</Form.Label>
                     <Form.Control
@@ -167,15 +171,20 @@ const SingleReview = ({ review }: { review: Review }) => {
 
   return (
     <div className={styles.reviewCard} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-      <h4>{`${review.firstname} ${review.lastname}`}</h4>
-      <Rating
-        initialValue={review.rating}
-        allowFraction
-        size={23}
-        fillColor="var(--orange)"
-        rtl={lang === "ar"}
-        readonly
-      />
+      <h4>{review.name}</h4>
+      <div>
+        <ReactStars
+          count={5}
+          size={23}
+          isHalf={true}
+          emptyIcon={<i className="far fa-star"></i>}
+          halfIcon={<i className="fa fa-star-half-alt"></i>}
+          fullIcon={<i className="fa fa-star"></i>}
+          activeColor="var(--orange)"
+          edit={false}
+          value={review.rating}
+        />
+      </div>
       <h3>{review.title}</h3>
       <p>{review.review}</p>
       <h6>{`${lastUpdated.getDate()}/${lastUpdated.getMonth()}/${lastUpdated.getFullYear()}`}</h6>
