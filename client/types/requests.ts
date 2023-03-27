@@ -31,13 +31,14 @@ export const EmptyEmailForm: EmailForm = {
   message: '',
 }
 
-export enum ProductKind {
-  trip = 'trip',
-  adventure = 'adventure',
+export interface ProductKindLabel {
+  id: string
+  label: string
+  label_ar: string
 }
 
 export interface ProductDetails {
-  kind: ProductKind
+  kind: string
   title: string
   titleAr: string
   subtitle: string
@@ -130,7 +131,7 @@ export interface NullableFloat {
 }
 
 export const emptyProduct: ProductDetails = {
-  kind: ProductKind.adventure,
+  kind: '',
   title: '',
   titleAr: '',
   subtitle: '',

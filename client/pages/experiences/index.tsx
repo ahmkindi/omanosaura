@@ -32,7 +32,6 @@ export async function getServerSideProps() {
 
 const Experiences = () => {
   const { t } = useTranslation('experiences')
-  // const { width, height } = useWindowDimensions()
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
   const { search, view } = router.query

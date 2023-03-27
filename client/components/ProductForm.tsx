@@ -1,8 +1,8 @@
 import useTranslation from 'next-translate/useTranslation'
 import { Formik, Form as FormikForm } from 'formik'
 import * as Yup from 'yup'
-import { Button, FloatingLabel, Form, InputGroup } from 'react-bootstrap'
-import { ProductDetails, ProductKind } from '../types/requests'
+import { Button, FloatingLabel, Form, InputGroup, Dropdown } from 'react-bootstrap'
+import { ProductDetails, ProductKindLabel } from '../types/requests'
 import { useGlobal } from '../context/global'
 import axiosServer from '../utils/axiosServer'
 import { useRouter } from 'next/router'
@@ -15,9 +15,11 @@ import MyQuill from './MyQuill'
 
 const ProductForm = ({
   product,
+  kinds,
   id,
 }: {
   product: ProductDetails
+  kinds: ProductKindLabel[]
   id?: string
 }) => {
   const { t, lang } = useTranslation('experiences')
@@ -47,6 +49,7 @@ const ProductForm = ({
     extraPriceBaisa: Yup.number().integer('common:onlyInt').required(),
     longitude: Yup.number().required(),
     latitude: Yup.number().required(),
+    kind: Yup.string().required()
   })
 
   const handleSubmit = async (values: ProductDetails) => {
@@ -352,25 +355,19 @@ const ProductForm = ({
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="mb-4">
-            <Form.Check
-              type="radio"
-              label={t('trip')}
-              checked={values.kind === ProductKind.trip}
-              onClick={() =>
-                setValues((prev) => ({ ...prev, kind: ProductKind.trip }))
-              }
-            />
-            <Form.Check
-              type="radio"
-              label={t('adventure')}
-              checked={values.kind === ProductKind.adventure}
-              onClick={() =>
-                setValues((prev) => ({
-                  ...prev,
-                  kind: ProductKind.adventure,
-                }))
-              }
-            />
+            <Dropdown>
+              <Dropdown.Toggle id="dropdown-basic">
+                {t('kind')}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {kinds.map(k => <Dropdown.Item
+                  onClick={() => setValues(prev => ({ ...prev, kind: k.id }))}
+                  key={k.id}
+                  active={values.kind === k.id}>
+                  {lang === 'ar' ? k.label_ar : k.label}
+                </Dropdown.Item>)}
+              </Dropdown.Menu>
+            </Dropdown>
           </Form.Group>
           <div style={{ display: 'flex', gap: '2rem' }} className="mb-4 mt-4">
             <Button variant="outline-primary" type="submit">

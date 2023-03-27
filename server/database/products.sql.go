@@ -45,7 +45,7 @@ func (q *Queries) DeleteProductReview(ctx context.Context, arg DeleteProductRevi
 }
 
 const getAllProducts = `-- name: GetAllProducts :many
-SELECT available_products.id, available_products.kind, available_products.title, available_products.title_ar, available_products.subtitle, available_products.subtitle_ar, available_products.description, available_products.description_ar, available_products.photo, available_products.base_price_baisa, available_products.planned_dates, available_products.photos, available_products.longitude, available_products.latitude, available_products.last_updated, available_products.is_deleted, available_products.extra_price_baisa, r.rating, r.rating_count, review.review_count
+SELECT available_products.id, available_products.title, available_products.title_ar, available_products.subtitle, available_products.subtitle_ar, available_products.description, available_products.description_ar, available_products.photo, available_products.base_price_baisa, available_products.planned_dates, available_products.photos, available_products.longitude, available_products.latitude, available_products.last_updated, available_products.is_deleted, available_products.extra_price_baisa, available_products.kind, r.rating, r.rating_count, review.review_count
 FROM available_products
 LEFT JOIN (SELECT  COALESCE(SUM(rating)/COUNT(*), 0) as rating, product_id, COALESCE(COUNT(*), 0)  AS rating_count FROM reviews GROUP BY product_id) r ON available_products.id = r.product_id
 LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM reviews WHERE title != '' GROUP BY product_id) review ON available_products.id = review.product_id
@@ -53,7 +53,6 @@ LEFT JOIN (SELECT  COALESCE(COUNT(*), 0) as review_count, product_id FROM review
 
 type GetAllProductsRow struct {
 	ID              string      `json:"id"`
-	Kind            string      `json:"kind"`
 	Title           string      `json:"title"`
 	TitleAr         string      `json:"title_ar"`
 	Subtitle        string      `json:"subtitle"`
@@ -69,6 +68,7 @@ type GetAllProductsRow struct {
 	LastUpdated     time.Time   `json:"last_updated"`
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
+	Kind            ProductKind `json:"kind"`
 	Rating          interface{} `json:"rating"`
 	RatingCount     interface{} `json:"rating_count"`
 	ReviewCount     interface{} `json:"review_count"`
@@ -85,7 +85,6 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 		var i GetAllProductsRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.Kind,
 			&i.Title,
 			&i.TitleAr,
 			&i.Subtitle,
@@ -101,6 +100,7 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 			&i.LastUpdated,
 			&i.IsDeleted,
 			&i.ExtraPriceBaisa,
+			&i.Kind,
 			&i.Rating,
 			&i.RatingCount,
 			&i.ReviewCount,
@@ -116,7 +116,7 @@ func (q *Queries) GetAllProducts(ctx context.Context) ([]GetAllProductsRow, erro
 }
 
 const getAllPurchases = `-- name: GetAllPurchases :many
-SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, extra_price_chosen, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa, users.id, email, name, phone, role FROM purchases
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, extra_price_chosen, products.id, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa, kind, users.id, email, name, phone, role FROM purchases
 INNER JOIN products on purchases.product_id = products.id
 INNER JOIN users on users.id = purchases.user_id
 WHERE complete = true
@@ -135,7 +135,6 @@ type GetAllPurchasesRow struct {
 	CreatedAt         time.Time   `json:"created_at"`
 	ExtraPriceChosen  bool        `json:"extra_price_chosen"`
 	ID_2              string      `json:"id_2"`
-	Kind              string      `json:"kind"`
 	Title             string      `json:"title"`
 	TitleAr           string      `json:"title_ar"`
 	Subtitle          string      `json:"subtitle"`
@@ -151,6 +150,7 @@ type GetAllPurchasesRow struct {
 	LastUpdated       time.Time   `json:"last_updated"`
 	IsDeleted         bool        `json:"is_deleted"`
 	ExtraPriceBaisa   int64       `json:"extra_price_baisa"`
+	Kind              ProductKind `json:"kind"`
 	ID_3              string      `json:"id_3"`
 	Email             string      `json:"email"`
 	Name              string      `json:"name"`
@@ -179,7 +179,6 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 			&i.CreatedAt,
 			&i.ExtraPriceChosen,
 			&i.ID_2,
-			&i.Kind,
 			&i.Title,
 			&i.TitleAr,
 			&i.Subtitle,
@@ -195,6 +194,7 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 			&i.LastUpdated,
 			&i.IsDeleted,
 			&i.ExtraPriceBaisa,
+			&i.Kind,
 			&i.ID_3,
 			&i.Email,
 			&i.Name,
@@ -212,7 +212,7 @@ func (q *Queries) GetAllPurchases(ctx context.Context) ([]GetAllPurchasesRow, er
 }
 
 const getBasicProduct = `-- name: GetBasicProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa FROM products WHERE id = $1
+SELECT id, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa, kind FROM products WHERE id = $1
 `
 
 func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, error) {
@@ -220,7 +220,6 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 	var i Product
 	err := row.Scan(
 		&i.ID,
-		&i.Kind,
 		&i.Title,
 		&i.TitleAr,
 		&i.Subtitle,
@@ -236,6 +235,7 @@ func (q *Queries) GetBasicProduct(ctx context.Context, id string) (Product, erro
 		&i.LastUpdated,
 		&i.IsDeleted,
 		&i.ExtraPriceBaisa,
+		&i.Kind,
 	)
 	return i, err
 }
@@ -274,7 +274,7 @@ func (q *Queries) GetNotifyPurchaseDetails(ctx context.Context, id uuid.UUID) (G
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa,
+SELECT id, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa, kind,
 (SELECT COALESCE(COUNT(*), 0) FROM purchases p WHERE p.product_id=$1) purchases_count,
 (SELECT COALESCE(SUM(rating)/COUNT(*), 0) as rating FROM reviews r WHERE r.product_id=$1) rating,
 (SELECT COALESCE(COUNT(*), 0) as rating_count FROM reviews r WHERE r.product_id=$1) rating_count,
@@ -284,7 +284,6 @@ FROM products WHERE id = $1
 
 type GetProductRow struct {
 	ID              string      `json:"id"`
-	Kind            string      `json:"kind"`
 	Title           string      `json:"title"`
 	TitleAr         string      `json:"title_ar"`
 	Subtitle        string      `json:"subtitle"`
@@ -300,6 +299,7 @@ type GetProductRow struct {
 	LastUpdated     time.Time   `json:"last_updated"`
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
+	Kind            ProductKind `json:"kind"`
 	PurchasesCount  interface{} `json:"purchases_count"`
 	Rating          interface{} `json:"rating"`
 	RatingCount     interface{} `json:"rating_count"`
@@ -311,7 +311,6 @@ func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductR
 	var i GetProductRow
 	err := row.Scan(
 		&i.ID,
-		&i.Kind,
 		&i.Title,
 		&i.TitleAr,
 		&i.Subtitle,
@@ -327,12 +326,37 @@ func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductR
 		&i.LastUpdated,
 		&i.IsDeleted,
 		&i.ExtraPriceBaisa,
+		&i.Kind,
 		&i.PurchasesCount,
 		&i.Rating,
 		&i.RatingCount,
 		&i.ReviewCount,
 	)
 	return i, err
+}
+
+const getProductKinds = `-- name: GetProductKinds :many
+select id, label, label_ar from product_kind_label
+`
+
+func (q *Queries) GetProductKinds(ctx context.Context) ([]ProductKindLabel, error) {
+	rows, err := q.db.Query(ctx, getProductKinds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ProductKindLabel{}
+	for rows.Next() {
+		var i ProductKindLabel
+		if err := rows.Scan(&i.ID, &i.Label, &i.LabelAr); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getProductReviews = `-- name: GetProductReviews :many
@@ -410,7 +434,7 @@ func (q *Queries) GetUserProductReview(ctx context.Context, arg GetUserProductRe
 }
 
 const getUserPurchases = `-- name: GetUserPurchases :many
-SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, extra_price_chosen, products.id, kind, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 AND complete = true ORDER BY purchases.created_at
+SELECT purchases.id, product_id, user_id, num_of_participants, paid, cost_baisa, chosen_date, complete, created_at, extra_price_chosen, products.id, title, title_ar, subtitle, subtitle_ar, description, description_ar, photo, base_price_baisa, planned_dates, photos, longitude, latitude, last_updated, is_deleted, extra_price_baisa, kind FROM purchases INNER JOIN products on purchases.product_id = products.id WHERE user_id = $1 AND complete = true ORDER BY purchases.created_at
 `
 
 type GetUserPurchasesRow struct {
@@ -425,7 +449,6 @@ type GetUserPurchasesRow struct {
 	CreatedAt         time.Time   `json:"created_at"`
 	ExtraPriceChosen  bool        `json:"extra_price_chosen"`
 	ID_2              string      `json:"id_2"`
-	Kind              string      `json:"kind"`
 	Title             string      `json:"title"`
 	TitleAr           string      `json:"title_ar"`
 	Subtitle          string      `json:"subtitle"`
@@ -441,6 +464,7 @@ type GetUserPurchasesRow struct {
 	LastUpdated       time.Time   `json:"last_updated"`
 	IsDeleted         bool        `json:"is_deleted"`
 	ExtraPriceBaisa   int64       `json:"extra_price_baisa"`
+	Kind              ProductKind `json:"kind"`
 }
 
 func (q *Queries) GetUserPurchases(ctx context.Context, userID string) ([]GetUserPurchasesRow, error) {
@@ -464,7 +488,6 @@ func (q *Queries) GetUserPurchases(ctx context.Context, userID string) ([]GetUse
 			&i.CreatedAt,
 			&i.ExtraPriceChosen,
 			&i.ID_2,
-			&i.Kind,
 			&i.Title,
 			&i.TitleAr,
 			&i.Subtitle,
@@ -480,6 +503,7 @@ func (q *Queries) GetUserPurchases(ctx context.Context, userID string) ([]GetUse
 			&i.LastUpdated,
 			&i.IsDeleted,
 			&i.ExtraPriceBaisa,
+			&i.Kind,
 		); err != nil {
 			return nil, err
 		}
@@ -591,7 +615,7 @@ ON CONFLICT (id) DO UPDATE SET
 
 type UpsertProductParams struct {
 	ID              string      `json:"id"`
-	Kind            string      `json:"kind"`
+	Kind            ProductKind `json:"kind"`
 	Title           string      `json:"title"`
 	TitleAr         string      `json:"title_ar"`
 	Subtitle        string      `json:"subtitle"`

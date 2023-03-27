@@ -38,6 +38,7 @@
   "failedAdd": "Failed to add a new experience...",
   "successDelete": "Successfully deleted experience",
   "failedDelete": "Failed to delete experience",
+  "kind": "Experience Kind",
   "form": {
     "title": "Title",
     "arTitle": "Arabic Title",

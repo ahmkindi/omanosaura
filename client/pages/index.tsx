@@ -15,6 +15,8 @@ import { whatWeOffer, whyUsOptions } from '../types/whyUsOptions'
 const Home: NextPage = () => {
   const { t } = useTranslation('home')
 
+  // TODO: change what we offer
+
   return (
     <Layout>
       <Box>

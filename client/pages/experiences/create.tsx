@@ -1,14 +1,30 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import { emptyProduct, UserRole } from '../../types/requests'
+import { emptyProduct, ProductKindLabel, UserRole } from '../../types/requests'
 import 'react-datepicker/dist/react-datepicker.css'
 import ProductForm from '../../components/ProductForm'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { useGlobal } from '../../context/global'
+import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
+import applyConverters from 'axios-case-converter'
+import { GetServerSideProps } from 'next'
 
-const Page = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const axios = applyConverters(axiosStatic as any) as AxiosInstance
+
+  const { data: productKinds }: AxiosResponse<ProductKindLabel[]> =
+    await axios.get(`${process.env.SERVER_URL}products/kinds`)
+
+  return {
+    props: {
+      kinds: productKinds,
+    },
+  }
+}
+
+const Page = ({ kinds }: { kinds: ProductKindLabel[] }) => {
   const { t } = useTranslation('experiences')
   const { user, isLoading } = useGlobal()
   const router = useRouter()
@@ -24,7 +40,7 @@ const Page = () => {
       {isLoading ? (
         <Spinner animation="border" />
       ) : (
-        <ProductForm product={emptyProduct} />
+        <ProductForm product={emptyProduct} kinds={kinds} />
       )}
     </Layout>
   )
