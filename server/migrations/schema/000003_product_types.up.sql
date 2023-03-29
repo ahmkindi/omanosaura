@@ -8,7 +8,8 @@ BEGIN;
     label_ar text not null
   );
 
-  alter table products drop column kind cascade;
+  DROP VIEW available_products;
+  alter table products drop column kind;
   alter table products add column kind product_kind not null
     references product_kind_label(id) default 'exp';
 
@@ -17,7 +18,6 @@ BEGIN;
     ('team', 'Team Building', 'بناء فريق'),
     ('exp', 'Experience', 'تجربة');
 
-  DROP VIEW available_products;
   CREATE VIEW available_products AS
   SELECT * FROM products WHERE is_deleted = false;
 

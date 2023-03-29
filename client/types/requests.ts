@@ -34,11 +34,17 @@ export const EmptyEmailForm: EmailForm = {
 export interface ProductKindLabel {
   id: string
   label: string
-  label_ar: string
+  labelAr: string
+}
+
+export enum ProductKind {
+  school = 'school',
+  exp = 'exp',
+  team = 'team',
 }
 
 export interface ProductDetails {
-  kind: string
+  kind: ProductKind
   title: string
   titleAr: string
   subtitle: string

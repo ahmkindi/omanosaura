@@ -3,6 +3,7 @@ import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
 import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
 import Map from '../components/svg/Map'
 import Adventurer from '../components/svg/Adventurer'
+import { ProductKind } from './requests'
 
 export const whyUsOptions = [
   {
@@ -25,12 +26,26 @@ export const whyUsOptions = [
 export const whatWeOffer = [
   {
     icon: <Map />,
-    text: 'service1',
-    href: '/experiences',
+    text: 'service1.title',
+    desc: 'service1.desc',
+    href: `/experiences?kind=${ProductKind.exp}`,
+  },
+  {
+    icon: <Map />,
+    text: 'service2.title',
+    desc: 'service2.desc',
+    href: `/experiences?kind=${ProductKind.school}`,
+  },
+  {
+    icon: <Map />,
+    text: 'service3.title',
+    desc: 'service3.desc',
+    href: `/experiences?kind=${ProductKind.team}`,
   },
   {
     icon: <Adventurer />,
-    text: 'service2',
+    text: 'service4.title',
+    desc: 'service4.desc',
     href: '/contact',
   },
 ]

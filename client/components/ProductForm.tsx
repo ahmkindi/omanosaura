@@ -364,7 +364,7 @@ const ProductForm = ({
                   onClick={() => setValues(prev => ({ ...prev, kind: k.id }))}
                   key={k.id}
                   active={values.kind === k.id}>
-                  {lang === 'ar' ? k.label_ar : k.label}
+                  {lang === 'ar' ? k.labelAr : k.label}
                 </Dropdown.Item>)}
               </Dropdown.Menu>
             </Dropdown>

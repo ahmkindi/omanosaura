@@ -1,6 +1,6 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import { Product } from '../../types/requests'
+import { Product, ProductKindLabel } from '../../types/requests'
 import { useMemo, useState } from 'react'
 import ProductCard from '../../components/ProductCard'
 import styles from '../../styles/experiences.module.scss'
@@ -21,16 +21,20 @@ export async function getServerSideProps() {
   const { data: products }: AxiosResponse<Product[]> = await axios.get(
     `${process.env.SERVER_URL}products`
   )
+  const { data: kinds }: AxiosResponse<ProductKindLabel[]> = await axios.get(
+    `${process.env.SERVER_URL}products/kinds`
+  )
   return {
     props: {
       fallback: {
         'products': products,
       },
+      'kinds': kinds
     },
   }
 }
 
-const Experiences = () => {
+const Experiences = ({ kinds }: { kinds: ProductKindLabel[] }) => {
   const { t } = useTranslation('experiences')
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
@@ -81,10 +85,8 @@ const Experiences = () => {
   return (
     <>
       <Layout title={t('title')}>
-        <SearchBar />
-        {view === "list" ? <div className='flex gap-8 flex-wrap justify-center'>
-          {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
-        </div> :
+        <SearchBar kinds={kinds} />
+        {view === "map" ?
           <div className={styles.sketchy}>
             <Map
               mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_TOKEN}
@@ -113,16 +115,19 @@ const Experiences = () => {
               )}
             </Map>
           </div>
+          : <div className='flex gap-8 flex-wrap justify-center'>
+            {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
         }
       </Layout>
     </>
   )
 }
 
-const Page = ({ fallback }: { fallback: Map<string, Product[]> }) => {
+const Page = ({ fallback, kinds }: { fallback: Map<string, Product[]>, kinds: ProductKindLabel[] }) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <Experiences />
+      <Experiences kinds={kinds} />
     </SWRConfig>
   )
 }
