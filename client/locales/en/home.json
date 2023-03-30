@@ -3,19 +3,7 @@
   "introText": "Explore the beauty of Oman with us, from full day trips to adventures we will make sure your experience is a delight not to be forgotten.",
   "contactText": "Let's Explore!",
   "services": "What Do We Offer?",
-  "service1": {
-    "title": "School Trips",
-    "desc": "Unique experience designed for students, following all school requirements"
-  },
-  "service2": {
-    "title": "Team Building",
-    "desc": "A trip filled with team activities and competitions to boost your team spirit"
-  },
-  "service3": {
-    "title": "Adeventures & Trips",
-    "desc": "pre-build experiences for everyone, choose according to your preference"
-  },
-  "service4": {
+  "service": {
     "title": "Tailored Experience",
     "desc": "Contact us to create your own custom experience!"
   },

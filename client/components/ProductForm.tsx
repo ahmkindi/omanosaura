@@ -362,7 +362,7 @@ const ProductForm = ({
                   onClick={() => setValues(prev => ({ ...prev, kind: k }))}
                   key={k}
                   active={values.kind === k}>
-                  {t(`common:productkind.${k}`)}
+                  {t(`common:productkind.${k}.title`)}
                 </Dropdown.Item>)}
               </Dropdown.Menu>
             </Dropdown>

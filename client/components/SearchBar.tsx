@@ -35,7 +35,7 @@ const SearchBar = (): JSX.Element => {
               key={k}
               active={kind === k}
             >
-              {t(`common:productkind.${k}`)}
+              {t(`common:productkind.${k}.title`)}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>
@@ -75,26 +75,14 @@ const SearchBar = (): JSX.Element => {
         placement="bottom"
         overlay={
           <Popover dir={isAr ? 'rtl' : 'ltr'}>
-            <Popover.Header as="h3">{t('twoProducts')}</Popover.Header>
+            <Popover.Header as="h3">{t('threeProducts')}</Popover.Header>
             <Popover.Body className="flex flex-col w-full">
-              <div className="flex gap-2">
-                <TbLetterT
-                  className="border-2 border-primary mb-0 box-border w-1/6"
-                  size={40}
-                />
-                <p className="grow-0 w-5/6">
-                  <strong>{t('trip')}</strong>: {t('tripExplanation')}
+              {Object.values(ProductKind).map((k) => (
+                <p key={k}>
+                  <strong>{t(`common:productkind.${k}.title`)}</strong>:{' '}
+                  {t(`common:productkind.${k}.desc`)}
                 </p>
-              </div>
-              <div className="flex gap-2">
-                <TbLetterA
-                  className="border-2 border-primary mb-0 box-border w-1/6"
-                  size={40}
-                />
-                <p className="grow-0 w-5/6">
-                  <strong>{t('adventure')}</strong>: {t('adventureExplanation')}
-                </p>
-              </div>
+              ))}
             </Popover.Body>
           </Popover>
         }

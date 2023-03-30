@@ -27,28 +27,23 @@ export const whyUsOptions = [
 ]
 
 export const whatWeOffer: WhatWeOfferProps[] = [
-  {
-    icon: <Bus />,
-    title: 'service1.title',
-    desc: 'service1.desc',
-    href: `/experiences?kind=${ProductKind.school}`,
-  },
-  {
-    icon: <Team />,
-    title: 'service2.title',
-    desc: 'service2.desc',
-    href: `/experiences?kind=${ProductKind.exp}`,
-  },
-  {
-    icon: <Map />,
-    title: 'service3.title',
-    desc: 'service3.desc',
-    href: `/experiences?kind=${ProductKind.team}`,
-  },
+  ...Object.values(ProductKind).map((k) => ({
+    icon:
+      k === ProductKind.school ? (
+        <Bus />
+      ) : k === ProductKind.exp ? (
+        <Map />
+      ) : (
+        <Team />
+      ),
+    title: `common:productkind.${k}.title`,
+    desc: `common:productkind.${k}.desc`,
+    href: `/experiences?kind=${k}`,
+  })),
   {
     icon: <Adventurer />,
-    title: 'service4.title',
-    desc: 'service4.desc',
+    title: 'service.title',
+    desc: 'service.desc',
     href: '/contact',
   },
 ]

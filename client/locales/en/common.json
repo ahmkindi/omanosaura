@@ -27,8 +27,17 @@
   "checkEmail": "Click on the login link sent to your email",
   "pricePer4": "{{ price }} / 4 ppl",
   "productkind": {
-    "exp": "Adventures & Trips",
-    "team": "Team Building",
-    "school": "School Trips"
+    "exp": {
+      "title": "Adventures & Trips",
+      "desc": "pre-build experiences for everyone, choose according to your preference"
+    },
+    "team": {
+      "title": "Team Building",
+      "desc": "A trip filled with team activities and competitions to boost your team spirit"
+    },
+    "school": {
+      "title": "School Trips",
+      "desc": "Unique experience designed for students, following all school requirements"
+    }
   }
 }

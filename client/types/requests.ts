@@ -32,8 +32,8 @@ export const EmptyEmailForm: EmailForm = {
 }
 
 export enum ProductKind {
-  school = 'school',
   exp = 'exp',
+  school = 'school',
   team = 'team',
 }
 
@@ -110,7 +110,7 @@ export interface Purchase extends ProductDetails {
   createdAt: Date
 }
 
-export interface UserPurchase extends Purchase, User { }
+export interface UserPurchase extends Purchase, User {}
 
 export interface PurchaseHistory {
   productId: string
@@ -131,7 +131,7 @@ export interface NullableFloat {
 }
 
 export const emptyProduct: ProductDetails = {
-  kind: '',
+  kind: ProductKind.exp,
   title: '',
   titleAr: '',
   subtitle: '',
