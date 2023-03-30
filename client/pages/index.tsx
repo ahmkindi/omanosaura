@@ -33,19 +33,14 @@ const Home: NextPage = () => {
         <div
           style={{
             display: 'flex',
-            gap: '3rem',
+            gap: '2rem',
             flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
           {whatWeOffer.map((w) => (
-            <WhatWeOffer
-              icon={w.icon}
-              text={w.text}
-              key={w.text}
-              href={w.href}
-            />
+            <WhatWeOffer key={w.href} {...w} />
           ))}
         </div>
       </Section>

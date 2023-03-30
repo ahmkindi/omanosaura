@@ -4,8 +4,8 @@ const Map = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="73"
-      height="73"
+      width="55"
+      height="55"
       viewBox="0 0 73 73"
     >
       <g>
