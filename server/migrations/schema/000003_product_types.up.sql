@@ -4,8 +4,7 @@ BEGIN;
 
   DROP VIEW available_products;
   alter table products drop column kind;
-  alter table products add column kind product_kind not null
-    references product_kind_label(id) default 'exp';
+  alter table products add column kind product_kind not null;
 
   CREATE VIEW available_products AS
   SELECT * FROM products WHERE is_deleted = false;

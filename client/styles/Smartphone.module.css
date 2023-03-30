@@ -3,55 +3,17 @@
   justify-content: flex-end;
 }
 
-.phone {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 331px;
-  height: 616px;
-  background: var(--primary);
-  border-radius: 30px;
-  padding: 10px;
+.video {
+ width: 100%;
+   border-radius: 15px;
+   margin-bottom: 1rem;
+   margin-left: -0.5rem;
+   margin-top: -0.5rem;
 }
 
-.phoneMirror {
-  position: relative;
-  width: 328px;
-  height: 600px;
-  background-color: rgb(26, 25, 25);
-  border-radius: 30px;
-}
-.topWrapper {
-  position: relative;
-  width: 130px;
-  height: 20px;
-  margin: 0px auto 0 auto;
-  float: left;
-  left: 30%;
-  background-color: #232526;
-  border-radius: 0 0 45px 45px;
-}
-.lineRec {
-  position: relative;
-  width: 60px;
-  height: 6px;
-  margin: 0px auto 0 auto;
-  float: left;
-  left: 20%;
-  top: 4px;
-  background-color: rgb(83, 83, 82);
-  border-radius: 5px;
-  border: 1px solid rgb(214, 214, 214);
-}
-.camera {
-  position: relative;
-  float: left;
-  margin-right: 8px;
-  left: 18%;
-  width: 11px;
-  height: 11px;
-  top: 1px;
-  background-color: rgb(83, 83, 82);
-  border-radius: 30px;
-  border: 1px solid rgb(214, 214, 214);
-}
+ @media screen and (min-width: 500px) {
+   .video {
+   width: 16rem;
+   margin-bottom: -0.5rem;
+   }
+ }

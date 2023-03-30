@@ -7,17 +7,23 @@ import Layout from '../components/Layout'
 import Section from '../components/Section'
 import Smartphone from '../components/Smartphone'
 import Testimonial from '../components/Testimonial'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
 import WhatWeOffer from '../components/WhatWeOfferCard'
 import WhyUsCard from '../components/WhyUsCard'
 import { whatWeOffer, whyUsOptions } from '../types/whyUsOptions'
 
 const Home: NextPage = () => {
-  const { t } = useTranslation('home')
+  const { t, lang } = useTranslation('home')
 
   return (
     <Layout>
-      <Box>
+      <Box className={styles.bgimage}>
+        <img className={styles.full} src="/back-photo.jpg" />
+        <div
+          className={`${styles.overlay} ${
+            lang === 'ar' ? styles.overlayAr : null
+          }`}
+        />
         <div>
           <div className={styles.omanSlogan}>{t('omanSlogan')}</div>
           <div className={styles.contact}>{t('introText')}</div>

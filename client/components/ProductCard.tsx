@@ -23,7 +23,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             {isAr ? product.subtitleAr : product.subtitle}
           </p>
           <p className="text-secondary text-sm">
-            {t(`productkind.${product.kind}`)}
+            {t(`productkind.${product.kind}.title`)}
           </p>
           <div className={styles.info}>
             <div>
