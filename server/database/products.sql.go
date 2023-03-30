@@ -335,30 +335,6 @@ func (q *Queries) GetProduct(ctx context.Context, productID string) (GetProductR
 	return i, err
 }
 
-const getProductKinds = `-- name: GetProductKinds :many
-select id, label, label_ar from product_kind_label
-`
-
-func (q *Queries) GetProductKinds(ctx context.Context) ([]ProductKindLabel, error) {
-	rows, err := q.db.Query(ctx, getProductKinds)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ProductKindLabel{}
-	for rows.Next() {
-		var i ProductKindLabel
-		if err := rows.Scan(&i.ID, &i.Label, &i.LabelAr); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getProductReviews = `-- name: GetProductReviews :many
 SELECT reviews.product_id, reviews.user_id, reviews.rating, reviews.title, reviews.review, reviews.last_updated, users.name FROM reviews
 INNER JOIN users ON reviews.user_id = users.id

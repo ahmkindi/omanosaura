@@ -264,12 +264,3 @@ func (server *Server) HandlerPurchaseSuccess(c *fiber.Ctx) error {
 
 	return c.Redirect(fmt.Sprintf("%s/purchases", server.Config.BaseUrl))
 }
-
-func (s *Server) HandlerProductKinds(c *fiber.Ctx) error {
-	kinds, err := s.Queries.GetProductKinds(c.Context())
-	if err != nil {
-		return fmt.Errorf("failed to get product kinds: %w", err)
-	}
-
-	return c.JSON(kinds)
-}

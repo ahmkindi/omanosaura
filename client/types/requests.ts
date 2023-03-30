@@ -31,12 +31,6 @@ export const EmptyEmailForm: EmailForm = {
   message: '',
 }
 
-export interface ProductKindLabel {
-  id: string
-  label: string
-  labelAr: string
-}
-
 export enum ProductKind {
   school = 'school',
   exp = 'exp',
@@ -116,7 +110,7 @@ export interface Purchase extends ProductDetails {
   createdAt: Date
 }
 
-export interface UserPurchase extends Purchase, User {}
+export interface UserPurchase extends Purchase, User { }
 
 export interface PurchaseHistory {
   productId: string

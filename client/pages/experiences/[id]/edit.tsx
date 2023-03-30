@@ -4,7 +4,7 @@ import Layout from '../../../components/Layout'
 import ProductForm from '../../../components/ProductForm'
 import applyConverters from 'axios-case-converter'
 import axiosStatic, { AxiosInstance, AxiosResponse } from 'axios'
-import { Product, ProductKindLabel, UserRole } from '../../../types/requests'
+import { Product, UserRole } from '../../../types/requests'
 import useSWR, { SWRConfig } from 'swr'
 import { fetcher } from '../../../utils/axiosServer'
 import { useRouter } from 'next/router'
@@ -19,15 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     `${process.env.SERVER_URL}products/${id}`,
   )
 
-  const { data: productKinds }: AxiosResponse<ProductKindLabel[]> = await axios.get(
-    `${process.env.SERVER_URL}products/kinds`,
-  )
-
   return {
     props: {
       fallback: {
         [`products/${id}`]: product,
-        [`products/kinds`]: productKinds,
       },
     },
   }
@@ -38,7 +33,6 @@ const Experience = () => {
   const router = useRouter()
   const { id } = router.query
   const { data: product } = useSWR(`products/${id}`, fetcher<Product>)
-  const { data: productKinds } = useSWR(`products/kinds`, fetcher<ProductKindLabel[]>)
   const { user, isLoading } = useGlobal()
 
   useEffect(() => {
@@ -47,16 +41,16 @@ const Experience = () => {
     }
   }, [user, isLoading, router])
 
-  if (!product || !productKinds) return null
+  if (!product) return null
 
   return (
     <Layout title={t('title')}>
-      {isLoading ? <Spinner animation="border" /> : <ProductForm product={product} kinds={productKinds} id={product.id} />}
+      {isLoading ? <Spinner animation="border" /> : <ProductForm product={product} id={product.id} />}
     </Layout>
   )
 }
 
-const Page = ({ fallback }: { fallback: Map<string, Product | ProductKindLabel[]> }) => {
+const Page = ({ fallback }: { fallback: Map<string, Product> }) => {
   return (
     <SWRConfig value={{ fallback }}>
       <Experience />

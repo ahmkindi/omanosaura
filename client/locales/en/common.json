@@ -25,5 +25,10 @@
   "failedToSocialLogin": "oops! failed login with your social account",
   "failedToSendEmail": "oops! failed to send you a login link",
   "checkEmail": "Click on the login link sent to your email",
-  "pricePer4": "{{ price }} / 4 ppl"
+  "pricePer4": "{{ price }} / 4 ppl",
+  "productkind": {
+    "exp": "Adventures & Trips",
+    "team": "Team Building",
+    "school": "School Trips"
+  }
 }

@@ -21,7 +21,6 @@ func main() {
 	app.Use(cors.New())
 	app.Post("/send", server.HandlerSendEmail)
 	app.Get("/products", server.HandlerGetAllProducts)
-	app.Get("/products/kinds", server.HandlerProductKinds)
 	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
 	app.Get("/products/:id", server.HandlerGetProduct)
 	app.Get("/blogs", server.HandlerGetAllBlogs)

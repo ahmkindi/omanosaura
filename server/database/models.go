@@ -104,12 +104,6 @@ type Product struct {
 	Kind            ProductKind `json:"kind"`
 }
 
-type ProductKindLabel struct {
-	ID      ProductKind `json:"id"`
-	Label   string      `json:"label"`
-	LabelAr string      `json:"label_ar"`
-}
-
 type Purchase struct {
 	ID                uuid.UUID `json:"id"`
 	ProductID         string    `json:"product_id"`

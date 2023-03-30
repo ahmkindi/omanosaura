@@ -1,22 +1,16 @@
 import useTranslation from 'next-translate/useTranslation'
 import React from 'react'
 import { TbLetterA, TbLetterT } from 'react-icons/tb'
-import {
-  InputGroup,
-  Button,
-  OverlayTrigger,
-  Popover,
-  Dropdown,
-} from 'react-bootstrap'
+import { Button, OverlayTrigger, Popover, Dropdown } from 'react-bootstrap'
 import { FiList, FiMap } from 'react-icons/fi'
 import { FaQuestion } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { MdAddCircleOutline } from 'react-icons/md'
 import { useGlobal } from '../context/global'
-import { UserRole, ProductKindLabel } from '../types/requests'
+import { UserRole, ProductKind } from '../types/requests'
 
-const SearchBar = ({ kinds }: { kinds: ProductKindLabel[] }): JSX.Element => {
+const SearchBar = (): JSX.Element => {
   const { user } = useGlobal()
   const { t, lang } = useTranslation('experiences')
   const router = useRouter()
@@ -28,20 +22,20 @@ const SearchBar = ({ kinds }: { kinds: ProductKindLabel[] }): JSX.Element => {
       <Dropdown>
         <Dropdown.Toggle id="dropdown-basic">{t('kind')}</Dropdown.Toggle>
         <Dropdown.Menu>
-          {kinds.map((k) => (
+          {Object.values(ProductKind).map((k) => (
             <Dropdown.Item
               onClick={() => {
-                if (kind === k.id) {
+                if (kind === k) {
                   delete router.query.kind
                 } else {
-                  router.query.kind = k.id
+                  router.query.kind = k
                 }
                 router.push(router)
               }}
-              key={k.id}
-              active={kind === k.id}
+              key={k}
+              active={kind === k}
             >
-              {lang === 'ar' ? k.labelAr : k.label}
+              {t(`common:productkind.${k}`)}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>

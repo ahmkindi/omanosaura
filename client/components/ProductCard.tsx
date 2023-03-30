@@ -18,15 +18,13 @@ const ProductCard = ({ product }: { product: Product }) => {
         style={{ background: `url(${product.photo})` }}
       >
         <div className={styles.profile}>
-          <h3 className="flex text-start h-12 text-xl">
-            {isAr ? product.titleAr : product.title}
-          </h3>
-          <div className="flex w-100 justify-between mb-2">
-            <p className="text-secondary">
-              {isAr ? product.subtitleAr : product.subtitle}
-            </p>
-            <p className="text-secondary">{product.kind}</p>
-          </div>
+          <h3>{isAr ? product.titleAr : product.title}</h3>
+          <p className="text-secondary font-bold">
+            {isAr ? product.subtitleAr : product.subtitle}
+          </p>
+          <p className="text-secondary text-sm">
+            {t(`productkind.${product.kind}`)}
+          </p>
           <div className={styles.info}>
             <div>
               {t('pricePer4', {
@@ -36,12 +34,10 @@ const ProductCard = ({ product }: { product: Product }) => {
                 }).format(product.basePriceBaisa / 1000 ?? 0),
               })}
             </div>
-            <div className="items-start">
-              <RatingWithCount
-                rating={product.rating}
-                ratingCount={product.ratingCount}
-              />
-            </div>
+            <RatingWithCount
+              rating={product.rating}
+              ratingCount={product.ratingCount}
+            />
           </div>
         </div>
       </div>

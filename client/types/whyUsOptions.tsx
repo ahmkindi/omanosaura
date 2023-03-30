@@ -2,9 +2,11 @@ import { MdGroups as WhyUsIcon1 } from 'react-icons/md'
 import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
 import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
 import Map from '../components/svg/Map'
+import Bus from '../components/svg/Bus'
 import Adventurer from '../components/svg/Adventurer'
 import { ProductKind } from './requests'
 import { WhatWeOfferProps } from '../components/WhatWeOfferCard'
+import Team from '../components/svg/Team'
 
 export const whyUsOptions = [
   {
@@ -26,16 +28,16 @@ export const whyUsOptions = [
 
 export const whatWeOffer: WhatWeOfferProps[] = [
   {
-    icon: <Map />,
+    icon: <Bus />,
     title: 'service1.title',
     desc: 'service1.desc',
-    href: `/experiences?kind=${ProductKind.exp}`,
+    href: `/experiences?kind=${ProductKind.school}`,
   },
   {
-    icon: <Map />,
+    icon: <Team />,
     title: 'service2.title',
     desc: 'service2.desc',
-    href: `/experiences?kind=${ProductKind.school}`,
+    href: `/experiences?kind=${ProductKind.exp}`,
   },
   {
     icon: <Map />,

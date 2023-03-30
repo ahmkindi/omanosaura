@@ -2,7 +2,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { Formik, Form as FormikForm } from 'formik'
 import * as Yup from 'yup'
 import { Button, FloatingLabel, Form, InputGroup, Dropdown } from 'react-bootstrap'
-import { ProductDetails, ProductKindLabel } from '../types/requests'
+import { ProductDetails, ProductKind } from '../types/requests'
 import { useGlobal } from '../context/global'
 import axiosServer from '../utils/axiosServer'
 import { useRouter } from 'next/router'
@@ -15,11 +15,9 @@ import MyQuill from './MyQuill'
 
 const ProductForm = ({
   product,
-  kinds,
   id,
 }: {
   product: ProductDetails
-  kinds: ProductKindLabel[]
   id?: string
 }) => {
   const { t, lang } = useTranslation('experiences')
@@ -360,11 +358,11 @@ const ProductForm = ({
                 {t('kind')}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {kinds.map(k => <Dropdown.Item
-                  onClick={() => setValues(prev => ({ ...prev, kind: k.id }))}
-                  key={k.id}
-                  active={values.kind === k.id}>
-                  {lang === 'ar' ? k.labelAr : k.label}
+                {Object.values(ProductKind).map(k => <Dropdown.Item
+                  onClick={() => setValues(prev => ({ ...prev, kind: k }))}
+                  key={k}
+                  active={values.kind === k}>
+                  {t(`common:productkind.${k}`)}
                 </Dropdown.Item>)}
               </Dropdown.Menu>
             </Dropdown>

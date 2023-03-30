@@ -1,6 +1,6 @@
 import useTranslation from 'next-translate/useTranslation'
 import Layout from '../../components/Layout'
-import { Product, ProductKindLabel } from '../../types/requests'
+import { Product } from '../../types/requests'
 import { useMemo, useState } from 'react'
 import ProductCard from '../../components/ProductCard'
 import styles from '../../styles/experiences.module.scss'
@@ -21,40 +21,30 @@ export async function getServerSideProps() {
   const { data: products }: AxiosResponse<Product[]> = await axios.get(
     `${process.env.SERVER_URL}products`
   )
-  const { data: kinds }: AxiosResponse<ProductKindLabel[]> = await axios.get(
-    `${process.env.SERVER_URL}products/kinds`
-  )
   return {
     props: {
       fallback: {
         'products': products,
       },
-      'kinds': kinds
     },
   }
 }
 
-const Experiences = ({ kinds }: { kinds: ProductKindLabel[] }) => {
+const Experiences = () => {
   const { t } = useTranslation('experiences')
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
-  const { search, view } = router.query
+  const { view, kind } = router.query
   const { data: products } = useSWR('products', fetcher<Product[]>)
 
   const filteredProducts = useMemo(
     () =>
-      search
+      kind
         ? products?.filter(
-          (p) =>
-            p.title.includes(search as string) ||
-            p.subtitle.includes(search as string) ||
-            p.description.includes(search as string) ||
-            p.titleAr.includes(search as string) ||
-            p.subtitleAr.includes(search as string) ||
-            p.descriptionAr.includes(search as string)
+          (p) => p.kind === kind
         )
         : products,
-    [search, products]
+    [kind, products]
   )
 
   const pins = useMemo(
@@ -85,7 +75,7 @@ const Experiences = ({ kinds }: { kinds: ProductKindLabel[] }) => {
   return (
     <>
       <Layout title={t('title')}>
-        <SearchBar kinds={kinds} />
+        <SearchBar />
         {view === "map" ?
           <div className={styles.sketchy}>
             <Map
@@ -124,10 +114,10 @@ const Experiences = ({ kinds }: { kinds: ProductKindLabel[] }) => {
   )
 }
 
-const Page = ({ fallback, kinds }: { fallback: Map<string, Product[]>, kinds: ProductKindLabel[] }) => {
+const Page = ({ fallback }: { fallback: Map<string, Product[]> }) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <Experiences kinds={kinds} />
+      <Experiences />
     </SWRConfig>
   )
 }

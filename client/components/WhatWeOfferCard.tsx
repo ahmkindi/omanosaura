@@ -14,7 +14,7 @@ const WhatWeOffer = ({ icon, title, desc, href }: WhatWeOfferProps) => {
   const { t } = useTranslation('home')
 
   return (
-    <Link href={href} passHref>
+    <Link href={href} passHref style={{ textDecoration: 'none' }}>
       <div className={`${styles.card} ${styles.trips}`}>
         <div className={styles.overlay}></div>
         <div className={styles.circle}>{icon}</div>

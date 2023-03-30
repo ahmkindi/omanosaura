@@ -3,9 +3,9 @@ import '../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import { GlobalProvider } from '../context/global'
 import NextNProgress from 'nextjs-progressbar'
-import { Tajawal } from 'next/font/google'
+import { IBM_Plex_Sans_Arabic } from 'next/font/google'
 
-const font = Tajawal({
+const font = IBM_Plex_Sans_Arabic({
   subsets: ['arabic', 'latin'],
   weight: ['300', '400', '500'],
 })
