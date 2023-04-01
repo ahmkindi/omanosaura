@@ -14,12 +14,11 @@ import { useGlobal } from '../../../context/global'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
-  const { token } = context.req.cookies
   const axios = applyConverters(axiosStatic as any) as AxiosInstance
   const { data: product }: AxiosResponse<Product> = await axios.get(
     `${process.env.SERVER_URL}products/${id}`,
-    { headers: { Cookie: `token=${token}` } }
   )
+
   return {
     props: {
       fallback: {
@@ -38,7 +37,7 @@ const Experience = () => {
 
   useEffect(() => {
     if (!isLoading && user?.role !== UserRole.admin) {
-      router.push('/blogs')
+      router.push('/')
     }
   }, [user, isLoading, router])
 

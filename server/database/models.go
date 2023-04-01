@@ -11,6 +11,26 @@ import (
 	"github.com/google/uuid"
 )
 
+type ProductKind string
+
+const (
+	ProductKindSchool ProductKind = "school"
+	ProductKindTeam   ProductKind = "team"
+	ProductKindExp    ProductKind = "exp"
+)
+
+func (e *ProductKind) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ProductKind(s)
+	case string:
+		*e = ProductKind(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ProductKind: %T", src)
+	}
+	return nil
+}
+
 type UserRole string
 
 const (
@@ -33,7 +53,6 @@ func (e *UserRole) Scan(src interface{}) error {
 
 type AvailableProduct struct {
 	ID              string      `json:"id"`
-	Kind            string      `json:"kind"`
 	Title           string      `json:"title"`
 	TitleAr         string      `json:"title_ar"`
 	Subtitle        string      `json:"subtitle"`
@@ -49,6 +68,7 @@ type AvailableProduct struct {
 	LastUpdated     time.Time   `json:"last_updated"`
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
+	Kind            ProductKind `json:"kind"`
 }
 
 type Blog struct {
@@ -66,7 +86,6 @@ type Blog struct {
 
 type Product struct {
 	ID              string      `json:"id"`
-	Kind            string      `json:"kind"`
 	Title           string      `json:"title"`
 	TitleAr         string      `json:"title_ar"`
 	Subtitle        string      `json:"subtitle"`
@@ -82,6 +101,7 @@ type Product struct {
 	LastUpdated     time.Time   `json:"last_updated"`
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
+	Kind            ProductKind `json:"kind"`
 }
 
 type Purchase struct {

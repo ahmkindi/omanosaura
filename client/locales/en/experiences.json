@@ -10,7 +10,7 @@
   "userReview": "{{ name }}'s Review",
   "mapView": "Map View",
   "listView": "List View",
-  "twoProducts": "Omanosaura provides two types of experiences, use the following as a legend:",
+  "threeProducts": "Omanosaura provides three types of experiences:",
   "searchExp": "Search Experiences",
   "trip": "Trip",
   "tripExplanation": "Learn about the culture and enjoy the landscapes in Oman",
@@ -38,6 +38,7 @@
   "failedAdd": "Failed to add a new experience...",
   "successDelete": "Successfully deleted experience",
   "failedDelete": "Failed to delete experience",
+  "kind": "Experience Kind",
   "form": {
     "title": "Title",
     "arTitle": "Arabic Title",

@@ -39,7 +39,7 @@ const Avatar = ({ user }: { user: User }) => {
           </div>
           <div className={styles.actions}>
             <Link passHref href="/purchases">
-              <div>{t('purchases')}</div>
+              {t('purchases')}
             </Link>
             <div onClick={() => signOut(auth)}>{t('logout')}</div>
           </div>

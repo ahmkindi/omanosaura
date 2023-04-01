@@ -1,7 +1,7 @@
 import useTranslation from 'next-translate/useTranslation'
 import { Formik, Form as FormikForm } from 'formik'
 import * as Yup from 'yup'
-import { Button, FloatingLabel, Form, InputGroup } from 'react-bootstrap'
+import { Button, FloatingLabel, Form, InputGroup, Dropdown } from 'react-bootstrap'
 import { ProductDetails, ProductKind } from '../types/requests'
 import { useGlobal } from '../context/global'
 import axiosServer from '../utils/axiosServer'
@@ -47,6 +47,7 @@ const ProductForm = ({
     extraPriceBaisa: Yup.number().integer('common:onlyInt').required(),
     longitude: Yup.number().required(),
     latitude: Yup.number().required(),
+    kind: Yup.string().required()
   })
 
   const handleSubmit = async (values: ProductDetails) => {
@@ -352,25 +353,19 @@ const ProductForm = ({
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="mb-4">
-            <Form.Check
-              type="radio"
-              label={t('trip')}
-              checked={values.kind === ProductKind.trip}
-              onClick={() =>
-                setValues((prev) => ({ ...prev, kind: ProductKind.trip }))
-              }
-            />
-            <Form.Check
-              type="radio"
-              label={t('adventure')}
-              checked={values.kind === ProductKind.adventure}
-              onClick={() =>
-                setValues((prev) => ({
-                  ...prev,
-                  kind: ProductKind.adventure,
-                }))
-              }
-            />
+            <Dropdown>
+              <Dropdown.Toggle id="dropdown-basic">
+                {t('kind')}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {Object.values(ProductKind).map(k => <Dropdown.Item
+                  onClick={() => setValues(prev => ({ ...prev, kind: k }))}
+                  key={k}
+                  active={values.kind === k}>
+                  {t(`common:productkind.${k}.title`)}
+                </Dropdown.Item>)}
+              </Dropdown.Menu>
+            </Dropdown>
           </Form.Group>
           <div style={{ display: 'flex', gap: '2rem' }} className="mb-4 mt-4">
             <Button variant="outline-primary" type="submit">

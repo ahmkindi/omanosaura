@@ -61,7 +61,7 @@
   overflow: hidden;
   transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease-in-out;
 
-  div {
+  a {
     color: var(--primary);
     font-weight: bold;
     font-size: 1.1rem;
@@ -157,7 +157,7 @@
     padding: unset;
     max-height: unset;
     flex-direction: row;
-    div {
+    a {
       font-size: 1.1rem;
       padding: 0.3em 0.4em;
       border-radius: 4px;

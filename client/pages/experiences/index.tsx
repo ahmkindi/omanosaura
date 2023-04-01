@@ -32,26 +32,19 @@ export async function getServerSideProps() {
 
 const Experiences = () => {
   const { t } = useTranslation('experiences')
-  // const { width, height } = useWindowDimensions()
   const [openProduct, setOpenProduct] = useState<Product>()
   const router = useRouter()
-  const { search, view } = router.query
+  const { view, kind } = router.query
   const { data: products } = useSWR('products', fetcher<Product[]>)
 
   const filteredProducts = useMemo(
     () =>
-      search
+      kind
         ? products?.filter(
-          (p) =>
-            p.title.includes(search as string) ||
-            p.subtitle.includes(search as string) ||
-            p.description.includes(search as string) ||
-            p.titleAr.includes(search as string) ||
-            p.subtitleAr.includes(search as string) ||
-            p.descriptionAr.includes(search as string)
+          (p) => p.kind === kind
         )
         : products,
-    [search, products]
+    [kind, products]
   )
 
   const pins = useMemo(
@@ -83,9 +76,7 @@ const Experiences = () => {
     <>
       <Layout title={t('title')}>
         <SearchBar />
-        {view === "list" ? <div className='flex gap-8 flex-wrap justify-center'>
-          {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
-        </div> :
+        {view === "map" ?
           <div className={styles.sketchy}>
             <Map
               mapboxAccessToken={process.env.NEXT_PUBLIC_MAP_TOKEN}
@@ -113,6 +104,9 @@ const Experiences = () => {
                 </Popup>
               )}
             </Map>
+          </div>
+          : <div className='flex gap-8 flex-wrap justify-center'>
+            {filteredProducts?.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         }
       </Layout>

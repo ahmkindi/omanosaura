@@ -13,36 +13,39 @@
   position: relative;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.315);
   cursor: pointer;
+  border-radius: 10px;
+
   &:hover {
     box-shadow: 0 0 40px rgba(0, 0, 100, 0.6);
     transition: all 0.25s;
   }
   .profile {
+    height: 8rem;
     background-color: var(--tertiary);
-    padding: 0.3rem;
+    padding: 0.3rem 0.5rem;
     @include bottom();
     bottom: 0;
-    .header {
-      display: flex;
-      justify-content: space-between;
-      text-align: left;
-      h2 {
-        color: var(--primary);
-        font-size: 1.3rem;
-        cursor: pointer;
-        min-height: 3rem;
-      }
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: start;
+
+    h3 {
+      color: var(--primary);
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-bottom: auto;
     }
+
+    & > p {
+      margin-bottom: 0;
+    }
+
     .info {
-      @include bottom;
       display: flex;
-      align-items: flex-end;
+      width: 100%;
       justify-content: space-between;
-      padding: 8px;
-      bottom: 0;
-      svg {
-        color: var(--primary);
-      }
+      color: var(--primary);
     }
   }
 }

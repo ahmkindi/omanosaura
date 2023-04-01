@@ -149,15 +149,12 @@ const NavBar = () => {
           className={`${styles.navOptions} ${menuOpen ? styles.active : null}`}
         >
           {navoptions.map((n) => (
-            <Link key={n} href={`/${n}`} passHref>
-              <div
-                key={n}
-                className={
-                  pathname === `/${n}` ? styles.navActive : styles.navInactive
-                }
-              >
-                {t(n)}
-              </div>
+            <Link key={n} href={`/${n}`}
+              className={
+                pathname === `/${n}` ? styles.navActive : styles.navInactive
+              }
+            >
+              {t(n)}
             </Link>
           ))}
         </div>

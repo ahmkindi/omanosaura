@@ -3,8 +3,10 @@
   "introText": "Explore the beauty of Oman with us, from full day trips to adventures we will make sure your experience is a delight not to be forgotten.",
   "contactText": "Let's Explore!",
   "services": "What Do We Offer?",
-  "service1": "Ready made experiences",
-  "service2": "Tailored experiences",
+  "service": {
+    "title": "Tailored Experience",
+    "desc": "Contact us to create your own custom experience!"
+  },
   "whyUs": "Why Omanosaura?",
   "whyUsTitle1": "Community",
   "whyUsTitle2": "Unique",

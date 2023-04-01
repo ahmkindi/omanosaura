@@ -32,8 +32,9 @@ export const EmptyEmailForm: EmailForm = {
 }
 
 export enum ProductKind {
-  trip = 'trip',
-  adventure = 'adventure',
+  exp = 'exp',
+  school = 'school',
+  team = 'team',
 }
 
 export interface ProductDetails {
@@ -130,7 +131,7 @@ export interface NullableFloat {
 }
 
 export const emptyProduct: ProductDetails = {
-  kind: ProductKind.adventure,
+  kind: ProductKind.exp,
   title: '',
   titleAr: '',
   subtitle: '',
