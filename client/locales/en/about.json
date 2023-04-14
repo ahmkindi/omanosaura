@@ -2,8 +2,45 @@
   "title": "About | Omanosaura",
   "pageTitle": "About Omanosaura",
   "desc": "Omanosaura aims to deliver a unique experience in Oman, and present the beuty and magic of Oman. From this the name Omanosaura was born, a one of a kind lizard that can be found in Oman only!",
-  "champ": "Our Champ!",
-  "jaifar": "Jaifar Saeed Suleiman Al Kindi",
-  "jaifarTitle": "Nature Lover/Founder of Omanosaura",
-  "jaifarDesc": "Founder of Omanosaura For Travel and Tourism, 5+ years of experience in tourism sector, licensed from the Ministry of Tourism as a general tour guide. I love adventure and hold an IRATA license in ropes and safety"
+  "champs": "Our Champions",
+  "mission": {
+    "title": "Mission",
+    "desc": "Unique journeys, affordable prices and exceeding our clients expectations"
+  },
+  "vision": {
+    "title": "Vision",
+    "desc": "Quality service, creativity and innovation, social responsibility"
+  },
+  "champs": {
+    "1": {
+      "name": "Jaifar Al-Kindi",
+      "title": "Founder of Omanosaura",
+      "desc": "I've been working in the tourism field, specifically adventures, for 7+ years. And hold the international IRATA certificate for security in abseiling, and RCL for adventure and rescure equipment inspection. I am also a general tour guide licensed by the Ministry of Tourism."
+    },
+    "2": {
+      "name": "Mohammed Al-Kindi",
+      "title": "Transportaion Quality & Leader",
+      "desc": "I've been in the field of cars and buses for 10 years. I pay attention to the finest details to ensure a comfortable a safe trip, whether its a city tour or an off-road adventure. I also work as tour leader, usually taking the front of group to guide the experience."
+    },
+    "3": {
+      "name": "Khaled Al-Hadrami",
+      "title": "Assistant Leader",
+      "desc": "I have 3 years of experience in adventuring, enjoying the unique Omani nature as a part-time job in Omanosaura"
+    },
+    "4": {
+      "name": "Rishad Al-Toubi",
+      "title": "Adventurer & Tour Guide",
+      "desc": "4+ years in trekking and adventures, and two years in tour guiding. I love exploring different cultures, nature and free-diving! specifically free-diving with a spear gun for fishing. I work as both a tour guide in city trips and a leader in adventures."
+    },
+    "5": {
+      "name": "Muzna Al-Kindi",
+      "title": "Marketing & Social Media",
+      "desc": "I am responsible for managing the social media accounts, and videography. I love immortalizing experiences, especially those offered by Omanosaura, because they're distinguished from other experiences I participated in, whether they are in Oman or outside."
+    },
+    "6": {
+      "name": "Ahmed Al-Kindi",
+      "title": "Software Developer",
+      "desc": "I am the developer and maintainer of omanosaura.com, ensuring you have a smooth experience searching and finding the right experience for you."
+    }
+  }
 }

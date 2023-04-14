@@ -10,10 +10,31 @@ import Testimonial from '../components/Testimonial'
 import styles from '../styles/Home.module.scss'
 import WhatWeOffer from '../components/WhatWeOfferCard'
 import WhyUsCard from '../components/WhyUsCard'
-import { whatWeOffer, whyUsOptions } from '../types/whyUsOptions'
+import { whatWeOffer } from '../types/whyUsOptions'
+import { MdGroups as WhyUsIcon1 } from 'react-icons/md'
+import { HiSparkles as WhyUsIcon2 } from 'react-icons/hi'
+import { AiOutlineSafetyCertificate as WhyUsIcon3 } from 'react-icons/ai'
 
 const Home: NextPage = () => {
   const { t, lang } = useTranslation('home')
+
+  const whyUsOptions = [
+    {
+      icon: <WhyUsIcon1 size={75} />,
+      header: t('whyUsTitle1'),
+      desc: t('whyUsDesc1'),
+    },
+    {
+      icon: <WhyUsIcon2 size={75} />,
+      header: t('whyUsTitle2'),
+      desc: t('whyUsDesc2'),
+    },
+    {
+      icon: <WhyUsIcon3 size={75} />,
+      header: t('whyUsTitle3'),
+      desc: t('whyUsDesc3'),
+    },
+  ]
 
   return (
     <Layout>
