@@ -7,11 +7,32 @@ import Section from '../components/Section'
 import WhyUsCard from '../components/WhyUsCard'
 import { BsBinocularsFill } from 'react-icons/bs'
 import { TbTargetArrow } from 'react-icons/tb'
+import Carousel from 'react-multi-carousel'
+import 'react-multi-carousel/lib/styles.css'
 
-const team = 5
+const team = 6
 
 const About = () => {
-  const { t } = useTranslation('about')
+  const { t, lang } = useTranslation('about')
+
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 620 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 620, min: 0 },
+      items: 1,
+    },
+  }
 
   return (
     <Layout title={t('title')}>
@@ -21,24 +42,45 @@ const About = () => {
           <WhyUsCard
             header={t('mission.title')}
             desc={t('mission.desc')}
-            icon={<BsBinocularsFill />}
+            icon={<BsBinocularsFill size={75} />}
           />
           <WhyUsCard
             header={t('vision.title')}
             desc={t('vision.desc')}
-            icon={<TbTargetArrow />}
+            icon={<TbTargetArrow size={75} />}
           />
         </Box>
       </Section>
-      <Section title={t('champ')}>
-        {Array.from(Array(team).keys()).map((i) => (
-          <div key={`champ-${i}`}>
-            <Image
-              src={`/champs/${i + 1}.jpeg`}
-              alt={t(`champs.${i + 1}.title`)}
-            />
-          </div>
-        ))}
+      <Section title={t('champs.title')}>
+        <Carousel
+          swipeable
+          responsive={responsive}
+          ssr
+          rtl={lang === 'ar'}
+          partialVisbile
+          showDots
+        >
+          {Array.from(Array(team).keys()).map((i) => (
+            <div
+              key={`champ-${i}`}
+              className="flex flex-col items-center mx-3 mb-1"
+              style={{ maxWidth: '390px' }}
+            >
+              <h2>{t(`champs.${i + 1}.name`)}</h2>
+              <h4 className="text-lg">{t(`champs.${i + 1}.title`)}</h4>
+              <Image
+                src={`/champs/${i + 1}.jpeg`}
+                alt={t(`champs.${i + 1}.name`)}
+                className="mb-2 rounded-lg shadow-md select-none justify-center"
+                width={384}
+                height={512}
+              />
+              <p className={lang === 'ar' ? 'text-md' : 'text-sm'}>
+                {t(`champs.${i + 1}.desc`)}
+              </p>
+            </div>
+          ))}
+        </Carousel>
       </Section>
     </Layout>
   )

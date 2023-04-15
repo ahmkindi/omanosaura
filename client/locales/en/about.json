@@ -2,7 +2,6 @@
   "title": "About | Omanosaura",
   "pageTitle": "About Omanosaura",
   "desc": "Omanosaura aims to deliver a unique experience in Oman, and present the beuty and magic of Oman. From this the name Omanosaura was born, a one of a kind lizard that can be found in Oman only!",
-  "champs": "Our Champions",
   "mission": {
     "title": "Mission",
     "desc": "Unique journeys, affordable prices and exceeding our clients expectations"
@@ -12,6 +11,7 @@
     "desc": "Quality service, creativity and innovation, social responsibility"
   },
   "champs": {
+    "title": "Our Champions",
     "1": {
       "name": "Jaifar Al-Kindi",
       "title": "Founder of Omanosaura",
