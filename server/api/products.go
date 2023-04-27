@@ -3,11 +3,14 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"math"
 	"omanosaura/database"
 	"omanosaura/thawani"
 	"omanosaura/thawani/types/mode"
 	"omanosaura/thawani/types/paymentstatus"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -19,6 +22,41 @@ import (
 
 func (server *Server) HandlerDeleteProduct(c *fiber.Ctx) error {
 	return server.Queries.DeleteProduct(c.Context(), c.Params("id"))
+}
+
+func (server *Server) HandlerSaveMedia(c *fiber.Ctx) error {
+	form, err := c.MultipartForm()
+	if err != nil {
+		return fmt.Errorf("failed to get multipar form: %w", err)
+	}
+
+	for _, fileHeaders := range form.File {
+		for _, fileHeader := range fileHeaders {
+			// Open the uploaded file
+			file, err := fileHeader.Open()
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+
+			filePath := filepath.Join("/media", fileHeader.Filename)
+
+			// Create a new file on the file system, fail if file exists
+			newFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
+			if err != nil {
+				return err
+			}
+			defer newFile.Close()
+
+			// Copy the contents of the uploaded file to the new file
+			_, err = io.Copy(newFile, file)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {

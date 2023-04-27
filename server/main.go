@@ -42,6 +42,7 @@ func main() {
 	admin.Get("/users", server.HandlerGetAllUsers)
 	admin.Post("/users/:id/role", server.HandlerUpdateUserRole)
 	admin.Post("/products", server.HandlerUpsertProduct)
+	admin.Post("/products/media", server.HandlerSaveMedia)
 	admin.Post("/blogs", server.HandlerUpsertBlog)
 	admin.Delete("/blogs/:id", server.HandlerDeleteBlog)
 	admin.Get("/products/purchases", server.HandlerGetAllPurchases)

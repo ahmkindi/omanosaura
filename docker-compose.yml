@@ -7,7 +7,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - media:/www/data
+      - media:/www/data/media
     depends_on:
       - client
       - server
