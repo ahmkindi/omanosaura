@@ -6,6 +6,8 @@ services:
       context: ./client/nginx/
     ports:
       - 80:80
+    volumes:
+      - media:/www/data
     depends_on:
       - client
       - server
@@ -16,8 +18,6 @@ services:
       target: development
     volumes:
       - ./client:/app
-    ports:
-      - 3000:3000
 
   server:
     build:
@@ -28,6 +28,7 @@ services:
       - dev.env
     volumes:
       - ./server:/app
+      - media:/media
     ports:
       - 8081:8081
     depends_on:
@@ -39,3 +40,6 @@ services:
       - 5432:5432
     env_file:
       - dev.env
+
+volumes:
+  media:
