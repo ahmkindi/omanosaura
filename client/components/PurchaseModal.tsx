@@ -32,6 +32,11 @@ const PurchaseModal = ({
   const router = useRouter()
   registerLocale('ar', ar)
 
+  const price = new Intl.NumberFormat(lang, {
+    style: 'currency',
+    currency: 'OMR',
+  }).format(product.basePriceBaisa / 1000 ?? 0)
+
   const PurchaseSchema = Yup.object().shape({
     quantity: Yup.number()
       .integer(t('common:onlyInt'))
@@ -164,17 +169,33 @@ const PurchaseModal = ({
                   })}
                 </Form.Label>
               </Form.Group>
-              <div className="mb-4" style={{ fontSize: '1.2rem' }}>
-                {t('totalPrice')}
-                <span style={{ fontWeight: 'bold' }}>
-                  {getTotalPrice(
-                    lang,
-                    product,
-                    values.quantity,
-                    values.payExtra,
-                    values.chosenDate
+              <div className="mb-4">
+                <div className='text-lg'>
+                  {t('totalPrice')}
+                  <span style={{ fontWeight: 'bold' }}>
+                    {getTotalPrice(
+                      lang,
+                      product,
+                      values.quantity,
+                      values.payExtra,
+                      values.chosenDate
+                    )}
+                  </span>
+                </div>
+                <p className="text-xs font-light">
+                  {t(
+                    `common:pricePer.${product.pricePer === 1
+                      ? 'single'
+                      : product.pricePer === 2
+                        ? 'duo'
+                        : 'multi'
+                    }`,
+                    {
+                      price: price,
+                      people: product.pricePer,
+                    }
                   )}
-                </span>
+                </p>
               </div>
               <Modal.Footer className="flex flex-col items-end gap-2">
                 <div className="flex gap-3">
@@ -190,10 +211,8 @@ const PurchaseModal = ({
                 </div>
                 <div className="flex text-xs text-blue-600/50 gap-1">
                   <p className="font-thin">{t('byPurchasing')}</p>
-                  <Link href="/terms.pdf" passHref>
-                    <a target="_blank" className="text-blue-600/50 text-xs">
-                      {t('readTerms')}
-                    </a>
+                  <Link href="/terms.pdf" target="_blank">
+                    {t('readTerms')}
                   </Link>
                 </div>
               </Modal.Footer>

@@ -39,7 +39,7 @@ func (server *Server) HandlerSaveMedia(c *fiber.Ctx) error {
 			}
 			defer file.Close()
 
-			filePath := filepath.Join("/media", fileHeader.Filename)
+			filePath := filepath.Join("media", fileHeader.Filename)
 
 			// Create a new file on the file system, fail if file exists
 			newFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
@@ -206,8 +206,8 @@ func (server *Server) HandlerPurchaseProduct(c *fiber.Ctx) error {
 		return fiber.ErrUnauthorized
 	}
 
-	// every 4 people will we add the base price
-	cost := int64(math.Ceil(float64(req.Quantity)/4.0)) * product.BasePriceBaisa
+	// every pricePer people will we add the base price
+	cost := int64(math.Ceil(float64(req.Quantity)/float64(product.PricePer))) * product.BasePriceBaisa
 	if req.PayExtra {
 		cost += (req.Quantity * product.ExtraPriceBaisa)
 	}

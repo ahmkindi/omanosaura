@@ -25,7 +25,13 @@
   "failedToSocialLogin": "oops! failed login with your social account",
   "failedToSendEmail": "oops! failed to send you a login link",
   "checkEmail": "Click on the login link sent to your email",
-  "pricePer4": "{{ price }} / 4 ppl",
+  "pricePer": {
+    "multi": "{{ price }} / {{ people }} ppl",
+    "duo": "{{ price }} / {{ people }} ppl",
+    "single": "{{ price }} per person"
+  },
+  "below": "must be below {{ value }}",
+  "above": "must be above {{ value }}",
   "productkind": {
     "exp": {
       "title": "Adventures & Trips",

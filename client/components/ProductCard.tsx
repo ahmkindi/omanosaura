@@ -9,7 +9,10 @@ const ProductCard = ({ product }: { product: Product }) => {
   const { t, lang } = useTranslation('common')
   const isAr = lang === 'ar'
 
-  //TODO: Get the labels from the BE and show here. and restyle
+  const price = new Intl.NumberFormat(lang, {
+    style: 'currency',
+    currency: 'OMR',
+  }).format(product.basePriceBaisa / 1000 ?? 0)
 
   return (
     <Link passHref href={`/experiences/${product.id}`}>
@@ -27,12 +30,19 @@ const ProductCard = ({ product }: { product: Product }) => {
           </p>
           <div className={styles.info}>
             <div>
-              {t('pricePer4', {
-                price: new Intl.NumberFormat(lang, {
-                  style: 'currency',
-                  currency: 'OMR',
-                }).format(product.basePriceBaisa / 1000 ?? 0),
-              })}
+              {t(
+                `pricePer.${
+                  product.pricePer === 1
+                    ? 'single'
+                    : product.pricePer === 2
+                    ? 'duo'
+                    : 'multi'
+                }`,
+                {
+                  price: price,
+                  people: product.pricePer,
+                }
+              )}
             </div>
             <RatingWithCount
               rating={product.rating}

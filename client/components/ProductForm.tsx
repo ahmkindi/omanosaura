@@ -44,9 +44,10 @@ const ProductForm = ({
       .required(),
     photo: Yup.string().required(),
     basePriceBaisa: Yup.number().integer('common:onlyInt').required(),
+    pricePer: Yup.number().integer(t('common:onlyInt')).required(),
     extraPriceBaisa: Yup.number().integer('common:onlyInt').required(),
-    longitude: Yup.number().required(),
-    latitude: Yup.number().required(),
+    longitude: Yup.number().required().max(180, t('common:below', { value: 180 })).min(-180, t('common:above', { value: -180 })),
+    latitude: Yup.number().required().max(90, t('common:below', { value: 90 })).min(-90, t('common:above', { value: -90 })),
     kind: Yup.string().required()
   })
 
@@ -298,7 +299,7 @@ const ProductForm = ({
               </Form.Text>
             </FloatingLabel>
           </Form.Group>
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-2 flex gap-3">
             <FloatingLabel label={t('form.basePriceBaisa')}>
               <Form.Control
                 placeholder={t('form.basePriceBaisa')}
@@ -322,6 +323,24 @@ const ProductForm = ({
                   style: 'currency',
                   currency: 'OMR',
                 }).format(values.basePriceBaisa / 1000)}
+              </Form.Text>
+            </FloatingLabel>
+            <FloatingLabel label={t('form.pricePer')}>
+              <Form.Control
+                placeholder={t('form.pricePer')}
+                name="pricePer"
+                type="number"
+                onChange={handleChange}
+                step={1}
+                value={values.pricePer}
+                isInvalid={
+                  errors.pricePer !== undefined &&
+                  errors.pricePer.length > 0 &&
+                  touched.pricePer
+                }
+              />
+              <Form.Text className="invalid-feedback">
+                {errors.pricePer}
               </Form.Text>
             </FloatingLabel>
           </Form.Group>

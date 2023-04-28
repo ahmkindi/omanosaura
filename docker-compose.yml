@@ -6,8 +6,6 @@ services:
       context: ./client/nginx/
     ports:
       - 80:80
-    volumes:
-      - media:/www/data/media
     depends_on:
       - client
       - server
@@ -28,7 +26,6 @@ services:
       - dev.env
     volumes:
       - ./server:/app
-      - media:/media
     ports:
       - 8081:8081
     depends_on:
@@ -40,6 +37,3 @@ services:
       - 5432:5432
     env_file:
       - dev.env
-
-volumes:
-  media:

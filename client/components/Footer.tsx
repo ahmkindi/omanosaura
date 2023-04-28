@@ -6,8 +6,14 @@ import {
   AiFillPhone,
 } from 'react-icons/ai'
 import Image from 'next/image'
+import { TbPhotoPlus, TbPhotoSearch } from 'react-icons/tb'
+import Link from 'next/link'
+import { useGlobal } from '../context/global'
+import { UserRole } from '../types/requests'
 
 const Footer = () => {
+  const { user } = useGlobal()
+
   return (
     <footer className={styles.footer}>
       <div className={styles.socials} style={{ gap: '1rem' }}>
@@ -28,6 +34,16 @@ const Footer = () => {
         >
           <AiFillPhone />
         </a>
+        {user?.role === UserRole.admin && (
+          <>
+            <Link href="/images">
+              <TbPhotoPlus />
+            </Link>
+            <Link href="/media">
+              <TbPhotoSearch />
+            </Link>
+          </>
+        )}
       </div>
     </footer>
   )

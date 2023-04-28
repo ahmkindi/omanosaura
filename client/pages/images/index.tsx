@@ -5,6 +5,9 @@ import Layout from '../../components/Layout'
 import { useGlobal } from '../../context/global'
 import { UserRole } from '../../types/requests'
 import axiosServer from '../../utils/axiosServer'
+import { humanFileSize } from '../../utils/bytes'
+import { AiOutlineClose } from 'react-icons/ai'
+import IncrementDecrement from '../../components/IncrementDecrement'
 
 const Page = () => {
   const { user, isLoading } = useGlobal()
@@ -39,9 +42,9 @@ const Page = () => {
   }
 
   return (
-    <Layout title="upload">
+    <Layout title="Upload">
       <Form.Group controlId="formFileMultiple" className="mb-3">
-        <Form.Label>Multiple image upload</Form.Label>
+        <Form.Label>Maximum of 10MB, ensure file names are unique</Form.Label>
         <Form.Control
           type="file"
           multiple
@@ -63,6 +66,24 @@ const Page = () => {
           'Upload'
         )}
       </Button>
+      <IncrementDecrement />
+      <div className="flex gap-3 flex-wrap mt-3">
+        {files.map((f, i) => (
+          <div
+            key={`file-${f.name}`}
+            className="p-3 bg-[#fff] rounded shadow-md"
+          >
+            <h3>{f.name}</h3>
+            <h6>{humanFileSize(f.size)}</h6>
+            <AiOutlineClose
+              className="cursor-pointer"
+              onClick={() =>
+                setFiles((prev) => [...prev.slice(0, i), ...prev.slice(i + 1)])
+              }
+            />
+          </div>
+        ))}
+      </div>
     </Layout>
   )
 }

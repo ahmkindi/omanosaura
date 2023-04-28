@@ -53,6 +53,7 @@ export interface ProductDetails {
   lastUpdated: Date
   longitude: number
   latitude: number
+  pricePer: number
 }
 
 export interface Product extends ProductDetails {
@@ -146,6 +147,7 @@ export const emptyProduct: ProductDetails = {
   lastUpdated: new Date(),
   longitude: 0,
   latitude: 0,
+  pricePer: 4,
 }
 
 export interface BlogPreface {
