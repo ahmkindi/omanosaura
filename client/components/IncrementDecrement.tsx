@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { Button } from 'react-bootstrap'
+import { PurchaseProduct } from '../types/requests'
+import { GrAdd, GrSubtract } from 'react-icons/gr'
 
-const IncrementDecrement: React.FC = () => {
-  const [count, setCount] = useState<number>(0)
+const IncrementDecrement = ({
+  count,
+  setCount,
+}: {
+  count: number
+  setCount: React.Dispatch<React.SetStateAction<PurchaseProduct>>
+}): JSX.Element => {
   const [isPressing, setIsPressing] = useState<boolean>(false)
   const [intervalDuration, setIntervalDuration] = useState<number>(200)
   const [incrementing, setIncrementing] = useState<boolean>(false)
@@ -10,9 +18,15 @@ const IncrementDecrement: React.FC = () => {
     setIsPressing(true)
     setIncrementing(increment)
     if (increment) {
-      setCount((prevCount) => Math.min(prevCount + 1, 500))
+      setCount((prev) => ({
+        ...prev,
+        quantity: Math.min(prev.quantity + 1, 500),
+      }))
     } else {
-      setCount((prevCount) => Math.max(prevCount - 1, 0))
+      setCount((prev) => ({
+        ...prev,
+        quantity: Math.max(prev.quantity - 1, 1),
+      }))
     }
   }
 
@@ -41,16 +55,25 @@ const IncrementDecrement: React.FC = () => {
     if (isPressing) {
       intervalId = setInterval(() => {
         if (isPressing) {
-          if (count > 0 && count < 500) {
+          if (count > 1 && count < 500) {
             setIntervalDuration(getIntervalDuration())
           }
-          setCount((prevCount) => {
+          setCount((prev) => {
             if (isPressing) {
               return incrementing
-                ? Math.min(prevCount + getIncreaseAmount(), 500)
-                : Math.max(prevCount - getIncreaseAmount(), 0)
+                ? {
+                    ...prev,
+                    quantity: Math.min(
+                      prev.quantity + getIncreaseAmount(),
+                      500
+                    ),
+                  }
+                : {
+                    ...prev,
+                    quantity: Math.max(prev.quantity - getIncreaseAmount(), 1),
+                  }
             }
-            return prevCount
+            return prev
           })
         }
       }, intervalDuration)
@@ -63,6 +86,7 @@ const IncrementDecrement: React.FC = () => {
   }, [
     isPressing,
     count,
+    setCount,
     intervalDuration,
     incrementing,
     getIntervalDuration,
@@ -70,26 +94,28 @@ const IncrementDecrement: React.FC = () => {
   ])
 
   return (
-    <div>
-      <button
-        onMouseDown={() => handlePress(true)}
-        onMouseUp={handleRelease}
-        onTouchStart={() => handlePress(true)}
-        onTouchEnd={handleRelease}
-        onTouchCancel={handleRelease}
-      >
-        +
-      </button>
-      <div>{count}</div>
-      <button
+    <div className="flex items-center">
+      <Button
+        variant="outline-secondary mx-1"
         onMouseDown={() => handlePress(false)}
         onMouseUp={handleRelease}
         onTouchStart={() => handlePress(false)}
         onTouchEnd={handleRelease}
         onTouchCancel={handleRelease}
       >
-        -
-      </button>
+        <GrSubtract />
+      </Button>
+      <h5 className="w-10 text-center">{count}</h5>
+      <Button
+        variant="outline-secondary mx-1"
+        onMouseDown={() => handlePress(true)}
+        onMouseUp={handleRelease}
+        onTouchStart={() => handlePress(true)}
+        onTouchEnd={handleRelease}
+        onTouchCancel={handleRelease}
+      >
+        <GrAdd />
+      </Button>
     </div>
   )
 }

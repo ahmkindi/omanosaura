@@ -7,7 +7,6 @@ import { UserRole } from '../../types/requests'
 import axiosServer from '../../utils/axiosServer'
 import { humanFileSize } from '../../utils/bytes'
 import { AiOutlineClose } from 'react-icons/ai'
-import IncrementDecrement from '../../components/IncrementDecrement'
 
 const Page = () => {
   const { user, isLoading } = useGlobal()
@@ -66,7 +65,6 @@ const Page = () => {
           'Upload'
         )}
       </Button>
-      <IncrementDecrement />
       <div className="flex gap-3 flex-wrap mt-3">
         {files.map((f, i) => (
           <div

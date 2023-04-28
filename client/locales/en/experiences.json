@@ -53,6 +53,7 @@
     "basePriceBaisa": "Base Price (Baisa)",
     "extraPriceBaisa": "Extra Price (Baisa)",
     "longitude": "Longitude",
-    "latitude": "Latitude"
+    "latitude": "Latitude",
+    "pricePer": "Price Per How Many?"
   }
 }

@@ -52,6 +52,7 @@
     "basePriceBaisa": "السعر الثابت - بالبيسة",
     "extraPriceBaisa": "السعر الإضافي - بالبيسة",
     "longitude": "خط الطول",
-    "latitude": "خط العرض"
+    "latitude": "خط العرض",
+    "pricePer": "تسعيرة لكم نفر"
   }
 }

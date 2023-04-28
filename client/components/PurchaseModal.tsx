@@ -17,6 +17,7 @@ import ar from 'date-fns/locale/ar'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getTotalPrice } from '../utils/price'
 import Link from 'next/link'
+import IncrementDecrement from './IncrementDecrement'
 
 const PurchaseModal = ({
   product,
@@ -94,22 +95,11 @@ const PurchaseModal = ({
           onSubmit={handleSubmit}
           validationSchema={PurchaseSchema}
         >
-          {({ errors, handleChange, values, setValues, touched }) => (
+          {({ errors, values, setValues }) => (
             <FormikForm>
               <Form.Group className="mb-4">
                 <Form.Label>{t('numOfParticipants')}</Form.Label>
-                <Form.Control
-                  step={1}
-                  name="quantity"
-                  value={values.quantity}
-                  type="number"
-                  onChange={handleChange}
-                  isInvalid={
-                    errors.quantity !== undefined &&
-                    errors.quantity.length > 0 &&
-                    touched.quantity
-                  }
-                />
+                <IncrementDecrement count={values.quantity} setCount={setValues} />
                 <Form.Text className="invalid-feedback">
                   {errors.quantity}
                 </Form.Text>
