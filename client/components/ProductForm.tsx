@@ -354,6 +354,7 @@ const ProductForm = ({
                 {new Intl.NumberFormat(lang, {
                   style: 'currency',
                   currency: 'OMR',
+                  maximumFractionDigits: 1,
                 }).format(values.basePriceBaisa / 1000)}
               </Form.Text>
             </FloatingLabel>
@@ -399,6 +400,7 @@ const ProductForm = ({
                 {new Intl.NumberFormat(lang, {
                   style: 'currency',
                   currency: 'OMR',
+                  maximumFractionDigits: 2,
                 }).format(values.extraPriceBaisa / 1000)}
               </Form.Text>
             </FloatingLabel>

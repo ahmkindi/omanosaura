@@ -36,6 +36,7 @@ const PurchaseModal = ({
   const price = new Intl.NumberFormat(lang, {
     style: 'currency',
     currency: 'OMR',
+    maximumFractionDigits: 1,
   }).format(product.basePriceBaisa / 1000 ?? 0)
 
   const PurchaseSchema = Yup.object().shape({
@@ -155,6 +156,7 @@ const PurchaseModal = ({
                     price: new Intl.NumberFormat(lang, {
                       style: 'currency',
                       currency: 'OMR',
+                      maximumFractionDigits: 2,
                     }).format(product.extraPriceBaisa / 1000),
                   })}
                 </Form.Label>

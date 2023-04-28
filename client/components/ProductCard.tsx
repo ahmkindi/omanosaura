@@ -12,6 +12,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   const price = new Intl.NumberFormat(lang, {
     style: 'currency',
     currency: 'OMR',
+    maximumFractionDigits: 1,
   }).format(product.basePriceBaisa / 1000 ?? 0)
 
   return (
