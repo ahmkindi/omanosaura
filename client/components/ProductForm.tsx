@@ -9,9 +9,10 @@ import { useRouter } from 'next/router'
 import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import ar from 'date-fns/locale/ar'
-import { RiDeleteBack2Line } from 'react-icons/ri'
 import 'react-quill/dist/quill.snow.css'
 import MyQuill from './MyQuill'
+import { isAfter } from 'date-fns'
+import { AiOutlineClose } from 'react-icons/ai'
 
 const ProductForm = ({
   product,
@@ -44,9 +45,10 @@ const ProductForm = ({
       .required(),
     photo: Yup.string().required(),
     basePriceBaisa: Yup.number().integer('common:onlyInt').required(),
+    pricePer: Yup.number().integer(t('common:onlyInt')).required(),
     extraPriceBaisa: Yup.number().integer('common:onlyInt').required(),
-    longitude: Yup.number().required(),
-    latitude: Yup.number().required(),
+    longitude: Yup.number().required().max(180, t('common:below', { value: 180 })).min(-180, t('common:above', { value: -180 })),
+    latitude: Yup.number().required().max(90, t('common:below', { value: 90 })).min(-90, t('common:above', { value: -90 })),
     kind: Yup.string().required()
   })
 
@@ -85,10 +87,11 @@ const ProductForm = ({
       validationSchema={CreateSchema}
     >
       {({ errors, handleChange, values, setValues, touched }) => (
-        <FormikForm style={{ maxWidth: '500px', margin: 'auto' }}>
-          <Form.Group className="mb-4 mt-4" dir="ltr">
+        <FormikForm style={{ maxWidth: '300rem', margin: 'auto', textAlign: 'initial' }}>
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.title')}</Form.Label>
             <Form.Control
+              dir="ltr"
               name="title"
               value={values.title}
               type="text"
@@ -101,9 +104,10 @@ const ProductForm = ({
             />
             <Form.Text className="invalid-feedback">{errors.title}</Form.Text>
           </Form.Group>
-          <Form.Group className="mb-4 mt-4" dir="ltr">
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.subtitle')}</Form.Label>
             <Form.Control
+              dir="ltr"
               name="subtitle"
               value={values.subtitle}
               type="text"
@@ -118,7 +122,7 @@ const ProductForm = ({
               {errors.subtitle}
             </Form.Text>
           </Form.Group>
-          <Form.Group className="mb-4 mt-4" dir="ltr">
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.desc')}</Form.Label>
             <MyQuill
               value={values.description}
@@ -127,9 +131,10 @@ const ProductForm = ({
               }
             />
           </Form.Group>
-          <Form.Group className="mb-4 mt-4" dir="rtl">
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.arTitle')}</Form.Label>
             <Form.Control
+              dir="rtl"
               name="titleAr"
               value={values.titleAr}
               type="text"
@@ -142,9 +147,10 @@ const ProductForm = ({
             />
             <Form.Text className="invalid-feedback">{errors.titleAr}</Form.Text>
           </Form.Group>
-          <Form.Group className="mb-4 mt-4" dir="rtl">
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.arSubtitle')}</Form.Label>
             <Form.Control
+              dir="rtl"
               name="subtitleAr"
               value={values.subtitleAr}
               type="text"
@@ -159,7 +165,7 @@ const ProductForm = ({
               {errors.subtitleAr}
             </Form.Text>
           </Form.Group>
-          <Form.Group className="mb-4 mt-4" dir="rtl">
+          <Form.Group className="mb-4 mt-4">
             <Form.Label>{t('form.arDesc')}</Form.Label>
             <MyQuill
               value={values.descriptionAr}
@@ -213,7 +219,7 @@ const ProductForm = ({
                   }
                   variant="danger"
                 >
-                  <RiDeleteBack2Line />
+                  <AiOutlineClose />
                 </Button>
               </InputGroup>
             ))}
@@ -224,6 +230,7 @@ const ProductForm = ({
                   photos: [...prev.photos, ''],
                 }))
               }
+              className="mx-2"
             >
               {t('form.addPhoto')}
             </Button>
@@ -239,7 +246,6 @@ const ProductForm = ({
                         new Date(d).toDateString() ===
                         new Date(date).toDateString()
                     )
-                    console.log(prev.plannedDates, date, index)
                     if (index !== -1) {
                       return {
                         ...prev,
@@ -248,19 +254,46 @@ const ProductForm = ({
                           ...prev.plannedDates.slice(index + 1),
                         ],
                       }
-                    } else
+                    } else if (isAfter(new Date(date), new Date())) {
                       return {
                         ...prev,
                         plannedDates: [...prev.plannedDates, new Date(date)],
                       }
+                    }
+                    return prev
                   })
                   : console.log('CLICKED NOTHING')
               }
               highlightDates={values.plannedDates.map((d) => new Date(d))}
               locale={lang}
             />
+            <div className="flex gap-2 flex-wrap my-2">
+              {values.plannedDates.filter(d => isAfter(d, new Date())).map((d) => <div className="flex items-center gap-2 bg-[#fff] rounded shadow-sm" key={`date-${d.toDateString()}`}><p className="mb-0 p-2">{d.toLocaleDateString()}</p>
+                <Button
+                  onClick={() =>
+                    setValues((prev) => {
+                      const index = prev.plannedDates.findIndex(
+                        (pd) =>
+                          new Date(d).toDateString() ===
+                          new Date(pd).toDateString()
+                      )
+                      return {
+                        ...prev,
+                        plannedDates: [
+                          ...prev.plannedDates.slice(0, index),
+                          ...prev.plannedDates.slice(index + 1),
+                        ],
+                      }
+                    })
+                  }
+                  variant="danger"
+                >
+                  <AiOutlineClose />
+                </Button>
+              </div>)}
+            </div>
           </Form.Group>
-          <Form.Group className="mb-4">
+          <Form.Group className="mb-4 flex gap-3">
             <FloatingLabel label={t('form.longitude')}>
               <Form.Control
                 placeholder={t('form.longitude')}
@@ -298,7 +331,7 @@ const ProductForm = ({
               </Form.Text>
             </FloatingLabel>
           </Form.Group>
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-2 flex gap-3">
             <FloatingLabel label={t('form.basePriceBaisa')}>
               <Form.Control
                 placeholder={t('form.basePriceBaisa')}
@@ -321,11 +354,30 @@ const ProductForm = ({
                 {new Intl.NumberFormat(lang, {
                   style: 'currency',
                   currency: 'OMR',
+                  maximumFractionDigits: 1,
                 }).format(values.basePriceBaisa / 1000)}
               </Form.Text>
             </FloatingLabel>
+            <FloatingLabel label={t('form.pricePer')}>
+              <Form.Control
+                placeholder={t('form.pricePer')}
+                name="pricePer"
+                type="number"
+                onChange={handleChange}
+                step={1}
+                value={values.pricePer}
+                isInvalid={
+                  errors.pricePer !== undefined &&
+                  errors.pricePer.length > 0 &&
+                  touched.pricePer
+                }
+              />
+              <Form.Text className="invalid-feedback">
+                {errors.pricePer}
+              </Form.Text>
+            </FloatingLabel>
           </Form.Group>
-          <Form.Group className="mb-4">
+          <Form.Group className="mb-4 w-48">
             <FloatingLabel label={t('form.extraPriceBaisa')}>
               <Form.Control
                 placeholder={t('form.extraPriceBaisa')}
@@ -348,6 +400,7 @@ const ProductForm = ({
                 {new Intl.NumberFormat(lang, {
                   style: 'currency',
                   currency: 'OMR',
+                  maximumFractionDigits: 2,
                 }).format(values.extraPriceBaisa / 1000)}
               </Form.Text>
             </FloatingLabel>

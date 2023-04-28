@@ -25,7 +25,13 @@
   "failedToSocialLogin": "اوه لا...فشل التسجيل الدخول بوتسطة الموقع",
   "failedToSendEmail": "اوه لا...لم نستطع ارسال الرتبط الى بريدك",
   "checkEmail": "اضغط على الرابط المرسول الى بريدك",
-  "pricePer4": "{{ price }} لكل اربع",
+  "pricePer": {
+    "multi": "{{ price }} لكل {{ people }} أفراد",
+    "duo": "{{ price }} لكل فردين",
+    "single": "{{ price }} لكل فرد"
+  },
+  "below": "يجب ان يكون أقل من {{ value }}",
+  "above": "يجب ان يكون أكثر من {{ value }}",
   "productkind": {
     "exp": {
       "title": "مغامرات & رحلات",

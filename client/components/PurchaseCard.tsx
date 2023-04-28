@@ -33,6 +33,7 @@ const PurchaseCard = ({ purchase }: { purchase: Purchase }) => {
               {new Intl.NumberFormat(lang, {
                 style: 'currency',
                 currency: 'OMR',
+                maximumFractionDigits: 1,
               }).format(purchase.costBaisa / 1000)}
             </h4>
           </div>

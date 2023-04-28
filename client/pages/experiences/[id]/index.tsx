@@ -64,7 +64,7 @@ const SingleExperience = () => {
 
   return <Layout title={t('title')}>
     <Box>
-      <Image src={product.photo} width={450} height={450} alt={product.title} />
+      <Image className='rounded shadow-md' src={product.photo} width={450} height={450} alt={product.title} />
       <div className={styles.details}>
         <h3>{
           isAr ? product?.titleAr : product?.title

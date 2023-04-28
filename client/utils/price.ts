@@ -7,7 +7,7 @@ export const getTotalPrice = (
   payExtra: boolean,
   chosenDate: Date
 ) => {
-  var total = Math.ceil(quantity / 4) * product.basePriceBaisa
+  var total = Math.ceil(quantity / product.pricePer) * product.basePriceBaisa
   if (
     product.plannedDates.map((d) => new Date(d)).includes(new Date(chosenDate))
   ) {

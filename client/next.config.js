@@ -15,7 +15,13 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ['images.unsplash.com', 'picsum.photos', 'i.imgur.com'],
+    domains: [
+      'omanosaura.com',
+      'localhost',
+      'images.unsplash.com',
+      'picsum.photos',
+      'i.imgur.com',
+    ],
   },
 }
 

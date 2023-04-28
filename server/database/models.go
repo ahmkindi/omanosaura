@@ -69,6 +69,7 @@ type AvailableProduct struct {
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
 	Kind            ProductKind `json:"kind"`
+	PricePer        int32       `json:"price_per"`
 }
 
 type Blog struct {
@@ -102,6 +103,7 @@ type Product struct {
 	IsDeleted       bool        `json:"is_deleted"`
 	ExtraPriceBaisa int64       `json:"extra_price_baisa"`
 	Kind            ProductKind `json:"kind"`
+	PricePer        int32       `json:"price_per"`
 }
 
 type Purchase struct {

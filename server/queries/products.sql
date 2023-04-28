@@ -15,10 +15,11 @@ INSERT INTO products(
   photos,
   longitude,
   latitude,
+  price_per,
   last_updated,
   is_deleted
 )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_DATE, false)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, CURRENT_DATE, false)
 ON CONFLICT (id) DO UPDATE SET
   title = excluded.title,
   title_ar = excluded.title_ar,
@@ -34,6 +35,7 @@ ON CONFLICT (id) DO UPDATE SET
   longitude = excluded.longitude,
   latitude = excluded.latitude,
   is_deleted = excluded.is_deleted,
+  price_per = excluded.price_per,
   last_updated = CURRENT_DATE;
 
 -- name: ReviewProduct :exec

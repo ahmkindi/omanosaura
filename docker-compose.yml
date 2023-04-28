@@ -16,8 +16,6 @@ services:
       target: development
     volumes:
       - ./client:/app
-    ports:
-      - 3000:3000
 
   server:
     build:

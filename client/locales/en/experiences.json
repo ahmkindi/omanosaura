@@ -38,7 +38,7 @@
   "failedAdd": "Failed to add a new experience...",
   "successDelete": "Successfully deleted experience",
   "failedDelete": "Failed to delete experience",
-  "kind": "Experience Kind",
+  "kind": "Experience Type",
   "form": {
     "title": "Title",
     "arTitle": "Arabic Title",
@@ -47,12 +47,13 @@
     "desc": "Description",
     "arDesc": "Arabic Description",
     "plannedDates": "Planned Dates",
-    "photoUrl": "Main Photo URL (must be in i.imgur.com)",
+    "photoUrl": "Main Photo URL",
     "otherPhotos": "Other Photo URLs (Gallery)",
     "addPhoto": "Add Photo",
     "basePriceBaisa": "Base Price (Baisa)",
     "extraPriceBaisa": "Extra Price (Baisa)",
     "longitude": "Longitude",
-    "latitude": "Latitude"
+    "latitude": "Latitude",
+    "pricePer": "Price Per How Many?"
   }
 }

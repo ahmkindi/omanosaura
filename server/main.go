@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	server, err := api.CreateServer()
 	if err != nil {
 		log.Fatal(err)
@@ -19,6 +18,9 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Use(cors.New())
+	app.Static("/media", "./media", fiber.Static{
+		Browse: true,
+	})
 	app.Post("/send", server.HandlerSendEmail)
 	app.Get("/products", server.HandlerGetAllProducts)
 	app.Get("/products/:id/reviews", server.HandlerGetProductReviews)
@@ -42,6 +44,7 @@ func main() {
 	admin.Get("/users", server.HandlerGetAllUsers)
 	admin.Post("/users/:id/role", server.HandlerUpdateUserRole)
 	admin.Post("/products", server.HandlerUpsertProduct)
+	admin.Post("/products/media", server.HandlerSaveMedia)
 	admin.Post("/blogs", server.HandlerUpsertBlog)
 	admin.Delete("/blogs/:id", server.HandlerDeleteBlog)
 	admin.Get("/products/purchases", server.HandlerGetAllPurchases)

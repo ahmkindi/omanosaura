@@ -29,15 +29,17 @@ RUN go mod download
 # Copy app files
 COPY . .
 # Build app
-RUN go build -o app
+RUN go build -o server
 
 FROM alpine:3.14 as production
 # Add certificates
 RUN apk add --no-cache ca-certificates
 # Copy built binary from builder
-COPY --from=builder app .
-COPY firebase-key.json .
+WORKDIR /app
+COPY --from=builder /app/server .
+COPY --from=builder /app/firebase-key.json .
+RUN mkdir -p /app/media
 # Expose port
 EXPOSE 8081
 # Exec built binary
-CMD ./app
+CMD ./server
