@@ -20,6 +20,7 @@ import { Button } from 'react-bootstrap'
 import PurchaseModal from '../../../components/PurchaseModal'
 import Link from 'next/link'
 import { useGlobal } from '../../../context/global'
+import 'react-quill/dist/quill.snow.css'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query
@@ -63,7 +64,7 @@ const SingleExperience = () => {
   if (!product) return null
 
   return <Layout title={t('title')}>
-    <Box>
+    <Box style={{ textAlign: 'initial' }}>
       <Image className='rounded shadow-md' src={product.photo} width={450} height={450} alt={product.title} />
       <div className={styles.details}>
         <h3>{
@@ -72,8 +73,8 @@ const SingleExperience = () => {
         <h4>{
           isAr ? product?.subtitleAr : product?.subtitle
         }</h4>
-        <div dangerouslySetInnerHTML={{ __html: isAr ? product?.descriptionAr : product?.description }} />
-        <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'end', alignSelf: 'end', gap: '1rem' }}>
+        <div className="view ql-editor" dangerouslySetInnerHTML={{ __html: isAr ? product?.descriptionAr : product?.description }} />
+        <div className='flex justify-end items-end self-end gap-2 mt-1'>
           {user?.role === UserRole.admin &&
             <Link href={`/experiences/${id}/edit`} passHref>
               <Button variant="primary">

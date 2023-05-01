@@ -17,17 +17,12 @@ const IncrementDecrement = ({
   const handlePress = (increment: boolean): void => {
     setIsPressing(true)
     setIncrementing(increment)
-    if (increment) {
-      setCount((prev) => ({
-        ...prev,
-        quantity: Math.min(prev.quantity + 1, 500),
-      }))
-    } else {
-      setCount((prev) => ({
-        ...prev,
-        quantity: Math.max(prev.quantity - 1, 1),
-      }))
-    }
+    setCount((prev) => ({
+      ...prev,
+      quantity: increment
+        ? Math.min(prev.quantity + 1, 500)
+        : Math.max(prev.quantity - 1, 1),
+    }))
   }
 
   const handleRelease = (): void => {
@@ -97,22 +92,18 @@ const IncrementDecrement = ({
     <div className="flex items-center">
       <Button
         variant="outline-secondary mx-1"
-        onMouseDown={() => handlePress(false)}
-        onMouseUp={handleRelease}
-        onTouchStart={() => handlePress(false)}
-        onTouchEnd={handleRelease}
-        onTouchCancel={handleRelease}
+        onPointerDown={() => handlePress(false)}
+        onPointerUp={handleRelease}
+        onPointerCancel={handleRelease}
       >
         <GrSubtract />
       </Button>
       <h5 className="w-10 text-center">{count}</h5>
       <Button
         variant="outline-secondary mx-1"
-        onMouseDown={() => handlePress(true)}
-        onMouseUp={handleRelease}
-        onTouchStart={() => handlePress(true)}
-        onTouchEnd={handleRelease}
-        onTouchCancel={handleRelease}
+        onPointerDown={() => handlePress(true)}
+        onPointerUp={handleRelease}
+        onPointerCancel={handleRelease}
       >
         <GrAdd />
       </Button>

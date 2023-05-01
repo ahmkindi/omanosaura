@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import ReactDatePicker, { registerLocale } from 'react-datepicker'
 import ar from 'date-fns/locale/ar'
 import 'react-datepicker/dist/react-datepicker.css'
-import { getTotalPrice } from '../utils/price'
+import { getBasePrice, getTotalPrice } from '../utils/price'
 import Link from 'next/link'
 import IncrementDecrement from './IncrementDecrement'
 
@@ -162,6 +162,21 @@ const PurchaseModal = ({
                 </Form.Label>
               </Form.Group>
               <div className="mb-4">
+                {product.pricePer !== 1 && <p className="text-xs font-light mb-0">
+                  {t(
+                    `common:pricePer.${product.pricePer === 1
+                      ? 'single'
+                      : product.pricePer === 2
+                        ? 'duo'
+                        : 'multi'
+                    }`,
+                    {
+                      price: getBasePrice(lang, product, values.quantity),
+                      people: Math.ceil(values.quantity / product.pricePer) * product.pricePer,
+                    }
+                  )}
+                </p>
+                }
                 <div className='text-lg'>
                   {t('totalPrice')}
                   <span style={{ fontWeight: 'bold' }}>
@@ -174,20 +189,6 @@ const PurchaseModal = ({
                     )}
                   </span>
                 </div>
-                <p className="text-xs font-light">
-                  {t(
-                    `common:pricePer.${product.pricePer === 1
-                      ? 'single'
-                      : product.pricePer === 2
-                        ? 'duo'
-                        : 'multi'
-                    }`,
-                    {
-                      price: price,
-                      people: product.pricePer,
-                    }
-                  )}
-                </p>
               </div>
               <Modal.Footer className="flex flex-col items-end gap-2">
                 <div className="flex gap-3">
@@ -201,7 +202,7 @@ const PurchaseModal = ({
                     {t('submit')}
                   </Button>
                 </div>
-                <div className="flex text-xs text-blue-600/50 gap-1">
+                <div className="flex text-xs text-blue-600/50 gap-1 w-full">
                   <p className="font-thin">{t('byPurchasing')}</p>
                   <Link href="/terms.pdf" target="_blank">
                     {t('readTerms')}
