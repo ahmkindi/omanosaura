@@ -7,6 +7,16 @@
   }
 }
 
+.test {
+  ol {
+    list-style-type: decimal;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+}
+
 .sketchy {
   width: 96%;
   display: inline-block;

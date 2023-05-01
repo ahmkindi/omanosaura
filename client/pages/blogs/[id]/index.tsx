@@ -41,7 +41,7 @@ const Blog = () => {
   return (
     <Layout title={t('blogTitle', { title: isAr ? blog.titleAr : blog.title })}>
       <Section title={isAr ? blog.titleAr : blog.title}>
-        <div dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
+        <div className="view ql-editor" dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
         <div>
           <div style={{ textAlign: isAr ? 'right' : 'left', marginTop: '5rem', marginBottom: '1rem' }}>
             <h5>{blog.firstname} {blog.lastname}</h5>
