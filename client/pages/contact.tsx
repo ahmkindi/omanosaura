@@ -59,7 +59,7 @@ const Contact = () => {
               <AiOutlineInstagram />
             </a>
             <a
-              href="https://wa.me/0096895598840"
+              href="https://wa.me/+96895598840"
               target="_blank"
               rel="noreferrer"
             >
@@ -68,7 +68,7 @@ const Contact = () => {
             <a
               href="tel:+96892767527"
               onClick={() => {
-                navigator.clipboard.writeText('0096892767527')
+                navigator.clipboard.writeText('+96892767527')
                 setAlert?.({ type: 'light', message: successEmail })
               }}
             >

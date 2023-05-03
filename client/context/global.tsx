@@ -3,9 +3,10 @@ import auth from '../config/firebase'
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import axiosServer from '../utils/axiosServer'
 import { AxiosResponse } from 'axios'
-import { Purchase, PurchaseProduct, User } from '../types/requests'
+import { PurchaseProduct, User } from '../types/requests'
 import Cookies from 'js-cookie'
 import useTranslation from 'next-translate/useTranslation'
+import { useRouter } from 'next/router'
 
 export interface Alert {
   type: 'light' | 'warning' | 'success'
@@ -46,6 +47,7 @@ export const GlobalProvider = ({
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [purchase, setPurchase] = useState<PurchaseProduct>()
+  const router = useRouter()
 
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
@@ -57,6 +59,9 @@ export const GlobalProvider = ({
       signInWithEmailLink(auth, email ?? '', window.location.href)
         .then((result) => {
           window.localStorage.removeItem('emailForSignIn')
+          delete router.query.apiKey
+          delete router.query.oobCode
+          router.push(router)
           setAlert?.({
             type: 'success',
             message: t('successLogin', { name: result.user.displayName }),
