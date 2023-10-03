@@ -55,7 +55,7 @@ UPDATE products SET is_deleted = true WHERE id = $1;
 
 -- name: UserCanRateProduct :one
 SELECT EXISTS (
-  SELECT 1 FROM purchases WHERE user_id = $1 AND product_id = $2 AND chosen_date > CURRENT_DATE
+  SELECT 1 FROM purchases WHERE user_id = $1 AND product_id = $2 AND chosen_date <= CURRENT_DATE
 );
 
 -- name: InsertPurchase :exec

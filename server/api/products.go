@@ -62,12 +62,12 @@ func (server *Server) HandlerSaveMedia(c *fiber.Ctx) error {
 func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 	review := new(database.ReviewProductParams)
 	if err := c.BodyParser(review); err != nil {
-		return fiber.ErrBadRequest
+		return fmt.Errorf("failed to parse review body params: %w", err)
 	}
 
 	userID, ok := c.Locals(FirebaseAuthKey).(string)
 	if !ok {
-		return fiber.ErrNotFound
+		return fmt.Errorf("failed to get userId")
 	}
 
 	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
@@ -75,7 +75,7 @@ func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 		UserID:    userID,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to check if user can rate this product: %w", err)
 	}
 	if !canRate {
 		return fiber.ErrUnauthorized

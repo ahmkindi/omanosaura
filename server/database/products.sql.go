@@ -643,7 +643,7 @@ func (q *Queries) UpsertProduct(ctx context.Context, arg UpsertProductParams) er
 
 const userCanRateProduct = `-- name: UserCanRateProduct :one
 SELECT EXISTS (
-  SELECT 1 FROM purchases WHERE user_id = $1 AND product_id = $2 AND chosen_date > CURRENT_DATE
+  SELECT 1 FROM purchases WHERE user_id = $1 AND product_id = $2 AND chosen_date <= CURRENT_DATE
 )
 `
 

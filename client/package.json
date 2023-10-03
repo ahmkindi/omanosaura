@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "^13.2.4",
     "@types/bootstrap": "^5.2.5",
     "@types/js-cookie": "^3.0.3",
     "@types/react-responsive-masonry": "^2.1.0",
