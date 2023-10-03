@@ -38,15 +38,14 @@ const Reviews = ({ product }: { product: Product }) => {
   const { user } = useGlobal();
   const { data: userReview } = useSWR(
     user ? `user/products/${product.id}/review` : null,
-    fetcher<UserReview>
-  );
+    fetcher<UserReview>);
   const { data: reviews, size, setSize } = useSWRInfinite(getKey, fetcher<Review[]>);
 
   const isAr = lang === "ar";
 
   const handleSubmit = async (values: UserReview) => {
     try {
-      const response = await axiosServer.post('user/products/review', values)
+      const response = await axiosServer.post('user/products/review', {...values, productId: product.id})
       if (response.status === 200) {
         setAlert?.({ type: 'success', message: t('successfulReview') })
       } else {

@@ -70,15 +70,17 @@ func (server *Server) HandlerReviewProduct(c *fiber.Ctx) error {
 		return fmt.Errorf("failed to get userId")
 	}
 
+	review.UserID = userID
+
 	canRate, err := server.Queries.UserCanRateProduct(c.Context(), database.UserCanRateProductParams{
 		ProductID: review.ProductID,
-		UserID:    userID,
+		UserID:    review.UserID,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to check if user can rate this product: %w", err)
 	}
 	if !canRate {
-		return fiber.ErrUnauthorized
+		return fmt.Errorf("user cannot rate this product: %s %s", review.UserID, review.ProductID)
 	}
 
 	return server.Queries.ReviewProduct(c.Context(), *review)
