@@ -8,6 +8,7 @@ import * as Yup from 'yup'
 import axiosServer from '../utils/axiosServer'
 import { useGlobal } from '../context/global'
 import { useRouter } from 'next/router'
+import styles from '../styles/blog.module.scss'
 
 const BlogForm = ({ blog, id }: { blog: Blog; id?: string }) => {
   const { t } = useTranslation('blogs')
@@ -70,7 +71,7 @@ const BlogForm = ({ blog, id }: { blog: Blog; id?: string }) => {
       validationSchema={CreateSchema}
     >
       {({ errors, handleChange, values, setValues, touched }) => (
-        <FormikForm>
+        <FormikForm style={{ textAlign: 'initial' }}>
           <Form.Group className="mb-4">
             <Form.Label>{t('photoUrl')}</Form.Label>
             <Form.Control
@@ -118,11 +119,13 @@ const BlogForm = ({ blog, id }: { blog: Blog; id?: string }) => {
               {errors.description}
             </Form.Text>
           </Form.Group>
-          <MyQuill
-            value={values.page}
-            setValue={(v) => setValues((prev) => ({ ...prev, page: v }))}
-          />
-          <Form.Group className="mb-4 mt-4" dir="rtl">
+          <div className={styles.blog}>
+            <MyQuill
+              value={values.page}
+              setValue={(v) => setValues((prev) => ({ ...prev, page: v }))}
+            />
+          </div>
+          <Form.Group className="mb-4 mt-8" dir="rtl">
             <Form.Label>{t('arTitle')}</Form.Label>
             <Form.Control
               value={values.titleAr}
@@ -154,10 +157,12 @@ const BlogForm = ({ blog, id }: { blog: Blog; id?: string }) => {
               {errors.descriptionAr}
             </Form.Text>
           </Form.Group>
-          <MyQuill
-            value={values.pageAr}
-            setValue={(v) => setValues((prev) => ({ ...prev, pageAr: v }))}
-          />
+          <div className={styles.blog}>
+            <MyQuill
+              value={values.pageAr}
+              setValue={(v) => setValues((prev) => ({ ...prev, pageAr: v }))}
+            />
+          </div>
           <div style={{ display: 'flex', gap: '2rem' }} className="mb-4 mt-4">
             <Button variant="outline-primary" type="submit">
               {t('submit')}

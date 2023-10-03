@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <style>
+      html {
+        background-color: #e1eced;
+      }
+
+      body {
+        background-color: #e1eced;
+        color: #043c6c;
+        padding: 1rem;
+        margin: 1rem;
+        text-align: center;
+      }
+
+      h1 {
+        color: #f58a07;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>New Purchase:</h1>
+
+    <p><strong>Email:</strong> {{ .Email }}</p>
+
+    <p><strong>Name:</strong> {{ .Name }}</p>
+
+    <p>
+      <strong>Experience:</strong>
+      <a
+        target="_blank"
+        href="https://omanosaura.com/experiences/{{ .ProductID }}"
+        >{{ .Title }}</a
+      >
+    </p>
+
+    {{if .Paid}}
+    <p><strong>Card:</strong> {{ .Cost }} omr</p>
+    {{ else }}
+    <p><strong>Cash:</strong> {{ .Cost }} omr</p>
+    {{end}}
+
+    <p><strong>Number of People:</strong> {{ .NumOfParticipants }}</p>
+
+    <p>
+      <strong>Date of Trip:</strong> {{ .ChosenDate.Format "Jan 02, 2006" }}
+    </p>
+  </body>
+</html>

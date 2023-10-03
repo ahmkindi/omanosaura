@@ -1,6 +1,7 @@
 import { signOut } from 'firebase/auth'
 import useTranslation from 'next-translate/useTranslation'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { BsFillPencilFill } from 'react-icons/bs'
@@ -13,6 +14,7 @@ const Avatar = ({ user }: { user: User }) => {
   const [profileOpen, setProfileOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const circle = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -62,7 +64,13 @@ const Avatar = ({ user }: { user: User }) => {
             <Link passHref href="/purchases">
               {t('purchases')}
             </Link>
-            <div onClick={() => signOut(auth)}>{t('logout')}</div>
+            <div
+              onClick={() => {
+                signOut(auth)
+              }}
+            >
+              {t('logout')}
+            </div>
           </div>
         </div>
       )}

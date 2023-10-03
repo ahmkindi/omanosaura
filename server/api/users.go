@@ -20,7 +20,7 @@ func (s *Server) JWTMiddlware(c *fiber.Ctx) error {
 
 	idToken, err := s.AuthClient.VerifyIDToken(c.Context(), token)
 	if err != nil {
-		log.Println("No token found in cookies: ", token)
+		log.Println("No token found in cookies: ", token, err)
 		return c.Next()
 	}
 

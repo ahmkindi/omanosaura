@@ -111,7 +111,7 @@ export interface Purchase extends ProductDetails {
   createdAt: Date
 }
 
-export interface UserPurchase extends Purchase, User {}
+export interface UserPurchase extends Purchase, User { }
 
 export interface PurchaseHistory {
   productId: string
@@ -153,8 +153,7 @@ export const emptyProduct: ProductDetails = {
 export interface BlogPreface {
   id: string
   userId: string
-  firstname: string
-  lastname: string
+  name: string
   title: string
   titleAr: string
   description: string
@@ -171,8 +170,7 @@ export interface Blog extends BlogPreface {
 export const EmptyBlog: Blog = {
   id: '',
   userId: '00000000-0000-0000-0000-000000000000',
-  firstname: '',
-  lastname: '',
+  name: '',
   title: '',
   titleAr: '',
   description: '',

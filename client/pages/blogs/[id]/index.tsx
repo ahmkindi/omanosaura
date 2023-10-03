@@ -11,6 +11,7 @@ import Section from "../../../components/Section"
 import { format } from "date-fns"
 import Link from "next/link"
 import { useGlobal } from "../../../context/global"
+import styles from '../../../styles/blog.module.scss'
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -41,12 +42,14 @@ const Blog = () => {
   return (
     <Layout title={t('blogTitle', { title: isAr ? blog.titleAr : blog.title })}>
       <Section title={isAr ? blog.titleAr : blog.title}>
-        <div className="view ql-editor" dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
-        <div>
-          <div style={{ textAlign: isAr ? 'right' : 'left', marginTop: '5rem', marginBottom: '1rem' }}>
-            <h5>{blog.firstname} {blog.lastname}</h5>
-            <p>{format(new Date(blog.createdAt), 'dd/MM/yyyy')}</p>
-            {user?.id === blog.userId && <Link href={`/blogs/${id}/edit`}>{t('edit')}</Link>}
+        <div className={styles.blog}>
+          <div className="view ql-editor" dangerouslySetInnerHTML={{ __html: isAr ? blog.pageAr : blog.page }} />
+          <div>
+            <div style={{ textAlign: isAr ? 'right' : 'left', marginTop: '5rem', marginBottom: '1rem' }}>
+              <h5>{blog.name}</h5>
+              <p>{format(new Date(blog.createdAt), 'dd/MM/yyyy')}</p>
+              {user?.id === blog.userId && <Link href={`/blogs/${id}/edit`}>{t('edit')}</Link>}
+            </div>
           </div>
         </div>
       </Section>

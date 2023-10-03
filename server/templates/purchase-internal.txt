@@ -1,0 +1,17 @@
+New Purchase:
+
+Email: {{ .Email }}
+
+Name: {{ .Name }}
+
+Experience: {{ .Title }} (https://omanosaura.com/experiences/{{ .ProductID }})
+
+{{ if .Paid }}
+paid with card amount of: {{ .Cost }} omr online
+{{ else }}
+did not pay amount of: {{ .Cost }} omr, they will pay with cash
+{{ end }}
+
+Number of People: {{ .NumOfParticipants }}
+
+Date of Trip: {{ .ChosenDate.Format "Jan 02, 2006" }}

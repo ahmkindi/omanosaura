@@ -100,7 +100,36 @@ func (server *Server) NotifyOfPurchase(purchaseID uuid.UUID) error {
 	e.Text = textBody.Bytes()
 	e.HTML = htmlBody.Bytes()
 
-	return e.Send(server.Email.SmtpURL, server.Email.Auth)
+	err = e.Send(server.Email.SmtpURL, server.Email.Auth)
+	if err != nil {
+		fmt.Printf("failed to send external purchase email: %s", err.Error())
+	}
+
+	var inthtmlBody bytes.Buffer
+	inthtml, err := template.ParseFiles("templates/purchase-internal.html")
+	if err != nil {
+		return fmt.Errorf("failed to parse internal purchase email template: %w", err)
+	}
+	inthtml.Execute(&inthtmlBody, details)
+
+	var inttxtBody bytes.Buffer
+	inttxt, err := template.ParseFiles("templates/purchase-internal.txt")
+	if err != nil {
+		return fmt.Errorf("failed to parse internal purchase email template: %w", err)
+	}
+	inttxt.Execute(&inttxtBody, details)
+
+	e.To = []string{"admin@omanosaura.com"}
+	e.Subject = "New Purchase: " + details.Title
+	e.Text = inttxtBody.Bytes()
+	e.HTML = inthtmlBody.Bytes()
+
+	err = e.Send(server.Email.SmtpURL, server.Email.Auth)
+	if err != nil {
+		fmt.Printf("failed to send internal purchase email: %s", err.Error())
+	}
+
+	return nil
 }
 
 func (server *Server) SendWelcomeEmail(user database.User) error {

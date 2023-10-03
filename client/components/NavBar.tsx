@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import styles from '../styles/Navbar.module.scss'
-import { ButtonGroup, Button } from 'react-bootstrap'
+import { ButtonGroup, Button, Spinner } from 'react-bootstrap'
 import { navoptions } from '../types/navoptions'
 import { useGlobal } from '../context/global'
 import { useRouter } from 'next/router'
@@ -11,7 +11,7 @@ import { FiLogIn } from 'react-icons/fi'
 import Avatar from './Avatar'
 
 const NavBar = () => {
-  const { user } = useGlobal()
+  const { user, isLoading } = useGlobal()
   const { menuOpen, setMenuOpen } = useGlobal()
   const { lang, t } = useTranslation('common')
   const router = useRouter()
@@ -51,6 +51,8 @@ const NavBar = () => {
         <div className={styles.topLevelOptions}>
           {user ? (
             <Avatar user={user} />
+          ) : isLoading ? (
+            <Spinner />
           ) : (
             <Button
               style={{
@@ -149,7 +151,9 @@ const NavBar = () => {
           className={`${styles.navOptions} ${menuOpen ? styles.active : null}`}
         >
           {navoptions.map((n) => (
-            <Link key={n} href={`/${n}`}
+            <Link
+              key={n}
+              href={`/${n}`}
               className={
                 pathname === `/${n}` ? styles.navActive : styles.navInactive
               }
