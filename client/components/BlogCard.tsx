@@ -33,7 +33,7 @@ const BlogCard = ({ blogPreface }: { blogPreface: BlogPreface }) => {
           </Link>
         </h1>
         <div className={`${styles.postcardSubtitle} ${styles.small}`}>
-          {`${blogPreface.firstname} ${blogPreface.lastname} | ${format(
+          {`${blogPreface.name} | ${format(
             new Date(blogPreface.createdAt),
             'dd/MM/yyyy'
           )}`}

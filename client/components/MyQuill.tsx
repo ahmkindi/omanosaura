@@ -1,32 +1,25 @@
 import 'react-quill/dist/quill.snow.css'
 import dynamic from 'next/dynamic'
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import { useRef, useMemo } from 'react'
+import { ReactQuillProps } from 'react-quill'
 
-const modules = {
-  toolbar: [
-    [{ header: '1' }, { header: '2' }, { font: [] }],
-    [{ size: [] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [
-      { align: '' },
-      { align: 'center' },
-      { align: 'right' },
-      { align: 'justify' },
-    ],
-    [
-      { list: 'ordered' },
-      { list: 'bullet' },
-      { indent: '-1' },
-      { indent: '+1' },
-    ],
-    ['link', 'image', 'video'],
-    [{ direction: 'rtl' }],
-    ['clean'],
-  ],
-  clipboard: {
-    matchVisual: false,
+const ReactQuill = dynamic(
+  async () => {
+    const ReactQuill = (await import('react-quill')).default
+
+    const name = ({
+      forwardedRef,
+      props,
+    }: {
+      forwardedRef: any
+      props: ReactQuillProps
+    }) => <ReactQuill ref={forwardedRef} {...props} />
+    return name
   },
-}
+  {
+    ssr: false,
+  }
+)
 
 const formats = [
   'header',
@@ -53,14 +46,67 @@ const MyQuill = ({
 }: {
   value: string
   setValue: (newValue: string) => void
-}) => (
-  <ReactQuill
-    theme="snow"
-    value={value}
-    onChange={(v) => setValue(v)}
-    modules={modules}
-    formats={formats}
-  />
-)
+}) => {
+  const quillRef = useRef(null)
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          [{ size: [] }],
+          ['bold', 'italic', 'underline', 'blockquote'],
+          [
+            { align: '' },
+            { align: 'center' },
+            { align: 'right' },
+            { align: 'justify' },
+          ],
+          [
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { indent: '-1' },
+            { indent: '+1' },
+          ],
+          ['link', 'image', 'video'],
+          [{ direction: 'rtl' }],
+          ['clean'],
+          ['fullscreen'],
+        ],
+        clipboard: {
+          matchVisual: false,
+        },
+        handlers: {
+          image: imageHandler,
+        },
+      },
+    }),
+    []
+  )
+
+  function imageHandler() {
+    if (!quillRef.current) return
+
+    const editor = (quillRef.current as any).getEditor()
+    const range = editor.getSelection()
+    const value = prompt('Please enter the image URL')
+
+    if (value && range) {
+      editor.insertEmbed(range.index, 'image', value, 'user')
+    }
+  }
+
+  return (
+    <ReactQuill
+      forwardedRef={quillRef}
+      props={{
+        theme: 'snow',
+        value: value,
+        onChange: (v) => setValue(v),
+        modules: modules,
+        formats: formats,
+      }}
+    />
+  )
+}
 
 export default MyQuill
