@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./client/nginx/
+    ports:
+      - 80:80
+    depends_on:
+      - client
+      - server
+
+  client:
+    build:
+      context: ./client/
+      target: development
+    volumes:
+      - ./client:/app
+
+  server:
+    build:
+      context: ./server/
+      target: development
+    restart: unless-stopped
+    env_file:
+      - dev.env
+    volumes:
+      - ./server:/app
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.2-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - dev.env

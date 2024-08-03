@@ -1,0 +1,34 @@
+package templates
+
+type Props struct {
+	Lang     string
+	Title    string
+	Contents templ.Component
+}
+
+
+func getDir(lang string) string {
+  if lang == "ar" {
+    return "rtl"
+  }
+   return "ltr"
+}
+
+templ Layout(props Props) {
+	<!DOCTYPE html>
+	<html lang={ props.Lang } dir={ getDir(props.Lang) }>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+			<title>{ props.Title }</title>
+			<link rel="stylesheet" href="/static/output.css"/>
+		</head>
+		<body>
+			<main>
+				@props.Contents
+			</main>
+			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+		</body>
+	</html>
+}

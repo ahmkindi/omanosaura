@@ -1,39 +1,33 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  nginx:
-    build:
-      context: ./client/nginx/
-    ports:
-      - 80:80
-    depends_on:
-      - client
-      - server
-
-  client:
-    build:
-      context: ./client/
-      target: development
-    volumes:
-      - ./client:/app
-
   server:
-    build:
-      context: ./server/
-      target: development
-    restart: unless-stopped
-    env_file:
-      - dev.env
-    volumes:
-      - ./server:/app
+    image: cosmtrek/air:v1.49.0
+    working_dir: /app
+    environment:
+      - MODE=dev
     ports:
       - 8081:8081
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    volumes:
+      - ./server:/app:rw,cached
 
   db:
-    image: postgres:13.2-alpine
+    image: postgres:16.3-alpine3.20
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
     ports:
       - 5432:5432
-    env_file:
-      - dev.env
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
