@@ -1,0 +1,79 @@
+@model omanosaura.Models.Trip
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Trip</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Kind" class="control-label"></label>
+                <select asp-for="Kind" class="form-control"></select>
+                <span asp-validation-for="Kind" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TitleEn" class="control-label"></label>
+                <input asp-for="TitleEn" class="form-control" />
+                <span asp-validation-for="TitleEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TitleAr" class="control-label"></label>
+                <input asp-for="TitleAr" class="form-control" />
+                <span asp-validation-for="TitleAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationEn" class="control-label"></label>
+                <input asp-for="LocationEn" class="form-control" />
+                <span asp-validation-for="LocationEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationAr" class="control-label"></label>
+                <input asp-for="LocationAr" class="form-control" />
+                <span asp-validation-for="LocationAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AboutEn" class="control-label"></label>
+                <input asp-for="AboutEn" class="form-control" />
+                <span asp-validation-for="AboutEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AboutAr" class="control-label"></label>
+                <input asp-for="AboutAr" class="form-control" />
+                <span asp-validation-for="AboutAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Itinerary" class="control-label"></label>
+                <input asp-for="Itinerary" class="form-control" />
+                <span asp-validation-for="Itinerary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PriceBaisa" class="control-label"></label>
+                <input asp-for="PriceBaisa" class="form-control" />
+                <span asp-validation-for="PriceBaisa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

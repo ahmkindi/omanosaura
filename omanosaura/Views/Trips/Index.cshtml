@@ -1,0 +1,89 @@
+@model IEnumerable<omanosaura.Models.Trip>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-red-300 font-bold">Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Kind)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TitleEn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TitleAr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LocationEn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LocationAr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AboutEn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AboutAr)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Itinerary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceBaisa)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Kind)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TitleEn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TitleAr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocationEn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocationAr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AboutEn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AboutAr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Itinerary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PriceBaisa)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
