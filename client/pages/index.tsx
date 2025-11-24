@@ -5,7 +5,6 @@ import { Button } from 'react-bootstrap'
 import Box from '../components/Box'
 import Layout from '../components/Layout'
 import Section from '../components/Section'
-import Smartphone from '../components/Smartphone'
 import Testimonial from '../components/Testimonial'
 import styles from '../styles/Home.module.scss'
 import WhatWeOffer from '../components/WhatWeOfferCard'
@@ -52,7 +51,6 @@ const Home: NextPage = () => {
             <Button className={styles.myButton}>{t('contactText')}</Button>
           </Link>
         </div>
-        <Smartphone />
       </Box>
       <Section title={t('services')}>
         <div

@@ -7,6 +7,7 @@
 .contact {
   font-size: 1.2rem;
   padding-bottom: 1rem;
+  max-width: 500px;
 }
 
 .myButton {
@@ -33,7 +34,7 @@
   .full {
     position: absolute;
     z-index: -2;
-    max-height: 85%;
+    height: 100%;
     object-fit: cover;
     left: 50%;
     margin-left: -50vw;
@@ -53,7 +54,7 @@
       rgba(225, 236, 237, 0.7777311608237045) 50%,
       rgba(225, 236, 237, 1) 73%
     );
-    height: 85%;
+    height: 100%;
     left: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
