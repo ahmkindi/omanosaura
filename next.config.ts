@@ -28,6 +28,10 @@ function mediaRedirects(): Array<{
 }
 
 const nextConfig: NextConfig = {
+  // firebase-admin (via jwks-rsa → jose) breaks when bundled: the serverless
+  // runtime hits ERR_REQUIRE_ESM. Keep it (and Prisma) as external Node
+  // requires instead of letting Turbopack bundle them.
+  serverExternalPackages: ['firebase-admin', '@prisma/client', 'nodemailer'],
   images: {
     // Legacy DB rows store photo URLs as free text pointing at arbitrary
     // hosts (imgur, unsplash, tour sites…), so allow any https source.
