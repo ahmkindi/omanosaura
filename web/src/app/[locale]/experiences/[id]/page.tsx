@@ -7,6 +7,7 @@ import { MapPin, Users } from 'lucide-react'
 import { getProduct, getProductIds } from '@/data/products'
 import { getProductReviews } from '@/data/reviews'
 import { routing } from '@/i18n/routing'
+import { localeAlternates } from '@/lib/seo'
 import { pickLocalized } from '@/lib/localized'
 import { formatOMR } from '@/lib/price'
 import { StarRating } from '@/components/star-rating'
@@ -35,6 +36,7 @@ export async function generateMetadata({
     title: pickLocalized(product, 'title', locale),
     description: pickLocalized(product, 'subtitle', locale),
     openGraph: { images: [product.photo] },
+    alternates: localeAlternates(`/experiences/${encodeURIComponent(id)}`),
   }
 }
 

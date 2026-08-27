@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { localeAlternates } from '@/lib/seo'
 import { Users, Sparkles, ShieldCheck, Quote } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getProducts } from '@/data/products'
@@ -8,6 +9,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'common' })
+  return {
+    description: t('description'),
+    alternates: localeAlternates(''),
+  }
+}
 
 const WHY_US = [
   { icon: Users, title: 'whyUsTitle1', desc: 'whyUsDesc1' },

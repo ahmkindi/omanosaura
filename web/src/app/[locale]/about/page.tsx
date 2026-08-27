@@ -4,6 +4,7 @@ import {
   getTranslations,
   setRequestLocale,
 } from 'next-intl/server'
+import { localeAlternates } from '@/lib/seo'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const revalidate = 3600
@@ -15,7 +16,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'about' })
-  return { title: t('pageTitle'), description: t('desc') }
+  return {
+    title: t('pageTitle'),
+    description: t('desc'),
+    alternates: localeAlternates('/about'),
+  }
 }
 
 const CHAMPS = [1, 2, 3, 4, 5, 6] as const

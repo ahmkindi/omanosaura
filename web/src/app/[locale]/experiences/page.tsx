@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
+import { localeAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getProducts } from '@/data/products'
 import { ProductCard } from '@/components/experiences/product-card'
@@ -14,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'experiences' })
-  return { title: t('title') }
+  return { title: t('title'), alternates: localeAlternates('/experiences') }
 }
 
 export default async function ExperiencesPage({

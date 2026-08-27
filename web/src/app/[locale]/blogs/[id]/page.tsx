@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getBlog, getBlogIds } from '@/data/blogs'
 import { routing } from '@/i18n/routing'
+import { localeAlternates } from '@/lib/seo'
 import { pickLocalized } from '@/lib/localized'
 import { RichContent } from '@/components/rich-content'
 
@@ -30,6 +31,7 @@ export async function generateMetadata({
     title: t('blogTitle', { title: pickLocalized(blog, 'title', locale) }),
     description: pickLocalized(blog, 'description', locale),
     openGraph: { images: [blog.photo] },
+    alternates: localeAlternates(`/blogs/${encodeURIComponent(id)}`),
   }
 }
 
