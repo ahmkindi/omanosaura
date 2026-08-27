@@ -75,16 +75,13 @@ export async function upsertReview(
   if (!parsed.success) return { ok: false, error: 'invalid' }
   const { productId, rating, title, review } = parsed.data
 
-  // Legacy gate: only users with a purchase whose date has passed may rate.
-  const canRate = await prisma.purchase.findFirst({
-    where: {
-      userId: user.id,
-      productId,
-      chosenDate: { lte: new Date() },
-    },
+  // Any signed-in user may review; the (productId, userId) unique key caps it
+  // at one review per user per trip (upsert edits in place).
+  const exists = await prisma.product.findUnique({
+    where: { id: productId },
     select: { id: true },
   })
-  if (!canRate) return { ok: false, error: 'not-allowed' }
+  if (!exists) return { ok: false, error: 'invalid' }
 
   await prisma.review.upsert({
     where: { productId_userId: { productId, userId: user.id } },

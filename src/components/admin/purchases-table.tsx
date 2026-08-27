@@ -1,12 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Download } from 'lucide-react'
 import type { AdminPurchaseDTO } from '@/data/purchases'
 import { exportCSV } from '@/lib/csv'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -15,6 +22,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { TablePagination } from '@/components/admin/table-pagination'
+
+const PAGE_SIZE = 20
 
 export function PurchasesTable({
   purchases,
@@ -22,28 +32,79 @@ export function PurchasesTable({
   purchases: AdminPurchaseDTO[]
 }) {
   const [query, setQuery] = useState('')
+  const [payment, setPayment] = useState<'all' | 'card' | 'cash'>('all')
+  const [when, setWhen] = useState<'all' | 'upcoming' | 'past'>('all')
+  const [page, setPage] = useState(1)
 
-  const visible = purchases.filter((p) =>
-    `${p.userName} ${p.userEmail} ${p.productTitle}`
-      .toLowerCase()
-      .includes(query.toLowerCase()),
+  const today = new Date().toISOString().slice(0, 10)
+
+  const filtered = useMemo(
+    () =>
+      purchases.filter((p) => {
+        if (payment !== 'all' && (p.paid ? 'card' : 'cash') !== payment)
+          return false
+        if (when === 'upcoming' && p.chosenDate < today) return false
+        if (when === 'past' && p.chosenDate >= today) return false
+        return `${p.userName} ${p.userEmail} ${p.userPhone} ${p.productTitle}`
+          .toLowerCase()
+          .includes(query.toLowerCase())
+      }),
+    [purchases, query, payment, when, today],
   )
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const visible = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  )
+
+  const setFilter = <T,>(set: (v: T) => void) => (v: T) => {
+    set(v)
+    setPage(1)
+  }
 
   return (
     <div className="space-y-4" dir="ltr">
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Input
-          placeholder="Search purchases…"
+          placeholder="Search customer or experience…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setFilter(setQuery)(e.target.value)}
           className="max-w-xs"
         />
+        <Select
+          value={payment}
+          onValueChange={(v) => setFilter(setPayment)(v as typeof payment)}
+        >
+          <SelectTrigger className="w-28">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All payments</SelectItem>
+            <SelectItem value="card">Card</SelectItem>
+            <SelectItem value="cash">Cash</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          value={when}
+          onValueChange={(v) => setFilter(setWhen)(v as typeof when)}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All dates</SelectItem>
+            <SelectItem value="upcoming">Upcoming trips</SelectItem>
+            <SelectItem value="past">Past trips</SelectItem>
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
           onClick={() =>
             exportCSV(
               'purchases.csv',
-              visible.map((p) => ({
+              filtered.map((p) => ({
                 experience: p.productTitle,
                 name: p.userName,
                 email: p.userEmail,
@@ -94,6 +155,12 @@ export function PurchasesTable({
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        page={currentPage}
+        pageCount={pageCount}
+        total={filtered.length}
+        onPage={setPage}
+      />
     </div>
   )
 }

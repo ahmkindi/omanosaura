@@ -34,10 +34,10 @@ export async function Footer() {
         </nav>
         <div className="flex flex-col gap-2 text-sm">
           <a
-            href="mailto:admin@omanosaura.com"
+            href="mailto:info@omanosaura.com"
             className="flex items-center gap-2 opacity-80 hover:opacity-100"
           >
-            <Mail className="size-4" /> admin@omanosaura.com
+            <Mail className="size-4" /> info@omanosaura.com
           </a>
           <a
             href="https://wa.me/0096895598840"

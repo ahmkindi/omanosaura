@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { setUserRole } from '@/actions/admin/users'
@@ -23,20 +23,46 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { TablePagination } from '@/components/admin/table-pagination'
+
+const PAGE_SIZE = 20
 
 export function UsersTable({ users }: { users: AdminUserDTO[] }) {
   const [query, setQuery] = useState('')
+  const [role, setRole] = useState<'all' | AdminUserDTO['role']>('all')
+  const [hasTrips, setHasTrips] = useState<'all' | 'customers'>('all')
+  const [page, setPage] = useState(1)
   const [rows, setRows] = useState(users)
 
-  const visible = rows.filter((u) =>
-    `${u.name} ${u.email} ${u.phone}`.toLowerCase().includes(query.toLowerCase()),
+  const filtered = useMemo(
+    () =>
+      rows.filter((u) => {
+        if (role !== 'all' && u.role !== role) return false
+        if (hasTrips === 'customers' && u.purchaseCount === 0) return false
+        return `${u.name} ${u.email} ${u.phone}`
+          .toLowerCase()
+          .includes(query.toLowerCase())
+      }),
+    [rows, query, role, hasTrips],
   )
 
-  const changeRole = async (userId: string, role: AdminUserDTO['role']) => {
-    const result = await setUserRole(userId, role)
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const visible = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  )
+
+  const setFilter = <T,>(set: (v: T) => void) => (v: T) => {
+    set(v)
+    setPage(1)
+  }
+
+  const changeRole = async (userId: string, newRole: AdminUserDTO['role']) => {
+    const result = await setUserRole(userId, newRole)
     if (result.ok) {
       setRows((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, role } : u)),
+        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
       )
       toast.success('Role updated')
     } else {
@@ -46,19 +72,45 @@ export function UsersTable({ users }: { users: AdminUserDTO[] }) {
 
   return (
     <div className="space-y-4" dir="ltr">
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Input
           placeholder="Search users…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setFilter(setQuery)(e.target.value)}
           className="max-w-xs"
         />
+        <Select
+          value={role}
+          onValueChange={(v) => setFilter(setRole)(v as typeof role)}
+        >
+          <SelectTrigger className="w-28">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All roles</SelectItem>
+            <SelectItem value="none">none</SelectItem>
+            <SelectItem value="writer">writer</SelectItem>
+            <SelectItem value="admin">admin</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          value={hasTrips}
+          onValueChange={(v) => setFilter(setHasTrips)(v as typeof hasTrips)}
+        >
+          <SelectTrigger className="w-36">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All users</SelectItem>
+            <SelectItem value="customers">With purchases</SelectItem>
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
           onClick={() =>
             exportCSV(
               'users.csv',
-              visible.map((u) => ({
+              filtered.map((u) => ({
                 name: u.name,
                 email: u.email,
                 phone: u.phone,
@@ -115,6 +167,12 @@ export function UsersTable({ users }: { users: AdminUserDTO[] }) {
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        page={currentPage}
+        pageCount={pageCount}
+        total={filtered.length}
+        onPage={setPage}
+      />
     </div>
   )
 }

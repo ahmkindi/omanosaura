@@ -1,4 +1,3 @@
-import { SafeImage } from '@/components/safe-image'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -12,7 +11,7 @@ import { pickLocalized } from '@/lib/localized'
 import { formatOMR } from '@/lib/price'
 import { StarRating } from '@/components/star-rating'
 import { RichContent } from '@/components/rich-content'
-import { Gallery } from '@/components/experiences/gallery'
+import { ProductGallery } from '@/components/experiences/gallery'
 import { ReviewsSection } from '@/components/experiences/reviews-section'
 import { PurchaseCard } from '@/components/experiences/purchase-card'
 
@@ -84,23 +83,13 @@ export default async function ExperiencePage({
 
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
-            <SafeImage
-              src={product.photo}
-              alt={title}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 66vw"
-              className="object-cover"
-            />
-          </div>
+          <ProductGallery
+            hero={product.photo}
+            photos={product.photos}
+            title={title}
+            stripHeading={t('gallery')}
+          />
           <RichContent html={pickLocalized(product, 'description', locale)} />
-          {product.photos.length > 0 && (
-            <section className="space-y-4">
-              <h2 className="text-2xl font-semibold">{t('gallery')}</h2>
-              <Gallery photos={product.photos} title={title} />
-            </section>
-          )}
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">

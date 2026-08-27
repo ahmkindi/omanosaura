@@ -167,6 +167,51 @@
   }
 }
 
+/* Rich-content list treatments (trip descriptions use these classes) */
+.rich-content ul.checklist,
+.rich-content ul.itinerary,
+.rich-content ul.stats {
+  list-style: none;
+  padding-inline-start: 0;
+}
+.rich-content ul.checklist li,
+.rich-content ul.itinerary li {
+  margin-inline-start: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.rich-content ul.checklist li::before {
+  content: '✓';
+  flex: none;
+  font-weight: 700;
+  color: var(--color-wadi);
+}
+.rich-content ul.itinerary li::before {
+  content: '•';
+  flex: none;
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+.rich-content ul.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.rich-content ul.stats li {
+  margin-inline-start: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--color-wadi) 7%, transparent);
+  padding: 0.3rem 0.9rem;
+  font-size: 0.875rem;
+}
+.rich-content ul.stats li strong {
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-inline-end: 0.35rem;
+}
+
 /* Hide scrollbars on snap carousels while keeping scrollability */
 .no-scrollbar {
   scrollbar-width: none;

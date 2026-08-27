@@ -10,22 +10,31 @@ export type BlobFile = {
   uploadedAt: string
 }
 
-export async function listMedia(): Promise<BlobFile[]> {
+export type MediaListing = {
+  // Sub-folder prefixes directly under `prefix`, e.g. 'products/'.
+  folders: string[]
+  files: BlobFile[]
+}
+
+export async function listMedia(prefix = ''): Promise<MediaListing> {
   await requireRole('admin')
   try {
-    const { blobs } = await list({ limit: 500 })
-    return blobs
-      .map((b) => ({
-        url: b.url,
-        pathname: b.pathname,
-        size: b.size,
-        uploadedAt: new Date(b.uploadedAt).toISOString(),
-      }))
-      .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt))
+    const { blobs, folders } = await list({ limit: 500, prefix, mode: 'folded' })
+    return {
+      folders,
+      files: blobs
+        .map((b) => ({
+          url: b.url,
+          pathname: b.pathname,
+          size: b.size,
+          uploadedAt: new Date(b.uploadedAt).toISOString(),
+        }))
+        .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt)),
+    }
   } catch (error) {
     // Missing/expired blob credentials shouldn't crash the admin page.
     console.error('blob list failed', error)
-    return []
+    return { folders: [], files: [] }
   }
 }
 

@@ -1,15 +1,33 @@
 'use client'
 
 import { SafeImage } from '@/components/safe-image'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useRef, useState } from 'react'
+import { Expand } from 'lucide-react'
+import Lightbox from 'yet-another-react-lightbox'
+import Counter from 'yet-another-react-lightbox/plugins/counter'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+import 'yet-another-react-lightbox/styles.css'
+import 'yet-another-react-lightbox/plugins/counter.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
 
 /**
- * Edge-to-edge snap filmstrip with a fullscreen swipeable lightbox.
+ * Hero image + edge-to-edge snap filmstrip. The lightbox
+ * (yet-another-react-lightbox) opens over ALL photos, hero included.
  */
-export function Gallery({ photos, title }: { photos: string[]; title: string }) {
-  const [open, setOpen] = useState<number | null>(null)
+export function ProductGallery({
+  hero,
+  photos,
+  title,
+  stripHeading,
+}: {
+  hero: string
+  photos: string[]
+  title: string
+  stripHeading: string
+}) {
+  const slides = [hero, ...photos.filter((p) => p && p !== hero)]
+  const [index, setIndex] = useState(-1)
   const stripRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
 
@@ -30,130 +48,87 @@ export function Gallery({ photos, title }: { photos: string[]; title: string }) 
     setActive(best)
   }, [])
 
-  useEffect(() => {
-    if (open === null) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(null)
-      if (e.key === 'ArrowRight') setOpen((o) => Math.min((o ?? 0) + 1, photos.length - 1))
-      if (e.key === 'ArrowLeft') setOpen((o) => Math.max((o ?? 0) - 1, 0))
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open, photos.length])
-
-  if (photos.length === 0) return null
+  const strip = slides.slice(1)
 
   return (
     <>
-      <div className="relative">
-        <div
-          ref={stripRef}
-          onScroll={onScroll}
-          className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
-        >
-          {photos.map((src, i) => (
-            <button
-              key={src}
-              className="relative aspect-[4/3] w-[82%] shrink-0 snap-center overflow-hidden rounded-2xl sm:w-[46%] lg:w-[32%]"
-              onClick={() => setOpen(i)}
-              aria-label={`${title} ${i + 1}/${photos.length}`}
+      <button
+        className="group relative block aspect-[16/9] w-full overflow-hidden rounded-xl"
+        onClick={() => setIndex(0)}
+        aria-label={`${title} 1/${slides.length}`}
+      >
+        <SafeImage
+          src={hero}
+          alt={title}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 66vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+        />
+        <span className="absolute end-3 bottom-3 rounded-full bg-black/45 p-2 text-white opacity-80 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+          <Expand className="size-4" />
+        </span>
+      </button>
+
+      {strip.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">{stripHeading}</h2>
+          <div className="relative">
+            <div
+              ref={stripRef}
+              onScroll={onScroll}
+              className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
             >
-              <SafeImage
-                src={src}
-                alt={`${title} ${i + 1}`}
-                fill
-                sizes="(max-width: 640px) 82vw, (max-width: 1024px) 46vw, 32vw"
-                className="object-cover transition-transform duration-500 hover:scale-105"
-              />
-            </button>
-          ))}
-        </div>
-        {photos.length > 1 && (
-          <div className="mt-3 flex justify-center gap-1.5 sm:hidden" dir="ltr">
-            {photos.map((_, i) => (
-              <span
-                key={i}
-                className={`size-1.5 rounded-full transition-colors ${
-                  i === active ? 'bg-secondary' : 'bg-muted-foreground/30'
-                }`}
-              />
-            ))}
+              {strip.map((src, i) => (
+                <button
+                  key={src}
+                  className="relative aspect-[4/3] w-[82%] shrink-0 snap-center overflow-hidden rounded-2xl sm:w-[46%] lg:w-[32%]"
+                  onClick={() => setIndex(i + 1)}
+                  aria-label={`${title} ${i + 2}/${slides.length}`}
+                >
+                  <SafeImage
+                    src={src}
+                    alt={`${title} ${i + 2}`}
+                    fill
+                    sizes="(max-width: 640px) 82vw, (max-width: 1024px) 46vw, 32vw"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </button>
+              ))}
+            </div>
+            {strip.length > 1 && (
+              <div className="mt-3 flex justify-center gap-1.5 sm:hidden" dir="ltr">
+                {strip.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`size-1.5 rounded-full transition-colors ${
+                      i === active ? 'bg-secondary' : 'bg-muted-foreground/30'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </section>
+      )}
 
-      <AnimatePresence>
-        {open !== null && (
-          <motion.div
-            className="bg-night/95 fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(null)}
-          >
-            <button
-              className="absolute top-4 end-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-              onClick={() => setOpen(null)}
-              aria-label="Close"
-            >
-              <X className="size-5" />
-            </button>
-            <span className="absolute top-5 start-5 font-mono text-sm text-white/70">
-              {open + 1} / {photos.length}
-            </span>
-
-            {open > 0 && (
-              <button
-                className="absolute left-3 z-10 hidden rounded-full bg-white/10 p-2 text-white hover:bg-white/20 sm:block"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setOpen(open - 1)
-                }}
-                aria-label="Previous"
-              >
-                <ChevronLeft className="size-6" />
-              </button>
-            )}
-            {open < photos.length - 1 && (
-              <button
-                className="absolute right-3 z-10 hidden rounded-full bg-white/10 p-2 text-white hover:bg-white/20 sm:block"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setOpen(open + 1)
-                }}
-                aria-label="Next"
-              >
-                <ChevronRight className="size-6" />
-              </button>
-            )}
-
-            <motion.div
-              key={open}
-              className="relative h-[80svh] w-[94vw] sm:w-[86vw]"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.25 }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.6}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -70 && open < photos.length - 1) setOpen(open + 1)
-                else if (info.offset.x > 70 && open > 0) setOpen(open - 1)
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <SafeImage
-                src={photos[open]}
-                alt={`${title} ${open + 1}`}
-                fill
-                sizes="94vw"
-                className="object-contain"
-                priority
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Lightbox
+        open={index >= 0}
+        index={index}
+        close={() => setIndex(-1)}
+        slides={slides.map((src) => ({ src, alt: title }))}
+        plugins={[Zoom, Counter, Thumbnails]}
+        counter={{ container: { style: { top: 0, direction: 'ltr' } } }}
+        thumbnails={{ vignette: false, imageFit: 'cover' }}
+        carousel={{ finite: true }}
+        controller={{ closeOnBackdropClick: true }}
+        styles={{
+          root: { backgroundColor: 'rgb(22 50 79 / 0.97)' },
+          container: { backgroundColor: 'transparent' },
+          thumbnailsContainer: { backgroundColor: 'transparent' },
+          thumbnail: { backgroundColor: 'rgb(255 255 255 / 0.08)', border: 'none' },
+        }}
+      />
     </>
   )
 }

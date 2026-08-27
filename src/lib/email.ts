@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import { env } from '@/env'
 
 const FROM = process.env.EMAIL_FROM || 'Omanosaura <no-reply@mail.omanosaura.com>'
-export const ADMIN_EMAIL = 'admin@omanosaura.com'
+export const ADMIN_EMAIL = 'info@omanosaura.com'
 
 function transport() {
   return nodemailer.createTransport({
