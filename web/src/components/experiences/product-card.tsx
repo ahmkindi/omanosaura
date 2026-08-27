@@ -40,7 +40,7 @@ export async function ProductCard({ product }: { product: ProductDTO }) {
             <StarRating rating={product.rating} count={product.ratingCount} />
           ) : (
             <span className="text-muted-foreground text-xs">
-              {t('ratings')}: —
+              {t('ratings', { ratingCount: 0 })}
             </span>
           )}
         </CardContent>

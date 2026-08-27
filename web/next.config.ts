@@ -29,12 +29,9 @@ function mediaRedirects(): Array<{
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
-      { protocol: 'https', hostname: 'omanosaura.com' },
-      { protocol: 'https', hostname: 'i.imgur.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-    ],
+    // Legacy DB rows store photo URLs as free text pointing at arbitrary
+    // hosts (imgur, unsplash, tour sites…), so allow any https source.
+    remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },
   async redirects() {
     return [

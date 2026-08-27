@@ -117,11 +117,15 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-baseline justify-between gap-2">
-          <span>{formatOMR(product.basePriceBaisa, locale)}</span>
-          <span className="text-muted-foreground text-sm font-normal">
-            / {product.pricePer} {tc('pricePer')}
-          </span>
+        <CardTitle>
+          {product.pricePer === 1
+            ? tc('pricePer.single', {
+                price: formatOMR(product.basePriceBaisa, locale),
+              })
+            : tc('pricePer.multi', {
+                price: formatOMR(product.basePriceBaisa, locale),
+                people: product.pricePer,
+              })}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
