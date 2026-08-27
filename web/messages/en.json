@@ -1,0 +1,243 @@
+{
+  "about": {
+    "title": "About | Omanosaura",
+    "pageTitle": "About Omanosaura",
+    "desc": "Omanosaura aims to deliver a unique experience in Oman, and present the beuty and magic of Oman. From this the name Omanosaura was born, a one of a kind lizard that can be found in Oman only!",
+    "mission": {
+      "title": "Mission",
+      "desc": "Unique journeys, affordable prices and exceeding our clients expectations"
+    },
+    "vision": {
+      "title": "Vision",
+      "desc": "Quality service, creativity and innovation, social responsibility"
+    },
+    "champs": {
+      "1": {
+        "name": "Jaifar Al-Kindi",
+        "title": "Founder of Omanosaura",
+        "desc": "I've been working in the tourism field, specifically adventures, for 7+ years. And hold the international IRATA certificate for security in abseiling, and RCL for adventure and rescure equipment inspection. I am also a general tour guide licensed by the Ministry of Tourism."
+      },
+      "2": {
+        "name": "Mohammed Al-Kindi",
+        "title": "Transportaion Quality & Leader",
+        "desc": "I've been in the field of cars and buses for 10 years. I pay attention to the finest details to ensure a comfortable a safe trip, whether its a city tour or an off-road adventure. I also work as tour leader, usually taking the front of group to guide the experience."
+      },
+      "3": {
+        "name": "Khaled Al-Hadrami",
+        "title": "Assistant Leader",
+        "desc": "I have 3 years of experience in adventuring, enjoying the unique Omani nature as a part-time job in Omanosaura"
+      },
+      "4": {
+        "name": "Rishad Al-Toubi",
+        "title": "Adventurer & Tour Guide",
+        "desc": "4+ years in trekking and adventures, and two years in tour guiding. I love exploring different cultures, nature and free-diving! specifically free-diving with a spear gun for fishing. I work as both a tour guide in city trips and a leader in adventures."
+      },
+      "5": {
+        "name": "Muzna Al-Kindi",
+        "title": "Marketing & Social Media",
+        "desc": "I am responsible for managing the social media accounts, and videography. I love immortalizing experiences, especially those offered by Omanosaura, because they're distinguished from other experiences I participated in, whether they are in Oman or outside."
+      },
+      "6": {
+        "name": "Ahmed Al-Kindi",
+        "title": "Software Developer",
+        "desc": "I am the developer and maintainer of omanosaura.com, ensuring you have a smooth experience searching and finding the right experience for you."
+      },
+      "title": "Our Champions"
+    }
+  },
+  "blog": {
+    "title": "Blog | Omanosaura",
+    "readMore": "Read More",
+    "sharing": "Sharing The Beauty of Oman",
+    "newBlog": "New Blog",
+    "photoUrl": "Photo URL",
+    "engTitle": "English Title",
+    "engDesc": "English Description",
+    "arTitle": "Arabic Title",
+    "arDesc": "Arabic Description",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "edit",
+    "blogTitle": "{title} | Omanosaura",
+    "successAdd": "Successfully added a new blog!",
+    "failedAdd": "Failed to add a new blog...",
+    "successDelete": "Successfully deleted blog",
+    "failedDelete": "Failed to delete blog"
+  },
+  "common": {
+    "description": "Beyond the Horizon: Adventures, Sands, Mountains, and Mysteries.",
+    "company": "Omanosaura",
+    "experiences": "Experiences",
+    "about": "About",
+    "contact": "Contact",
+    "blogs": "Blogs",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "profile": "Profile",
+    "purchases": "Purchases",
+    "ratings": "{ratingCount} ratings",
+    "onlyInt": "Please input only whole numbers (no decimals)",
+    "tooLittle": "We need more participants than that",
+    "tooMany": "yikes! Thats too many participants, even for us",
+    "tooEarly": "the selected date is too early, we need time to prepare",
+    "loginFirst": "Login to view the contents of this page",
+    "acceptTerms": "Please read and accept the terms and conditions before purchasing",
+    "tooShort": "thats too short!",
+    "tooLong": "thats too long!",
+    "email": "Your Email",
+    "emailLogin": "Send Login Link",
+    "orSocialLogin": "Or Login With",
+    "successLogin": "Welcome to Omanosaura {name}",
+    "failedToSocialLogin": "oops! failed login with your social account",
+    "failedToSendEmail": "oops! failed to send you a login link",
+    "checkEmail": "Click on the login link sent to your email",
+    "pricePer": {
+      "multi": "{price} / {people} ppl",
+      "duo": "{price} / {people} ppl",
+      "single": "{price} per person"
+    },
+    "below": "must be below {value}",
+    "above": "must be above {value}",
+    "productkind": {
+      "exp": {
+        "title": "Adventures & Trips",
+        "desc": "pre-build experiences for everyone, choose according to your preference"
+      },
+      "team": {
+        "title": "Team Building",
+        "desc": "A trip filled with team activities and competitions to boost your team spirit"
+      },
+      "school": {
+        "title": "School Trips",
+        "desc": "Unique experience designed for students, following all school requirements"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact | Omanosaura",
+    "pageTitle": "Contact",
+    "desc": "You can reach us by pressing the big blue button, or use your favourite social media app from the icons below. Either way an adventure awaits!",
+    "name": "NAME",
+    "email": "EMAIL",
+    "subject": "SUBJECT",
+    "send": "SEND",
+    "message": "MESSAGE",
+    "sent": "Message sent, we will get back to you soon!",
+    "failed": "Failed to send your message, please try again"
+  },
+  "experiences": {
+    "title": "Experiences | Omanosaura",
+    "reviews": "Customer Reviews",
+    "addReview": "Add Reviews",
+    "loadMore": "Load More",
+    "reviewTitle": "Review Title (optional)",
+    "reviewDesc": "More Details (optional)",
+    "submit": "Submit",
+    "close": "Close",
+    "userReview": "{name}'s Review",
+    "mapView": "Map View",
+    "listView": "List View",
+    "threeProducts": "Omanosaura provides three types of experiences:",
+    "searchExp": "Search Experiences",
+    "trip": "Trip",
+    "tripExplanation": "Learn about the culture and enjoy the landscapes in Oman",
+    "adventure": "Adventure",
+    "adventureExplanation": "Exciting experiences such as visitng valleys, swimming in deep pools, abseiling and climb",
+    "purchase": "Lets Go!",
+    "gallery": "Gallery",
+    "successfulPurchase": "Nice! Successfully purchased the experience",
+    "failedPurchase": "oh no! there was a problem purchasing the experience",
+    "failedReview": "oops! we couldn't add your review. Maybe you haven't been on this experience yet?",
+    "successfulReview": "YAY! thanks for your review, it will help fellow adventurers!",
+    "purchaseTitle": "Purchasing {product}",
+    "numOfParticipants": "Number of Participants",
+    "chosenDate": "Date of Trip",
+    "explainGreen": "Green highlighted Dates are shared dates, prices will be cheaper but you will be paired with another group",
+    "payCash": "Payment Method:",
+    "cash": "cash",
+    "card": "card",
+    "totalPrice": "Total Price: ",
+    "byPurchasing": "By purchasing you approve the",
+    "payExtra": "Pay {price} per person, and we will take care of lunch and snacks",
+    "readTerms": "Terms and Conditions",
+    "terms": "I accept terms",
+    "successAdd": "Successfully added a new experience!",
+    "failedAdd": "Failed to add a new experience...",
+    "successDelete": "Successfully deleted experience",
+    "failedDelete": "Failed to delete experience",
+    "kind": "Experience Type",
+    "form": {
+      "title": "Title",
+      "arTitle": "Arabic Title",
+      "subtitle": "Subtitle",
+      "arSubtitle": "Arabic Subtitle",
+      "desc": "Description",
+      "arDesc": "Arabic Description",
+      "plannedDates": "Planned Dates",
+      "photoUrl": "Main Photo URL",
+      "otherPhotos": "Other Photo URLs (Gallery)",
+      "addPhoto": "Add Photo",
+      "basePriceBaisa": "Base Price (Baisa)",
+      "extraPriceBaisa": "Extra Price (Baisa)",
+      "longitude": "Longitude",
+      "latitude": "Latitude",
+      "pricePer": "Price Per How Many?"
+    }
+  },
+  "home": {
+    "omanSlogan": "Beauty Has an Address",
+    "introText": "Explore the beauty of Oman with us, from full day trips to adventures we will make sure your experience is a delight not to be forgotten.",
+    "contactText": "Let's Explore!",
+    "services": "What Do We Offer?",
+    "service": {
+      "title": "Tailored Experience",
+      "desc": "Contact us to create your own custom experience!"
+    },
+    "whyUs": "Why Omanosaura?",
+    "whyUsTitle1": "Community",
+    "whyUsTitle2": "Unique",
+    "whyUsTitle3": "Safety",
+    "whyUsDesc1": "The fun in a trip is multiplied when you are surrounded by amazing people",
+    "whyUsDesc2": "We take you on memorable experiences catered for you",
+    "whyUsDesc3": "Our guides are certified and are trained to always put your safety first",
+    "reviews": "What Do Fellow Tourists Say?",
+    "reviewDesc": "Out of the blue, We discovered Omanosaura but at the end, Its human quality and good service made the difference. If you are looking to feel Oman's culture, live adventures and a good value for money, congrats, you are at home",
+    "reviewName": "Omanosaura Tourist",
+    "reviewNameDesc": "Spanish explorer",
+    "translate": "translate"
+  },
+  "profile": {
+    "title": "Profile | Omanosaura",
+    "tooShort": "thats too short!",
+    "tooLong": "thats too long!",
+    "invalidEmail": "the email doesn't look right",
+    "emailAdr": "Email Address",
+    "name": "Name",
+    "phone": "Phone Number",
+    "update": "Update",
+    "successUpdate": "successfully updated your profile",
+    "failedUpdate": "oops, something went wrong while updating your profile"
+  },
+  "purchases": {
+    "title": "Purchases | Omanosaura",
+    "doubleClick": "Double click twice to view the trip",
+    "noPurchases": "You haven't purchased anything from us yet",
+    "allPurchases": "All Purchases",
+    "purchaseMade": "Purchase Date",
+    "tripDate": "Trip Date",
+    "numOfParticipants": "Number of Participants",
+    "totalPrice": "Total Price",
+    "productId": "Experience",
+    "userEmail": "Email",
+    "userPhone": "Phone Number",
+    "price": "Price",
+    "paid?": "Paid?",
+    "chosenDate": "Trip Date",
+    "export": "Export",
+    "userName": "Name",
+    "lastTrip": "Last Trip",
+    "numOfPurchases": "Purchases Made",
+    "avgRating": "Average Rating",
+    "allUsers": "All Users"
+  }
+}

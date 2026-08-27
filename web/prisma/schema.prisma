@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  none
+  admin
+  writer
+
+  @@map("user_role")
+}
+
+enum ProductKind {
+  school
+  team
+  exp
+
+  @@map("product_kind")
+}
+
+model Product {
+  id              String      @id
+  title           String
+  titleAr         String      @map("title_ar")
+  subtitle        String
+  subtitleAr      String      @map("subtitle_ar")
+  description     String
+  descriptionAr   String      @map("description_ar")
+  photo           String
+  basePriceBaisa  BigInt      @map("base_price_baisa")
+  extraPriceBaisa BigInt      @default(0) @map("extra_price_baisa")
+  plannedDates    DateTime[]  @default([]) @map("planned_dates") @db.Date
+  photos          String[]    @default([])
+  longitude       Float
+  latitude        Float
+  lastUpdated     DateTime    @map("last_updated") @db.Date
+  isDeleted       Boolean     @map("is_deleted")
+  kind            ProductKind @default(exp)
+  pricePer        Int         @default(4) @map("price_per")
+
+  purchases Purchase[]
+  reviews   Review[]
+
+  @@map("products")
+}
+
+model User {
+  id    String   @id
+  email String   @unique
+  name  String
+  phone String
+  role  UserRole @default(none)
+
+  purchases Purchase[]
+  reviews   Review[]
+  blogs     Blog[]
+  thawani   UserCustomerId?
+
+  @@map("users")
+}
+
+model Purchase {
+  id                String   @id @db.Uuid
+  productId         String   @map("product_id")
+  userId            String   @map("user_id")
+  numOfParticipants Int      @map("num_of_participants")
+  paid              Boolean
+  costBaisa         BigInt   @map("cost_baisa")
+  chosenDate        DateTime @map("chosen_date") @db.Date
+  complete          Boolean
+  createdAt         DateTime @default(dbgenerated("CURRENT_DATE")) @map("created_at") @db.Date
+  extraPriceChosen  Boolean  @default(false) @map("extra_price_chosen")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@map("purchases")
+}
+
+model Review {
+  productId   String   @map("product_id")
+  userId      String   @map("user_id")
+  rating      Float
+  title       String
+  review      String
+  lastUpdated DateTime @default(dbgenerated("CURRENT_DATE")) @map("last_updated") @db.Date
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@id([productId, userId])
+  @@map("reviews")
+}
+
+model UserCustomerId {
+  userId     String @id @map("user_id")
+  customerId String @map("customer_id")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_customer_id")
+}
+
+model Blog {
+  id            String   @id
+  title         String
+  description   String
+  titleAr       String   @map("title_ar")
+  descriptionAr String   @map("description_ar")
+  photo         String
+  page          String
+  pageAr        String   @map("page_ar")
+  userId        String   @map("user_id")
+  createdAt     DateTime @default(dbgenerated("CURRENT_DATE")) @map("created_at") @db.Date
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("blogs")
+}
