@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { SafeImage } from '@/components/safe-image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Users, CalendarDays, CreditCard, Banknote } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
@@ -26,7 +26,7 @@ export default async function PurchasesPage({
 
   return (
     <main className="mx-auto max-w-4xl space-y-8 px-4 py-12">
-      <h1 className="text-3xl font-bold">{tc('purchases')}</h1>
+      <h1 className="font-display text-3xl font-bold uppercase sm:text-4xl">{tc('purchases')}</h1>
       {purchases.length === 0 && (
         <p className="text-muted-foreground">{t('noPurchases')}</p>
       )}
@@ -40,7 +40,7 @@ export default async function PurchasesPage({
             <Card className="transition-shadow hover:shadow-md">
               <CardContent className="flex items-center gap-4">
                 <div className="relative size-20 shrink-0 overflow-hidden rounded-lg">
-                  <Image
+                  <SafeImage
                     src={p.productPhoto}
                     alt={p.productTitle}
                     fill

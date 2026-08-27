@@ -18,7 +18,7 @@ import {
 import { logout } from './auth-client'
 import { refreshSessionUser, useSessionUser } from './use-session-user'
 
-export function UserMenu() {
+export function UserMenu({ onDark = false }: { onDark?: boolean }) {
   const t = useTranslations('common')
   const router = useRouter()
   const pathname = usePathname()
@@ -32,6 +32,11 @@ export function UserMenu() {
       <Button
         variant="outline"
         size="sm"
+        className={
+          onDark
+            ? 'border-white/30 bg-white/10 text-white backdrop-blur hover:bg-white/20 hover:text-white'
+            : undefined
+        }
         onClick={() => {
           const params = new URLSearchParams(searchParams)
           params.set('login', '1')

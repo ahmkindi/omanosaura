@@ -37,7 +37,7 @@ export default async function AboutPage({
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 py-12">
       <section className="space-y-4 text-center">
-        <h1 className="text-4xl font-bold">{t('pageTitle')}</h1>
+        <h1 className="font-display text-4xl font-bold uppercase sm:text-5xl">{t('pageTitle')}</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">{t('desc')}</p>
         <Image
           src="/adventurer.svg"

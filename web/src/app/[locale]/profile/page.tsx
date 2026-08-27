@@ -17,7 +17,7 @@ export default async function ProfilePage({
 
   return (
     <main className="mx-auto max-w-lg space-y-8 px-4 py-12">
-      <h1 className="text-3xl font-bold">{t('title').split('|')[0]}</h1>
+      <h1 className="font-display text-3xl font-bold uppercase sm:text-4xl">{t('title').split('|')[0]}</h1>
       <ProfileForm
         initial={{ name: user!.name, phone: user!.phone, email: user!.email }}
       />

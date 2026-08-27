@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { SafeImage } from '@/components/safe-image'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -59,7 +59,7 @@ export default async function ExperiencePage({
   return (
     <main className="mx-auto max-w-6xl space-y-10 px-4 py-10">
       <header className="space-y-3">
-        <h1 className="text-4xl font-bold">{title}</h1>
+        <h1 className="font-display text-4xl font-bold uppercase sm:text-5xl">{title}</h1>
         <p className="text-muted-foreground text-lg">
           {pickLocalized(product, 'subtitle', locale)}
         </p>
@@ -85,7 +85,7 @@ export default async function ExperiencePage({
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
           <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
-            <Image
+            <SafeImage
               src={product.photo}
               alt={title}
               fill

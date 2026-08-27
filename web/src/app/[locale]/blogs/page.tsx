@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { SafeImage } from '@/components/safe-image'
 import type { Metadata } from 'next'
 import { localeAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -31,14 +31,14 @@ export default async function BlogsPage({
   return (
     <main className="mx-auto max-w-6xl space-y-8 px-4 py-12">
       <header className="text-center">
-        <h1 className="text-4xl font-bold">{t('sharing')}</h1>
+        <h1 className="font-display text-4xl font-bold uppercase sm:text-5xl">{t('sharing')}</h1>
       </header>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {blogs.map((blog) => (
           <Link key={blog.id} href={`/blogs/${blog.id}`}>
             <Card className="group h-full overflow-hidden pt-0 transition-shadow hover:shadow-lg">
               <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
+                <SafeImage
                   src={blog.photo}
                   alt={pickLocalized(blog, 'title', locale)}
                   fill

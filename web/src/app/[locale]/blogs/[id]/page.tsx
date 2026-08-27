@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { SafeImage } from '@/components/safe-image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -28,7 +28,7 @@ export async function generateMetadata({
   ])
   if (!blog) return {}
   return {
-    title: t('blogTitle', { title: pickLocalized(blog, 'title', locale) }),
+    title: pickLocalized(blog, 'title', locale),
     description: pickLocalized(blog, 'description', locale),
     openGraph: { images: [blog.photo] },
     alternates: localeAlternates(`/blogs/${encodeURIComponent(id)}`),
@@ -50,7 +50,7 @@ export default async function BlogPage({
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-4 py-12">
       <header className="space-y-3">
-        <h1 className="text-4xl font-bold">{title}</h1>
+        <h1 className="font-display text-4xl font-bold sm:text-5xl">{title}</h1>
         <p className="text-muted-foreground">
           {pickLocalized(blog, 'description', locale)}
         </p>
@@ -59,7 +59,7 @@ export default async function BlogPage({
         </p>
       </header>
       <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
-        <Image
+        <SafeImage
           src={blog.photo}
           alt={title}
           fill

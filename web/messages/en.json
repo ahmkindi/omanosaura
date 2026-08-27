@@ -111,7 +111,8 @@
         "title": "School Trips",
         "desc": "Unique experience designed for students, following all school requirements"
       }
-    }
+    },
+    "homeTab": "Home"
   },
   "contact": {
     "title": "Contact | Omanosaura",
@@ -204,7 +205,10 @@
     "reviewDesc": "Out of the blue, We discovered Omanosaura but at the end, Its human quality and good service made the difference. If you are looking to feel Oman's culture, live adventures and a good value for money, congrats, you are at home",
     "reviewName": "Omanosaura Tourist",
     "reviewNameDesc": "Spanish explorer",
-    "translate": "translate"
+    "translate": "translate",
+    "featured": "Choose your adventure",
+    "viewAll": "All experiences",
+    "scroll": "Scroll"
   },
   "profile": {
     "title": "Profile | Omanosaura",
