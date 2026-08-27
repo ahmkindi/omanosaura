@@ -4,13 +4,13 @@ import { render } from '@react-email/render'
 import type { ReactElement } from 'react'
 import { env } from '@/env'
 
-const FROM = 'Omanosaura No-Reply <no-reply@omanosaura.com>'
+const FROM = process.env.EMAIL_FROM || 'Omanosaura <no-reply@mail.omanosaura.com>'
 export const ADMIN_EMAIL = 'admin@omanosaura.com'
 
 function transport() {
   return nodemailer.createTransport({
-    host: 'smtppro.zoho.com',
-    port: 587,
+    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+    port: Number(process.env.SMTP_PORT || 587),
     secure: false, // STARTTLS
     auth: {
       user: env.emailUsername,
