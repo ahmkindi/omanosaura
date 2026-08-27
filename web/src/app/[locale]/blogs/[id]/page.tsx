@@ -17,7 +17,7 @@ export const dynamicParams = true
 const BASE = 'https://omanosaura.com'
 
 export async function generateStaticParams() {
-  const ids = await getBlogIds()
+  const ids = getBlogIds()
   return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
 }
 
@@ -32,7 +32,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>
 }): Promise<Metadata> {
   const { locale, id } = await params
-  const blog = await getBlog(decodeURIComponent(id))
+  const blog = getBlog(id)
   if (!blog) return {}
   const title = pickLocalized(blog, 'title', locale)
   const description = pickLocalized(blog, 'description', locale)
@@ -48,7 +48,7 @@ export async function generateMetadata({
       url: `${BASE}${locale === 'ar' ? '/ar' : ''}${path}`,
       images: [{ url: blog.photo }],
       publishedTime: blog.createdAt,
-      authors: [blog.authorName],
+      authors: ['Omanosaura'],
       siteName: 'Omanosaura',
       locale: locale === 'ar' ? 'ar_OM' : 'en_US',
     },
@@ -68,10 +68,8 @@ export default async function BlogPage({
 }) {
   const { locale, id } = await params
   setRequestLocale(locale)
-  const [t, blog] = await Promise.all([
-    getTranslations('blog'),
-    getBlog(decodeURIComponent(id)),
-  ])
+  const t = await getTranslations('blog')
+  const blog = getBlog(id)
   if (!blog) notFound()
 
   const title = pickLocalized(blog, 'title', locale)
@@ -86,7 +84,7 @@ export default async function BlogPage({
     description,
     image: [blog.photo],
     datePublished: blog.createdAt,
-    author: { '@type': 'Person', name: blog.authorName },
+    author: { '@type': 'Organization', name: 'Omanosaura' },
     publisher: {
       '@type': 'Organization',
       name: 'Omanosaura',
@@ -119,7 +117,7 @@ export default async function BlogPage({
             <p className="mt-4 max-w-2xl text-white/70">{description}</p>
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/60">
               <span className="inline-flex items-center gap-1.5">
-                <UserRound className="size-4" /> {blog.authorName}
+                <UserRound className="size-4" /> Omanosaura
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <CalendarDays className="size-4" />

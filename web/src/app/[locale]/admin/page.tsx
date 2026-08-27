@@ -1,18 +1,18 @@
 import { prisma } from '@/lib/db'
 import { Link } from '@/i18n/navigation'
+import { blogPosts } from '@/content/blogs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function AdminHome() {
-  const [products, blogs, users, purchases] = await Promise.all([
+  const [products, users, purchases] = await Promise.all([
     prisma.product.count({ where: { isDeleted: false } }),
-    prisma.blog.count(),
     prisma.user.count(),
     prisma.purchase.count({ where: { complete: true } }),
   ])
 
   const stats = [
     { label: 'Experiences', value: products, href: '/admin/experiences' },
-    { label: 'Blogs', value: blogs, href: '/admin/blogs' },
+    { label: 'Blogs (static)', value: blogPosts.length, href: '/blogs' },
     { label: 'Users', value: users, href: '/admin/users' },
     { label: 'Purchases', value: purchases, href: '/admin/purchases' },
   ]

@@ -5,7 +5,6 @@ import { redirect, Link } from '@/i18n/navigation'
 
 const ADMIN_LINKS = [
   { href: '/admin/experiences', label: 'Experiences' },
-  { href: '/admin/blogs', label: 'Blogs' },
   { href: '/admin/purchases', label: 'Purchases' },
   { href: '/admin/users', label: 'Users' },
   { href: '/admin/media', label: 'Media' },

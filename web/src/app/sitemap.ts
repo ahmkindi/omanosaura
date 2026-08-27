@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/db'
+import { blogPosts } from '@/content/blogs'
 
 const BASE = 'https://omanosaura.com'
 
@@ -19,13 +20,10 @@ function entry(path: string, lastModified?: Date): MetadataRoute.Sitemap[number]
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, blogs] = await Promise.all([
-    prisma.product.findMany({
-      where: { isDeleted: false },
-      select: { id: true, lastUpdated: true },
-    }),
-    prisma.blog.findMany({ select: { id: true, createdAt: true } }),
-  ])
+  const products = await prisma.product.findMany({
+    where: { isDeleted: false },
+    select: { id: true, lastUpdated: true },
+  })
 
   return [
     entry(''),
@@ -36,6 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...products.map((p) =>
       entry(`/experiences/${encodeURIComponent(p.id)}`, p.lastUpdated),
     ),
-    ...blogs.map((b) => entry(`/blogs/${encodeURIComponent(b.id)}`, b.createdAt)),
+    ...blogPosts.map((b) =>
+      entry(`/blogs/${b.slug}`, new Date(b.createdAt)),
+    ),
   ]
 }

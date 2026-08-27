@@ -1,6 +1,4 @@
-import 'server-only'
-import { prisma } from '@/lib/db'
-import { toDateString } from './serialize'
+import { blogBySlug, blogPosts, type BlogPost } from '@/content/blogs'
 
 export type BlogDTO = {
   id: string
@@ -12,52 +10,31 @@ export type BlogDTO = {
   page: string
   pageAr: string
   createdAt: string
-  authorName: string
 }
 
-function toBlogDTO(blog: {
-  id: string
-  title: string
-  titleAr: string
-  description: string
-  descriptionAr: string
-  photo: string
-  page: string
-  pageAr: string
-  createdAt: Date
-  user: { name: string }
-}): BlogDTO {
+function toDTO(post: BlogPost): BlogDTO {
   return {
-    id: blog.id,
-    title: blog.title,
-    titleAr: blog.titleAr,
-    description: blog.description,
-    descriptionAr: blog.descriptionAr,
-    photo: blog.photo,
-    page: blog.page,
-    pageAr: blog.pageAr,
-    createdAt: toDateString(blog.createdAt),
-    authorName: blog.user.name,
+    id: post.slug,
+    title: post.title,
+    titleAr: post.titleAr,
+    description: post.description,
+    descriptionAr: post.descriptionAr,
+    photo: post.photo,
+    page: post.page,
+    pageAr: post.pageAr,
+    createdAt: post.createdAt,
   }
 }
 
-export async function getBlogs(): Promise<BlogDTO[]> {
-  const blogs = await prisma.blog.findMany({
-    include: { user: { select: { name: true } } },
-    orderBy: { createdAt: 'desc' },
-  })
-  return blogs.map(toBlogDTO)
+export function getBlogs(): BlogDTO[] {
+  return blogPosts.map(toDTO)
 }
 
-export async function getBlog(id: string): Promise<BlogDTO | null> {
-  const blog = await prisma.blog.findUnique({
-    where: { id },
-    include: { user: { select: { name: true } } },
-  })
-  return blog ? toBlogDTO(blog) : null
+export function getBlog(slug: string): BlogDTO | null {
+  const post = blogBySlug.get(slug)
+  return post ? toDTO(post) : null
 }
 
-export async function getBlogIds(): Promise<string[]> {
-  const rows = await prisma.blog.findMany({ select: { id: true } })
-  return rows.map((r) => r.id)
+export function getBlogIds(): string[] {
+  return blogPosts.map((p) => p.slug)
 }

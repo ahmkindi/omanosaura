@@ -41,8 +41,13 @@ const nextConfig: NextConfig = {
       { source: '/images', destination: '/admin/media', permanent: true },
       { source: '/experiences/create', destination: '/admin/experiences/new', permanent: true },
       { source: '/experiences/:id/edit', destination: '/admin/experiences/:id', permanent: true },
-      { source: '/blogs/create', destination: '/admin/blogs/new', permanent: true },
-      { source: '/blogs/:id/edit', destination: '/admin/blogs/:id', permanent: true },
+      // Legacy blog slugs (apostrophes/trailing dashes) → clean static slugs
+      { source: "/blogs/exploring-nizwa's-timeless-charms", destination: '/blogs/exploring-nizwas-timeless-charms', permanent: true },
+      { source: "/blogs/oman's-top-5-wadis", destination: '/blogs/omans-top-5-wadis', permanent: true },
+      { source: '/blogs/a-trip-to-wadi-shab-', destination: '/blogs/a-trip-to-wadi-shab', permanent: true },
+      { source: "/blogs/oman's-hiking-hotspots", destination: '/blogs/omans-hiking-hotspots', permanent: true },
+      { source: "/blogs/oman's-best-beaches", destination: '/blogs/omans-best-beaches', permanent: true },
+      { source: "/blogs/oman's-hidden-gems", destination: '/blogs/omans-hidden-gems', permanent: true },
       ...mediaRedirects(),
     ]
   },
