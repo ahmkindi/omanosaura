@@ -9,7 +9,7 @@ export async function Footer() {
   const t = await getTranslations('common')
 
   return (
-    <footer className="bg-primary text-primary-foreground mt-16">
+    <footer className="bg-night text-primary-foreground">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
         <div className="space-y-3">
           <Image

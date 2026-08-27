@@ -68,7 +68,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <div className="flex min-h-svh flex-col pb-16 md:pb-0">
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <div className="bg-sand flex-1">{children}</div>
             <Footer />
           </div>
           <Suspense>

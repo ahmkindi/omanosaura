@@ -61,6 +61,18 @@ export default async function AboutPage({
         ))}
       </section>
 
+      <section className="bg-night space-y-4 rounded-3xl p-7 text-white sm:p-10">
+        <h2 className="font-display text-2xl font-bold uppercase sm:text-3xl">
+          {t('work.title')}
+        </h2>
+        <p className="leading-relaxed text-white/80">{t('work.p1')}</p>
+        <p className="leading-relaxed text-white/80">{t('work.p2')}</p>
+        <p className="leading-relaxed text-white/80">{t('work.p3')}</p>
+        <p className="text-wadi pt-2 font-mono text-xs tracking-wider uppercase">
+          L2000917
+        </p>
+      </section>
+
       <section className="space-y-8">
         <h2 className="text-center text-3xl font-bold">{t('champs.title')}</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

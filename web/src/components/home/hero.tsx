@@ -93,8 +93,10 @@ export function Hero({ trips }: { trips: HeroTrip[] }) {
           backgroundPosition: 'center 30%',
         }}
       />
-      {/* Night-navy wash so any video frame reads on-brand */}
+      {/* Night-navy wash so the photo reads on-brand, plus a start-side
+          scrim so the copy stays readable over bright water */}
       <div className="from-night/85 via-night/40 to-night/90 absolute inset-0 bg-gradient-to-b" />
+      <div className="from-night/70 absolute inset-0 bg-gradient-to-r via-transparent to-transparent" />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-24 pb-56 sm:pb-64">
         <motion.p
@@ -123,7 +125,7 @@ export function Hero({ trips }: { trips: HeroTrip[] }) {
         </h1>
 
         <motion.p
-          className="mt-5 max-w-xl text-base text-white/75 sm:text-lg"
+          className="mt-5 max-w-xl text-base text-white [text-shadow:0_1px_14px_rgba(2,20,40,0.8)] sm:text-lg"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.75, ease }}

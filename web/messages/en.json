@@ -43,6 +43,12 @@
         "desc": "I am the developer and maintainer of omanosaura.com, ensuring you have a smooth experience searching and finding the right experience for you."
       },
       "title": "Our Champions"
+    },
+    "work": {
+      "title": "Work we can point to",
+      "p1": "Ellesmere College Muscat students have gone with us to Bidiyah, Wadi Hawir, Jabal Hatt and Jabal Shams, and their young sailors trained with Oman Sail. ISC Muscat students toured Nizwa souq with our guides. PDO teams hiked the Sidab trail on a company day out.",
+      "p2": "We have built and run ziplines in school playgrounds across four governorates: Muscat, Dakhiliyah, and North and South Batinah. Our kids camps mix camping, cooking, kayaking and abseiling, with a specialist team supervising every activity.",
+      "p3": "Since January 2025 we hold a 15-year agreement with the South Batinah governorate to manage and develop Ain A'Thowarah in Nakhal, a hot spring with a zipline running over the valley."
     }
   },
   "blog": {
@@ -208,7 +214,22 @@
     "translate": "translate",
     "featured": "Choose your adventure",
     "viewAll": "All experiences",
-    "scroll": "Scroll"
+    "scroll": "Scroll",
+    "trusted": {
+      "title": "Who we work with",
+      "sub": "School trips, kindergarten ziplines, and team days for companies. We run them across Muscat, Dakhiliyah, and North and South Batinah.",
+      "license": "Licensed tour operator · L2000917",
+      "tagline": "We plan, you make memories.",
+      "ainTitle": "Ain A'Thowarah, Nakhal",
+      "ainDesc": "In January 2025 we signed a 15-year agreement with the South Batinah governorate to run and develop the Ain A'Thowarah hot springs, with a zipline over the valley and new experiences on the way."
+    },
+    "partners": [
+      "Ellesmere College Muscat",
+      "ISC Muscat",
+      "Petroleum Development Oman",
+      "Oman Sail",
+      "Sports Summer Programme"
+    ]
   },
   "profile": {
     "title": "Profile | Omanosaura",

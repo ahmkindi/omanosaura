@@ -3,6 +3,7 @@ import { localeAlternates } from '@/lib/seo'
 import { getProducts } from '@/data/products'
 import { Hero } from '@/components/home/hero'
 import { Featured } from '@/components/home/featured'
+import { Trusted } from '@/components/home/trusted'
 import { Kinds } from '@/components/home/kinds'
 import { WhyUs } from '@/components/home/why-us'
 import { Testimonial } from '@/components/home/testimonial'
@@ -50,6 +51,7 @@ export default async function HomePage({
         }))}
       />
       <Featured products={featured} />
+      <Trusted />
       <Kinds />
       <WhyUs />
       <Testimonial />
