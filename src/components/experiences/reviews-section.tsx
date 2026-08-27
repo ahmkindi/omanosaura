@@ -146,6 +146,12 @@ export function ReviewsSection({
         </Card>
       )}
 
+      {reviews.length === 0 && (
+        <p className="text-muted-foreground rounded-2xl border border-dashed px-6 py-10 text-center text-sm">
+          {t('noReviews')}
+        </p>
+      )}
+
       <div className="space-y-4">
         {reviews.map((r) => (
           <Card key={`${r.productId}-${r.userId}`}>

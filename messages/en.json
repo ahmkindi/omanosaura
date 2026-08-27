@@ -189,7 +189,8 @@
       "longitude": "Longitude",
       "latitude": "Latitude",
       "pricePer": "Price Per How Many?"
-    }
+    },
+    "noReviews": "No reviews yet — be the first to share your experience after your trip."
   },
   "home": {
     "omanSlogan": "Beauty Has an Address",

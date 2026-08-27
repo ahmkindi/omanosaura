@@ -23,7 +23,7 @@ export async function generateMetadata({
   }
 }
 
-const CHAMPS = [1, 2, 3, 4, 5, 6] as const
+const CHAMPS = [1, 2, 3, 4, 5] as const
 
 export default async function AboutPage({
   params,
@@ -75,9 +75,13 @@ export default async function AboutPage({
 
       <section className="space-y-8">
         <h2 className="text-center text-3xl font-bold">{t('champs.title')}</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* 5 champions: 3 on top, centered 2 below on large screens */}
+        <div className="flex flex-wrap justify-center gap-6">
           {CHAMPS.map((i) => (
-            <Card key={i} className="overflow-hidden pt-0">
+            <Card
+              key={i}
+              className="w-full overflow-hidden pt-0 sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+            >
               <div className="relative aspect-square">
                 <Image
                   src={`/champs/${i}.jpeg`}
