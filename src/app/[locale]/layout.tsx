@@ -38,11 +38,30 @@ const plexMono = IBM_Plex_Mono({
   variable: '--font-plex-mono',
 })
 
+const SITE_DESCRIPTION =
+  'Adventure and experiences across Oman — trips, hikes, camps, and team days. We plan, you make memories.'
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://omanosaura.com'),
   title: {
-    default: 'Omanosaura',
+    default: 'Omanosaura — Adventure & Experiences in Oman',
     template: '%s | Omanosaura',
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: 'Omanosaura',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: 'Omanosaura', statusBarStyle: 'black-translucent' },
+  openGraph: {
+    type: 'website',
+    siteName: 'Omanosaura',
+    title: 'Omanosaura — Adventure & Experiences in Oman',
+    description: SITE_DESCRIPTION,
+    url: 'https://omanosaura.com',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Omanosaura — Adventure & Experiences in Oman',
+    description: SITE_DESCRIPTION,
   },
 }
 
