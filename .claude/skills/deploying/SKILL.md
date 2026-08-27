@@ -63,6 +63,29 @@ The build runs `prisma generate` (not `migrate`), so migrations must be applied
 separately. Prefer Neon's dashboard branching to test a migration against
 prod-like data first.
 
+## Thawani webhook (one-time portal setup, not yet done)
+
+Fulfillment is webhook-first; the webhook stays inert until this is configured.
+In the **Thawani merchant portal** (production portal — production keys are
+already live in the Vercel env):
+
+1. Set webhook URL: `https://omanosaura.com/api/webhooks/thawani`
+2. Set a webhook secret, then store the same value:
+   `printf '%s' "<secret>" | npx vercel env add THAWANI_WEBHOOK_SECRET production --scope team_sqQLOiO9vwR9wMfeAMFqA392 --force --type secret --yes` and redeploy.
+
+Contract implemented in `src/app/api/webhooks/thawani/route.ts`:
+- Headers: `thawani-timestamp`, `thawani-signature`
+- Signature = `HMAC-SHA256(rawBody + '-' + timestamp, secret)` hex-encoded
+- Events handled: `checkout.completed` with `payment_status === 'paid'` →
+  idempotent fulfillment keyed on `client_reference_id` (= purchase UUID);
+  `payment.failed` is logged; everything else ignored. Always returns 200 for
+  verified events so Thawani doesn't retry forever.
+- Test with https://webhook.site first if unsure of the portal's payload.
+
+Until configured, payments still complete via the success redirect
+(`/api/purchase/success/[id]`) and the daily reconcile cron — the webhook adds
+resilience for customers who close the browser after paying.
+
 ## Domains
 
 - `www.omanosaura.com` is aliased on each production deploy automatically.

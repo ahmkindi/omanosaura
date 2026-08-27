@@ -57,10 +57,12 @@ HMAC-verified with `THAWANI_WEBHOOK_SECRET`), with the success redirect
 (`/api/purchase/success/[id]`) and a daily cron
 (`/api/cron/reconcile-purchases`) as backups. All three are idempotent via
 `src/lib/fulfill.ts`. If a paid purchase stays `complete=false`:
-- Confirm the webhook URL + secret are set in the Thawani merchant portal.
+- Confirm the webhook URL + secret are set in the Thawani merchant portal
+  (full setup contract in the `deploying` skill).
 - Check the session status via `thawani.getSessionByClientReference(purchaseId)`.
 - The reconcile cron sweeps card purchases `<7 days` old — it self-heals.
-- Remember Thawani is on **UAT** until the keys are swapped to production.
+- Production Thawani keys are live in Vercel production env since 2026-08-27;
+  preview + local `.env` stay on UAT (`uatcheckout.thawani.om`).
 
 ## Emails not sending
 
