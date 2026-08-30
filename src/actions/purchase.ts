@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { prisma } from '@/lib/db'
 import { requireUser, rememberUserLocale } from '@/lib/auth'
 import { computeCostBaisa } from '@/lib/pricing'
-import { canModifyBooking } from '@/lib/booking-policy'
+import { canModifyBooking, canBookDate } from '@/lib/booking-policy'
 import { createCheckoutForPurchase } from '@/lib/checkout'
 import { refundPurchase } from '@/lib/refund'
 import {
@@ -33,17 +33,6 @@ export type PurchaseResult =
 
 const MIN_TOTAL_BAISA = 100
 
-// Legacy rule: bookings must be at least one day out.
-function isBeforeTomorrow(chosenDate: string | Date): boolean {
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const date =
-    typeof chosenDate === 'string'
-      ? new Date(`${chosenDate}T00:00:00Z`)
-      : chosenDate
-  return date < new Date(tomorrow.toISOString().slice(0, 10))
-}
-
 export async function purchaseProduct(
   input: PurchaseInput,
 ): Promise<PurchaseResult> {
@@ -58,7 +47,9 @@ export async function purchaseProduct(
   if (!parsed.success) return { ok: false, error: 'invalid' }
   const { productId, quantity, chosenDate, cash, payExtra } = parsed.data
 
-  if (isBeforeTomorrow(chosenDate)) {
+  // Same cutoff as cancel/reschedule: never sell a date the customer
+  // couldn't immediately back out of.
+  if (!canBookDate(chosenDate)) {
     return { ok: false, error: 'too-early' }
   }
 
@@ -238,7 +229,7 @@ export async function reschedulePurchase(
   if (!parsed.success) return { ok: false, error: 'invalid' }
   const { purchaseId, newDate } = parsed.data
 
-  if (isBeforeTomorrow(newDate)) return { ok: false, error: 'too-early' }
+  if (!canBookDate(newDate)) return { ok: false, error: 'too-early' }
 
   const purchase = await prisma.purchase.findUnique({
     where: { id: purchaseId },
@@ -315,7 +306,7 @@ export async function retryPayment(input: RetryInput): Promise<RetryResult> {
   }
   if (purchase.product.isDeleted) return { ok: false, error: 'conflict' }
   // Trip already too close to pay for — the booking has to be remade.
-  if (isBeforeTomorrow(purchase.chosenDate)) {
+  if (!canBookDate(purchase.chosenDate)) {
     return { ok: false, error: 'too-early' }
   }
 

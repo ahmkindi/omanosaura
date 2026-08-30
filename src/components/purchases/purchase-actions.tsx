@@ -22,15 +22,10 @@ import {
 } from '@/actions/purchase'
 import {
   canModifyBooking,
+  minBookableDateISO,
   modificationDeadline,
 } from '@/lib/booking-policy'
 import type { PurchaseDTO } from '@/data/purchases'
-
-function tomorrowISO(): string {
-  const d = new Date()
-  d.setDate(d.getDate() + 1)
-  return d.toISOString().slice(0, 10)
-}
 
 export function PurchaseActions({ purchase }: { purchase: PurchaseDTO }) {
   const t = useTranslations('purchases')
@@ -190,7 +185,7 @@ export function PurchaseActions({ purchase }: { purchase: PurchaseDTO }) {
             <Input
               id={`new-date-${purchase.id}`}
               type="date"
-              min={tomorrowISO()}
+              min={minBookableDateISO()}
               value={newDate}
               onChange={(e) => setNewDate(e.target.value)}
             />

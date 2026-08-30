@@ -31,3 +31,23 @@ export function canModifyBooking(
 ): boolean {
   return now.getTime() < modificationDeadline(chosenDate).getTime()
 }
+
+/**
+ * Booking uses the same cutoff as cancel/reschedule: you can only book a
+ * date you could still back out of. A date is bookable while its
+ * modification deadline is in the future.
+ */
+export const canBookDate = canModifyBooking
+
+/** Earliest bookable trip date (yyyy-MM-dd): Muscat today + 2 days. */
+export function minBookableDateISO(now: Date = new Date()): string {
+  const muscatNow = new Date(now.getTime() + MUSCAT_OFFSET_HOURS * HOUR_MS)
+  const first = new Date(
+    Date.UTC(
+      muscatNow.getUTCFullYear(),
+      muscatNow.getUTCMonth(),
+      muscatNow.getUTCDate() + 2,
+    ),
+  )
+  return first.toISOString().slice(0, 10)
+}

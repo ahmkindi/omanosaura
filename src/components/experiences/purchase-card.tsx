@@ -8,6 +8,7 @@ import { Info } from 'lucide-react'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { purchaseProduct } from '@/actions/purchase'
 import { computeCostBaisa } from '@/lib/pricing'
+import { minBookableDateISO } from '@/lib/booking-policy'
 import { formatOMR } from '@/lib/price'
 import { useSessionUser } from '@/components/layout/use-session-user'
 import { Button } from '@/components/ui/button'
@@ -45,12 +46,6 @@ export type PurchaseCardProduct = {
   plannedDates: string[]
 }
 
-function tomorrowISO(): string {
-  const d = new Date()
-  d.setDate(d.getDate() + 1)
-  return d.toISOString().slice(0, 10)
-}
-
 export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
   const t = useTranslations('experiences')
   const tc = useTranslations('common')
@@ -68,7 +63,7 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
   const [accepted, setAccepted] = useState(false)
   const [busy, setBusy] = useState(false)
 
-  const minDate = tomorrowISO()
+  const minDate = minBookableDateISO()
   const upcomingShared = product.plannedDates.filter((d) => d >= minDate)
 
   const total = useMemo(
@@ -104,7 +99,9 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
     })
     setBusy(false)
     if (!result.ok) {
-      toast.error(t('failedPurchase'))
+      toast.error(
+        result.error === 'too-early' ? tc('tooEarly') : t('failedPurchase'),
+      )
       return
     }
     if (result.cash) {

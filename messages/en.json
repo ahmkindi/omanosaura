@@ -348,7 +348,7 @@
         "title": "Bookings, prices & payment",
         "p1": "All prices are shown in Omani Rial (OMR). Payment can be made online by card through Thawani, Oman's licensed payment gateway, or in cash on arrival where that option is offered.",
         "p2": "A card booking is confirmed once payment completes; a cash booking is confirmed when we issue your confirmation email. Every confirmed booking receives a reference number, which you can find in your confirmation email and on your Purchases page.",
-        "p3": "Bookings must be made at least one day before the trip date."
+        "p3": "Bookings close 24 hours before the trip day begins (00:00 Oman time on the trip date), the same deadline that applies to free cancellation and date changes."
       },
       "cancellation": {
         "title": "Cancellation, rescheduling & refunds",
