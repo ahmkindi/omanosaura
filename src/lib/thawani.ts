@@ -26,6 +26,14 @@ export type CreateSessionRequest = {
   metadata: Record<string, string | number>
 }
 
+export type ThawaniPayment = {
+  payment_id: string
+  status: string
+  amount: number
+  checkout_invoice?: string
+  created_at?: string
+}
+
 type ThawaniEnvelope<T> = { success: boolean; code: number; data: T }
 
 const TIMEOUT_MS = 20_000
@@ -82,5 +90,27 @@ export const thawani = {
       'GET',
       `/checkout/reference/${encodeURIComponent(ref)}`,
     )
+  },
+
+  getSession(sessionId: string): Promise<ThawaniSession> {
+    return request<ThawaniSession>(
+      'GET',
+      `/checkout/session/${encodeURIComponent(sessionId)}`,
+    )
+  },
+
+  getPaymentsByInvoice(invoice: string): Promise<ThawaniPayment[]> {
+    return request<ThawaniPayment[]>(
+      'GET',
+      `/payments?checkout_invoice=${encodeURIComponent(invoice)}`,
+    )
+  },
+
+  createRefund(req: {
+    payment_id: string
+    reason: string
+    metadata?: Record<string, string | number>
+  }): Promise<unknown> {
+    return request<unknown>('POST', '/refunds', req)
   },
 }

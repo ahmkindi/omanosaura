@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/reconcile-purchases",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/booking-emails",
+      "schedule": "0 5 * * *"
     }
   ]
 }

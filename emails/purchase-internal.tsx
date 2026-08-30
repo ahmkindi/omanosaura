@@ -17,7 +17,7 @@ export default function PurchaseInternalEmail(props: PurchaseEmailProps) {
         <br />
         <b>Participants:</b> {props.participants}
         <br />
-        <b>Total:</b> {props.costOMR.toFixed(3)} OMR
+        <b>Total:</b> {props.costOMR}
         <br />
         <b>Payment:</b> {props.paid ? 'Paid online' : 'CASH — collect on site'}
         <br />

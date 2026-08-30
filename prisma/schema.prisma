@@ -23,6 +23,17 @@ enum ProductKind {
   @@map("product_kind")
 }
 
+enum PurchaseStatus {
+  pending
+  confirmed
+  cancelled
+  refund_pending
+  refunded
+  expired
+
+  @@map("purchase_status")
+}
+
 model Product {
   id              String      @id
   title           String
@@ -50,11 +61,12 @@ model Product {
 }
 
 model User {
-  id    String   @id
-  email String   @unique
-  name  String
-  phone String
-  role  UserRole @default(none)
+  id     String   @id
+  email  String   @unique
+  name   String
+  phone  String
+  role   UserRole @default(none)
+  locale String   @default("en")
 
   purchases Purchase[]
   reviews   Review[]
@@ -76,9 +88,26 @@ model Purchase {
   createdAt         DateTime @default(dbgenerated("CURRENT_DATE")) @map("created_at") @db.Date
   extraPriceChosen  Boolean  @default(false) @map("extra_price_chosen")
 
+  // Lifecycle. `complete` is legacy and dual-written until it can be dropped;
+  // all reads go through `status`. `paid` remains the payment-method flag
+  // (true = card via Thawani, false = cash on arrival).
+  status              PurchaseStatus @default(pending)
+  createdAtTs         DateTime       @default(now()) @map("created_at_ts") @db.Timestamptz(6)
+  updatedAt           DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  thawaniSessionId    String?        @map("thawani_session_id")
+  thawaniPaymentId    String?        @map("thawani_payment_id")
+  cancelledAt         DateTime?      @map("cancelled_at") @db.Timestamptz(6)
+  cancelledBy         String?        @map("cancelled_by")
+  refundedAt          DateTime?      @map("refunded_at") @db.Timestamptz(6)
+  rescheduledFrom     DateTime?      @map("rescheduled_from") @db.Date
+  reminderSentAt      DateTime?      @map("reminder_sent_at") @db.Timestamptz(6)
+  reviewRequestSentAt DateTime?      @map("review_request_sent_at") @db.Timestamptz(6)
+
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user    User    @relation(fields: [userId], references: [id])
 
+  @@index([status, chosenDate])
+  @@index([userId])
   @@map("purchases")
 }
 

@@ -9,8 +9,10 @@ import { notifyOfPurchase } from '@/lib/purchase-notify'
  */
 export async function fulfillPurchase(purchaseId: string): Promise<boolean> {
   const result = await prisma.purchase.updateMany({
-    where: { id: purchaseId, complete: false },
-    data: { complete: true },
+    // `expired` included so a session paid after the reconcile sweep expired
+    // the row still confirms. `complete` is dual-written until it is dropped.
+    where: { id: purchaseId, status: { in: ['pending', 'expired'] } },
+    data: { status: 'confirmed', complete: true },
   })
   return result.count > 0
 }

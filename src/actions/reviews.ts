@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
+import { containsProfanity } from '@/lib/profanity'
 import { getProductReviews, type ReviewDTO } from '@/data/reviews'
 import { toDateString } from '@/data/serialize'
 
@@ -63,7 +64,7 @@ function revalidateProduct(productId: string) {
 
 export async function upsertReview(
   input: ReviewInput,
-): Promise<{ ok: boolean; error?: 'not-allowed' | 'invalid' }> {
+): Promise<{ ok: boolean; error?: 'not-allowed' | 'invalid' | 'profane' }> {
   let user
   try {
     user = await requireUser()
@@ -74,6 +75,10 @@ export async function upsertReview(
   const parsed = reviewSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: 'invalid' }
   const { productId, rating, title, review } = parsed.data
+
+  if (containsProfanity(title) || containsProfanity(review)) {
+    return { ok: false, error: 'profane' }
+  }
 
   // Any signed-in user may review; the (productId, userId) unique key caps it
   // at one review per user per trip (upsert edits in place).

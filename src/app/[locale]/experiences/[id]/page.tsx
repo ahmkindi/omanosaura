@@ -108,7 +108,11 @@ export default async function ExperiencePage({
         </aside>
       </div>
 
-      <ReviewsSection productId={product.id} initialReviews={reviews} />
+      <ReviewsSection
+        productId={product.id}
+        initialReviews={reviews}
+        total={product.ratingCount}
+      />
     </main>
   )
 }

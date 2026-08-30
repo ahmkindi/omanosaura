@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { NextResponse, type NextRequest } from 'next/server'
 import { after } from 'next/server'
 import { env } from '@/env'
+import { prisma } from '@/lib/db'
 import { fulfillPurchase, notifyOfPurchase } from '@/lib/fulfill'
 
 type ThawaniWebhookBody = {
@@ -9,6 +10,7 @@ type ThawaniWebhookBody = {
   data?: {
     client_reference_id?: string
     payment_status?: string
+    payment_id?: string
   }
 }
 
@@ -53,6 +55,29 @@ export async function POST(request: NextRequest) {
     if (transitioned) after(() => notifyOfPurchase(purchaseId))
   } else if (body.event_type === 'payment.failed') {
     console.warn('thawani payment failed', rawBody)
+  } else if (body.event_type.startsWith('refund')) {
+    // Refund confirmation is normally synchronous in the cancel action; this
+    // corroborates it (e.g. a manual portal refund). Event names are not
+    // documented — match defensively and log the payload.
+    console.info('thawani refund event', rawBody)
+    const purchaseId = body.data?.client_reference_id
+    if (purchaseId) {
+      await prisma.purchase.updateMany({
+        where: { id: purchaseId, status: 'refund_pending' },
+        data: { status: 'refunded', refundedAt: new Date() },
+      })
+    } else if (body.data?.payment_id) {
+      await prisma.purchase.updateMany({
+        where: {
+          thawaniPaymentId: body.data.payment_id,
+          status: 'refund_pending',
+        },
+        data: { status: 'refunded', refundedAt: new Date() },
+      })
+    }
+  } else {
+    // Log unknown event types so we learn the real names (esp. refunds) in UAT.
+    console.info('thawani webhook (unhandled)', body.event_type, rawBody)
   }
 
   // Always 200 for verified events so Thawani doesn't retry forever.

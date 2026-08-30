@@ -104,6 +104,8 @@
     },
     "below": "must be below {value}",
     "above": "must be above {value}",
+    "termsLink": "Terms & Conditions",
+    "privacyLink": "Privacy Policy",
     "productkind": {
       "exp": {
         "title": "Adventures & Trips",
@@ -164,6 +166,7 @@
     "successfulPurchase": "Nice! Successfully purchased the experience",
     "failedPurchase": "oh no! there was a problem purchasing the experience",
     "failedReview": "oops! we couldn't save your review. Please try again.",
+    "reviewRejected": "Your review contains inappropriate language. Please rephrase it.",
     "successfulReview": "YAY! thanks for your review, it will help fellow adventurers!",
     "purchaseTitle": "Purchasing {product}",
     "numOfParticipants": "Number of Participants",
@@ -177,6 +180,7 @@
     "payExtra": "Pay {price} per person, and we will take care of lunch and snacks",
     "readTerms": "Terms and Conditions",
     "terms": "I accept terms",
+    "cancelPolicy": "Cancel or change your date for free until 24 hours before your trip day. After that, bookings are non-refundable.",
     "successAdd": "Successfully added a new experience!",
     "failedAdd": "Failed to add a new experience...",
     "successDelete": "Successfully deleted experience",
@@ -273,6 +277,158 @@
     "lastTrip": "Last Trip",
     "numOfPurchases": "Purchases Made",
     "avgRating": "Average Rating",
-    "allUsers": "All Users"
+    "allUsers": "All Users",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Payment pending",
+      "cancelled": "Cancelled",
+      "refund_pending": "Refund processing",
+      "refunded": "Refunded",
+      "expired": "Expired"
+    },
+    "cancel": "Cancel booking",
+    "reschedule": "Change date",
+    "completePayment": "Complete payment",
+    "paymentPendingNote": "Your booking is not confirmed until payment completes.",
+    "deadlineNote": "Free cancellation and date changes until {deadline}",
+    "deadlinePassed": "Changes are no longer possible. The deadline was {deadline}",
+    "rescheduledFrom": "Rescheduled from {date}",
+    "cancelConfirmTitle": "Cancel this booking?",
+    "cancelConfirmCard": "You will receive a 100% refund to your original payment method. Depending on your bank it can take 3 to 14 business days to appear.",
+    "cancelConfirmCash": "No payment was taken for this booking, so cancelling costs you nothing.",
+    "keepBooking": "Keep booking",
+    "confirmCancel": "Yes, cancel it",
+    "cancelled": "Your booking has been cancelled",
+    "cancelledRefunded": "Booking cancelled, your refund is on its way",
+    "cancelledRefundProcessing": "Booking cancelled, your refund is being processed",
+    "rescheduleTitle": "Choose a new date",
+    "newDate": "New trip date",
+    "back": "Back",
+    "confirmReschedule": "Confirm new date",
+    "rescheduled": "Your booking has been moved to the new date",
+    "dateTooSoon": "That date is too soon, pick a later one",
+    "tooLate": "The free cancellation window for this booking has closed",
+    "tooLateToPay": "The trip date is too close to pay for now. Please make a fresh booking.",
+    "actionFailed": "Something went wrong, please try again"
+  },
+  "terms": {
+    "title": "Terms & Conditions | Omanosaura",
+    "pageTitle": "Terms & Conditions",
+    "desc": "The terms and conditions for booking and participating in Omanosaura trips and adventures, including our cancellation and refund policy.",
+    "updated": "Last updated: 27 August 2026",
+    "intro": "These Terms and Conditions apply to all bookings made with Omanosaura (Saura Company), a licensed tour operator in the Sultanate of Oman (licence L2000917). Please read them carefully: by booking any of our experiences you agree to them.",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of these terms",
+        "p1": "By using omanosaura.com or booking any trip, adventure or activity with us, you (and anyone you book on behalf of) accept these Terms and Conditions in full. If you do not agree with any part of them, please do not make a booking.",
+        "p2": "In addition to accepting these terms online, every participant (or their guardian) must sign our liability waiver document on site before taking part in any activity. Participation is not permitted without a signed waiver."
+      },
+      "risk": {
+        "title": "Assumption of risk & liability waiver",
+        "p1": "Our experiences are outdoor and adventure activities (hiking, wadi trips, swimming, abseiling, climbing, ziplining and off-road travel) and carry inherent risks. These include, but are not limited to, personal injury, illness, disability or death, and theft of or damage to personal equipment.",
+        "p2": "By booking, you confirm that you participate voluntarily and assume responsibility for these risks. Omanosaura's management does not bear responsibility for accidents that occur because participants did not follow activity rules, did not listen to directions given by supervisors or employees, misused equipment, or slipped, tripped or fell on any of the tracks organised by the company.",
+        "p3": "Omanosaura is not responsible for supervising or following up on participants outside the designated activity areas."
+      },
+      "health": {
+        "title": "Health requirements",
+        "p1": "By booking you confirm that your health condition allows you to participate in the activities, and that you do not suffer from any health conditions or chronic diseases that prevent you from participating safely.",
+        "p2": "You are responsible for informing us, before the trip, of any relevant health condition, whether yours or that of anyone you book for. Omanosaura bears no responsibility for consequences of health conditions that were not disclosed to us."
+      },
+      "minors": {
+        "title": "Children & guardians",
+        "p1": "For participants under 6 years old, the liability waiver must be signed by an accompanying person aged 18 or over, and children aged 6 and under must be accompanied by an adult at all times during the experience.",
+        "p2": "A parent or guardian who books for a minor accepts these terms on the minor's behalf and remains responsible for the minor's supervision outside the organised activities."
+      },
+      "conduct": {
+        "title": "Participant responsibilities",
+        "p1": "Participants must follow the directions of our guides and supervisors at all times, use all equipment as instructed, and observe the safety rules of each activity.",
+        "p2": "Omanosaura may exclude from an activity, without refund, any participant whose behaviour endangers themselves, other participants or our staff."
+      },
+      "booking": {
+        "title": "Bookings, prices & payment",
+        "p1": "All prices are shown in Omani Rial (OMR). Payment can be made online by card through Thawani, Oman's licensed payment gateway, or in cash on arrival where that option is offered.",
+        "p2": "A card booking is confirmed once payment completes; a cash booking is confirmed when we issue your confirmation email. Every confirmed booking receives a reference number, which you can find in your confirmation email and on your Purchases page.",
+        "p3": "Bookings must be made at least one day before the trip date."
+      },
+      "cancellation": {
+        "title": "Cancellation, rescheduling & refunds",
+        "p1": "You may cancel your booking or change its date free of charge until 24 hours before your trip day begins (00:00 Oman time on the trip date). For example, for a trip on the 10th, you can cancel or reschedule until the end of the 8th.",
+        "p2": "If you cancel a card-paid booking within the free-cancellation window, you receive a 100% refund of the amount paid, returned to your original payment method. Refunds are processed immediately on our side and typically appear within 3 to 14 business days depending on your bank.",
+        "p3": "Cash bookings involve no advance payment, so cancelling within the window is free and nothing is owed.",
+        "p4": "Within 24 hours of the trip day, bookings can no longer be cancelled or rescheduled, and no refund is due. This also applies if you do not show up for the trip.",
+        "p5": "You can cancel or reschedule directly from your Purchases page at omanosaura.com/purchases. Every cancellation or date change is confirmed to you by email."
+      },
+      "operatorCancellation": {
+        "title": "Cancellation by Omanosaura",
+        "p1": "We may cancel or postpone a trip for reasons of weather, safety, insufficient group size, or other operational circumstances. We will notify you as early as possible using the contact details on your booking.",
+        "p2": "If we cancel your trip, you choose between a full 100% refund of any amount paid or a free reschedule to a new date."
+      },
+      "forceMajeure": {
+        "title": "Force majeure",
+        "p1": "Omanosaura is not liable for failure to perform its obligations where that failure results from events beyond its reasonable control, including extreme weather, natural disasters, government actions or other force-majeure events. In such cases the operator-cancellation policy above applies."
+      },
+      "medical": {
+        "title": "Medical costs",
+        "p1": "Participants agree to bear responsibility for their own medical costs whenever necessary, including but not limited to ambulance services, hospital stays, medicines and pharmaceuticals, physiotherapy sessions, psychotherapy, and rehabilitation programmes. We recommend that participants hold suitable personal or travel insurance."
+      },
+      "indemnity": {
+        "title": "Indemnity",
+        "p1": "You agree to compensate Omanosaura and its exempted persons for any damages or losses (including attorney fees and costs) incurred by the company due to a lawsuit or claim filed by you, your child, or any other person in connection with your participation, and you waive any claim against Omanosaura in respect of damage that may arise from your participation in the activities, except where liability cannot be excluded under Omani law."
+      },
+      "law": {
+        "title": "Governing law",
+        "p1": "These terms are governed by and construed primarily in accordance with the laws of the Sultanate of Oman, and its courts have exclusive jurisdiction over disputes arising from them.",
+        "p2": "If any of these terms is determined to be void, invalid or unenforceable, that term is deemed void and the remaining terms remain valid, enforceable and binding."
+      },
+      "contact": {
+        "title": "Contact",
+        "p1": "For any questions about these terms or your booking, contact us at info@omanosaura.com or via WhatsApp at +968 9559 8840."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy | Omanosaura",
+    "pageTitle": "Privacy Policy",
+    "desc": "How Omanosaura collects, uses and protects your personal data when you browse our site and book our trips.",
+    "updated": "Last updated: 27 August 2026",
+    "intro": "Omanosaura (Saura Company) respects your privacy. This policy explains what personal data we collect when you use omanosaura.com, why we collect it, and the choices you have.",
+    "sections": {
+      "collected": {
+        "title": "What we collect",
+        "p1": "Account information: when you sign in we store your email address, name and phone number, linked to your login account.",
+        "p2": "Booking information: the experiences you book, trip dates, number of participants, amounts paid and your booking history.",
+        "p3": "Messages and reviews: anything you send us through the contact form and any reviews you post on our experiences."
+      },
+      "use": {
+        "title": "How we use it",
+        "p1": "We use your data to operate your account, process and manage your bookings, send you transactional emails (booking confirmations, reminders, cancellation and refund notices), and respond to your messages.",
+        "p2": "We do not sell your personal data, and we do not use it for third-party advertising."
+      },
+      "processors": {
+        "title": "Services we rely on",
+        "p1": "Authentication is provided by Google Firebase, which processes your login credentials and social sign-in.",
+        "p2": "Online payments are processed by Thawani Technologies, Oman's licensed payment gateway.",
+        "p3": "Transactional emails are delivered through Brevo.",
+        "p4": "Our website and database are hosted on Vercel and Neon, with infrastructure located in Europe."
+      },
+      "payments": {
+        "title": "Card data",
+        "p1": "Omanosaura never sees or stores your card details. Card payments happen entirely on Thawani's secure checkout pages, and we store only a payment reference so we can support refunds."
+      },
+      "retention": {
+        "title": "How long we keep data",
+        "p1": "Booking and payment records are kept for as long as required for legal, accounting and tax purposes.",
+        "p2": "Your account data is kept while your account exists. You can request deletion of your account and associated personal data at any time."
+      },
+      "rights": {
+        "title": "Your rights",
+        "p1": "You can view and update your name, email and phone number from your Profile page at any time.",
+        "p2": "You may request a copy of the personal data we hold about you, ask us to correct it, or ask us to delete it, by contacting us at the address below."
+      },
+      "contact": {
+        "title": "Contact",
+        "p1": "For any privacy questions or requests, contact us at info@omanosaura.com."
+      }
+    }
   }
 }

@@ -40,6 +40,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // Old admin routes → new /admin area
+      { source: '/terms.pdf', destination: '/terms', permanent: true },
       { source: '/users', destination: '/admin/users', permanent: true },
       { source: '/purchases/all', destination: '/admin/purchases', permanent: true },
       { source: '/images', destination: '/admin/media', permanent: true },

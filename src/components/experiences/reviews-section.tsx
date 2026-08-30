@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Star, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -48,9 +48,11 @@ function StarPicker({
 export function ReviewsSection({
   productId,
   initialReviews,
+  total,
 }: {
   productId: string
   initialReviews: ReviewDTO[]
+  total?: number
 }) {
   const t = useTranslations('experiences')
   const { user } = useSessionUser()
@@ -59,6 +61,8 @@ export function ReviewsSection({
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialReviews.length === PAGE_SIZE)
   const [busy, setBusy] = useState(false)
+  const loadingRef = useRef(false)
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const [rating, setRating] = useState(0)
   const [title, setTitle] = useState('')
@@ -77,44 +81,81 @@ export function ReviewsSection({
     })
   }, [user, productId])
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
+    // The ref (not `busy`) is the reentrancy guard: the IntersectionObserver
+    // can fire again before React commits the state update.
+    if (loadingRef.current || !hasMore) return
+    loadingRef.current = true
     setBusy(true)
-    const next = await fetchReviews(productId, page + 1)
-    setReviews((prev) => [...prev, ...next])
-    setPage((p) => p + 1)
-    setHasMore(next.length === PAGE_SIZE)
-    setBusy(false)
+    try {
+      const next = await fetchReviews(productId, page + 1)
+      setReviews((prev) => [...prev, ...next])
+      setPage((p) => p + 1)
+      setHasMore(next.length === PAGE_SIZE)
+    } finally {
+      loadingRef.current = false
+      setBusy(false)
+    }
+  }, [productId, page, hasMore])
+
+  // Infinite loading: fetch the next page when the sentinel under the list
+  // scrolls into view. The Load More button stays as a no-JS-quirk fallback.
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel || !hasMore) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) void loadMore()
+      },
+      { rootMargin: '400px 0px' },
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [hasMore, loadMore])
+
+  const resetList = async () => {
+    const first = await fetchReviews(productId, 1)
+    setReviews(first)
+    setPage(1)
+    setHasMore(first.length === PAGE_SIZE)
   }
 
   const submit = async () => {
     setBusy(true)
     const result = await upsertReview({ productId, rating, title, review })
-    setBusy(false)
     if (result.ok) {
       toast.success(t('successfulReview'))
       setHadReview(true)
-      setReviews(await fetchReviews(productId, 1))
-      setPage(1)
+      await resetList()
     } else {
-      toast.error(t('failedReview'))
+      toast.error(
+        result.error === 'profane' ? t('reviewRejected') : t('failedReview'),
+      )
     }
+    setBusy(false)
   }
 
   const remove = async () => {
     setBusy(true)
     await deleteReview(productId)
-    setBusy(false)
     setRating(0)
     setTitle('')
     setReview('')
     setHadReview(false)
-    setReviews(await fetchReviews(productId, 1))
-    setPage(1)
+    await resetList()
+    setBusy(false)
   }
 
   return (
     <section className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t('reviews')}</h2>
+      <h2 className="text-2xl font-semibold">
+        {t('reviews')}
+        {typeof total === 'number' && total > 0 && (
+          <span className="text-muted-foreground ms-2 text-base font-normal">
+            ({total})
+          </span>
+        )}
+      </h2>
 
       {user && (
         <Card>
@@ -173,9 +214,12 @@ export function ReviewsSection({
       </div>
 
       {hasMore && (
-        <Button variant="outline" onClick={loadMore} disabled={busy}>
-          {t('loadMore')}
-        </Button>
+        <>
+          <div ref={sentinelRef} aria-hidden className="h-px" />
+          <Button variant="outline" onClick={loadMore} disabled={busy}>
+            {t('loadMore')}
+          </Button>
+        </>
       )}
     </section>
   )

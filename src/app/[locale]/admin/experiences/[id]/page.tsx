@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import { toDateString } from '@/data/serialize'
+import { getProductReviewsAdmin } from '@/data/reviews'
 import { ProductForm } from '@/components/admin/product-form'
+import { ProductReviewsPanel } from '@/components/admin/product-reviews-panel'
 
 export default async function EditExperiencePage({
   params,
@@ -9,7 +11,10 @@ export default async function EditExperiencePage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const product = await prisma.product.findUnique({ where: { id } })
+  const [product, reviews] = await Promise.all([
+    prisma.product.findUnique({ where: { id } }),
+    getProductReviewsAdmin(id),
+  ])
   if (!product) notFound()
 
   return (
@@ -37,6 +42,7 @@ export default async function EditExperiencePage({
           latitude: product.latitude,
         }}
       />
+      <ProductReviewsPanel reviews={reviews} />
     </div>
   )
 }

@@ -31,6 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/blogs'),
     entry('/about'),
     entry('/contact'),
+    entry('/terms'),
+    entry('/privacy'),
     ...products.map((p) =>
       entry(`/experiences/${encodeURIComponent(p.id)}`, p.lastUpdated),
     ),

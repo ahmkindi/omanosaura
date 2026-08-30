@@ -4,6 +4,11 @@ import { Camera, Mail, Phone } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 
 const NAV_LINKS = ['experiences', 'blogs', 'about', 'contact'] as const
+// Footer-only legal links; NAV_LINKS is shared with the navbar.
+const LEGAL_LINKS = [
+  { href: '/terms', key: 'termsLink' },
+  { href: '/privacy', key: 'privacyLink' },
+] as const
 
 export async function Footer() {
   const t = await getTranslations('common')
@@ -57,8 +62,17 @@ export async function Footer() {
           </a>
         </div>
       </div>
-      <div className="border-t border-white/10 py-4 text-center text-xs opacity-60">
-        © {new Date().getFullYear()} Omanosaura
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 border-t border-white/10 py-4 text-center text-xs opacity-60">
+        <span>© {new Date().getFullYear()} Omanosaura</span>
+        {LEGAL_LINKS.map(({ href, key }) => (
+          <Link
+            key={href}
+            href={href as never}
+            className="underline-offset-2 transition-opacity hover:opacity-100 hover:underline"
+          >
+            {t(key)}
+          </Link>
+        ))}
       </div>
     </footer>
   )

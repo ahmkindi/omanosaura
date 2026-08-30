@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useSearchParams } from 'next/navigation'
-import { usePathname, useRouter } from '@/i18n/navigation'
+import { Info } from 'lucide-react'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { purchaseProduct } from '@/actions/purchase'
 import { computeCostBaisa } from '@/lib/pricing'
 import { formatOMR } from '@/lib/price'
@@ -149,6 +150,10 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
             </div>
           </div>
         )}
+        <p className="text-muted-foreground flex items-start gap-1.5 text-xs">
+          <Info className="mt-0.5 size-3.5 shrink-0" />
+          {t('cancelPolicy')}
+        </p>
       </CardContent>
       <CardFooter>
         <Button className="w-full" size="lg" onClick={openDialog}>
@@ -191,6 +196,7 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
                     : undefined
                 }
               />
+              <p className="text-muted-foreground text-xs">{t('cancelPolicy')}</p>
             </div>
             {product.extraPriceBaisa > 0 && (
               <label className="flex items-start gap-2 text-sm">
@@ -228,14 +234,14 @@ export function PurchaseCard({ product }: { product: PurchaseCardProduct }) {
               />
               <span>
                 {t('byPurchasing')}{' '}
-                <a
-                  href="/terms.pdf"
+                <Link
+                  href="/terms"
                   target="_blank"
                   className="underline"
                   rel="noreferrer"
                 >
                   {t('readTerms')}
-                </a>
+                </Link>
               </span>
             </label>
             <Button

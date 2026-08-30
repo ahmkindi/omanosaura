@@ -21,7 +21,9 @@ export async function getProductReviews(
   const reviews = await prisma.review.findMany({
     where: { productId },
     include: { user: { select: { name: true } } },
-    orderBy: { lastUpdated: 'desc' },
+    // lastUpdated is date-only, so ties are common — the userId tiebreak keeps
+    // offset pagination stable (no dupes/skips across pages).
+    orderBy: [{ lastUpdated: 'desc' }, { userId: 'asc' }],
     skip: (page - 1) * REVIEWS_PAGE_SIZE,
     take: REVIEWS_PAGE_SIZE,
   })
@@ -33,5 +35,28 @@ export async function getProductReviews(
     review: r.review,
     lastUpdated: toDateString(r.lastUpdated),
     userName: r.user.name,
+  }))
+}
+
+export type AdminReviewDTO = ReviewDTO & { userEmail: string }
+
+/** All reviews for one product, for the admin moderation panel. */
+export async function getProductReviewsAdmin(
+  productId: string,
+): Promise<AdminReviewDTO[]> {
+  const reviews = await prisma.review.findMany({
+    where: { productId },
+    include: { user: { select: { name: true, email: true } } },
+    orderBy: [{ lastUpdated: 'desc' }, { userId: 'asc' }],
+  })
+  return reviews.map((r) => ({
+    productId: r.productId,
+    userId: r.userId,
+    rating: r.rating,
+    title: r.title,
+    review: r.review,
+    lastUpdated: toDateString(r.lastUpdated),
+    userName: r.user.name,
+    userEmail: r.user.email,
   }))
 }

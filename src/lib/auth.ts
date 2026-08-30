@@ -56,6 +56,26 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   }
 })
 
+/**
+ * Persists the request locale on the user row so emails sent outside a
+ * request (crons, webhooks) know the customer's language. Fire-and-forget:
+ * call from `after()` in server actions. No-op outside an intl request
+ * context or when the locale is unchanged.
+ */
+export async function rememberUserLocale(userId: string) {
+  try {
+    const { getLocale } = await import('next-intl/server')
+    const locale = await getLocale()
+    if (locale !== 'en' && locale !== 'ar') return
+    await prisma.user.updateMany({
+      where: { id: userId, NOT: { locale } },
+      data: { locale },
+    })
+  } catch (error) {
+    console.error('rememberUserLocale failed', error)
+  }
+}
+
 export class UnauthorizedError extends Error {
   constructor(message = 'Unauthorized') {
     super(message)
