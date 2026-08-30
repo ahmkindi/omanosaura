@@ -26,12 +26,13 @@ const productSchema = z.object({
 
 export type ProductFormInput = z.infer<typeof productSchema>
 
-function revalidateProducts(id: string) {
-  for (const prefix of ['', '/ar']) {
-    revalidatePath(`${prefix}/`)
-    revalidatePath(`${prefix}/experiences`)
-    revalidatePath(`${prefix}/experiences/${id}`)
-  }
+// Route-pattern form busts every locale. Literal URL paths like
+// '/experiences' silently miss the default locale, whose internal cached
+// path is '/en/experiences' under next-intl's as-needed prefixing.
+function revalidateProducts(_id: string) {
+  revalidatePath('/[locale]', 'page')
+  revalidatePath('/[locale]/experiences', 'page')
+  revalidatePath('/[locale]/experiences/[id]', 'page')
 }
 
 /** Legacy slug rule: lowercased title, spaces → dashes. */

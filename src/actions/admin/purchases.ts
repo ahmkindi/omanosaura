@@ -21,10 +21,9 @@ export type AdminPurchaseResult =
     }
 
 function revalidatePurchases() {
-  for (const prefix of ['', '/ar']) {
-    revalidatePath(`${prefix}/purchases`)
-    revalidatePath(`${prefix}/admin/purchases`)
-  }
+  // Route-pattern form busts every locale (literal paths miss '/en/...').
+  revalidatePath('/[locale]/purchases', 'page')
+  revalidatePath('/[locale]/admin/purchases', 'page')
 }
 
 const idSchema = z.object({ purchaseId: z.uuid() })

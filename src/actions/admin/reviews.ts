@@ -27,10 +27,9 @@ export async function adminDeleteReview(input: {
     .delete({ where: { productId_userId: { productId, userId } } })
     .catch(() => {})
 
-  for (const prefix of ['', '/ar']) {
-    revalidatePath(`${prefix}/experiences/${productId}`)
-    revalidatePath(`${prefix}/experiences`)
-    revalidatePath(`${prefix}/admin/experiences/${productId}`)
-  }
+  // Route-pattern form busts every locale (literal paths miss '/en/...').
+  revalidatePath('/[locale]/experiences/[id]', 'page')
+  revalidatePath('/[locale]/experiences', 'page')
+  revalidatePath('/[locale]/admin/experiences/[id]', 'page')
   return { ok: true }
 }

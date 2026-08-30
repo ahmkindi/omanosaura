@@ -55,11 +55,11 @@ const reviewSchema = z.object({
 
 export type ReviewInput = z.infer<typeof reviewSchema>
 
-function revalidateProduct(productId: string) {
-  for (const prefix of ['', '/ar']) {
-    revalidatePath(`${prefix}/experiences/${productId}`)
-    revalidatePath(`${prefix}/experiences`)
-  }
+// Route-pattern form busts every locale — literal '/experiences/...' paths
+// miss the default locale's internal '/en/...' cache entries.
+function revalidateProduct(_productId: string) {
+  revalidatePath('/[locale]/experiences/[id]', 'page')
+  revalidatePath('/[locale]/experiences', 'page')
 }
 
 export async function upsertReview(
